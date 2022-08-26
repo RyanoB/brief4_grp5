@@ -1,4 +1,4 @@
-# Scrum meeting at 25/08/2022.
+# Scrum meeting at 26/08/2022.
 
 # 1. Qu'est ce qu'on a fait hier ?
 * **Stephane:** Deploiement minimal de l'infra, présentation,  liste des ressources.
