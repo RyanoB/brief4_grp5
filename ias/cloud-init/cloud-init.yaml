@@ -1,0 +1,24 @@
+#cloud-config
+
+package_update: true
+packages:
+  - nginx
+  - composer
+  - nfs-common
+
+runcmd:
+  - sudo apt install software-properties-common && sudo add-apt-repository ppa:ondrej/php -y
+  - sudo apt update
+  - sudo export PATH=$PATH:/var/www/html/magento2/bin
+  - sudo apt upgrade -y
+  - sudo apt install -y libxml2 libxml2-dev libssl-dev libssl1.1
+  - sudo apt install -y php8.1 php8.1-common php8.1-xml php8.1-mbstring php8.1-curl php8.1-gd php8.1-intl php-json php8.1-mysql php8.1-soap php-sodium php-tokenizer php8.1-xsl php-zip
+  - sudo mkdir /var/www/html/magento2
+  - cd /home/magento && sudo curl -O https://MAG005875421:af7e13b80644f2a44187f446f55bb76d5c156b3b@www.magentocommerce.com/products/downloads/file/Magento-CE-2.4.4.tar.bz2
+  - sudo tar -C /var/www/html/magento2/ -xvf /home/magento/Magento-CE-2.4.4.tar.bz2
+  - cd /var/www/html/
+  - sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
+  - sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} +
+  - sudo chown -R www-data:www-data /var/www/html
+  - sudo chmod u+x bin/magento
+  - export PATH=$PATH:/var/www/html/
