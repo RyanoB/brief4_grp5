@@ -123,7 +123,7 @@ resource "random_password" "dbpassword" {
 #https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mariadb_server
 
 
-resource "azurerm_mariadb_server" "db_magento" {
+resource "azurerm_mariadb_server" "server_magento" {
   name = "magento-mariadb-server"
   location = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -139,6 +139,14 @@ resource "azurerm_mariadb_server" "db_magento" {
   geo_redundant_backup_enabled = false
   public_network_access_enabled = true
   ssl_enforcement_enabled = true
+}
+
+resource "azurerm_mariadb_database" "db-magento" {
+  name                = "mariadb_database"
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name         = azurerm_mariadb_server.server_magento.name
+  charset             = "utf8"
+  collation           = "utf8_general_ci"
 }
 
 #rule VM autorization
