@@ -25,6 +25,7 @@ resource "azurerm_subnet" "myterraformsubnetapp" {
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.myterraformnetwork.name
   address_prefixes     = var.subnet_app_address
+  service_endpoints    = ["Microsoft.Sql", "Microsoft.Storage"] # pour liaison sql et  compte de stockage
 }
 
 resource "azurerm_public_ip" "myterraformpublicipapp" {
@@ -109,13 +110,75 @@ resource "random_id" "randomId" {
   byte_length = 8
 }
 
-resource "azurerm_elastic_cloud_elasticsearch" "test" {
+#generation d'un random password pour database
+#peut necessiter un terraform init -upgrade pour activer le random
+
+resource "random_password" "dbpassword" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+#creation database
+#https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mariadb_server
+
+
+resource "azurerm_mariadb_server" "db_magento" {
+  name = "magento-mariadb-server"
+  location = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  administrator_login = "magento"
+  administrator_login_password = random_password.dbpassword.result
+
+  sku_name = "B_Gen5_2"
+  storage_mb = 5120
+  version = "10.2"
+
+  auto_grow_enabled = true
+  backup_retention_days = 14
+  geo_redundant_backup_enabled = false
+  public_network_access_enabled = true
+  ssl_enforcement_enabled = true
+}
+
+#rule VM autorization
+resource "azurerm_mariadb_firewall_rule" "mdbrule" {
+  name = "rule_magento_db"
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name = azurerm_mariadb_server.db_magento.name
+  start_ip_address = "10.0.1.0"
+  end_ip_address = "10.0.1.255"
+}
+
+#creation storage account
+resource "azurerm_storage_account" "magento-storage" {
+  name = "magentostorage"
+  resource_group_name = azurerm_resource_group.rg.name
+  location = azurerm_resource_group.rg.location
+  account_tier = "Standard"
+  account_replication_type = "LRS"
+  account_kind = "StorageV2"
+  enable_https_traffic_only = false
+  allow_nested_items_to_be_public = true
+  is_hns_enabled = true
+  nfsv3_enabled = true
+  network_rules {
+    default_action="Deny"
+    virtual_network_subnet_ids = [azurerm_subnet.myterraformsubnetapp.id]
+
+  }
+
+}
+
+
+resource "azurerm_elastic_cloud_elasticsearch" "elastic_magento" {
   name                        = "elastic_magento"
   resource_group_name         = azurerm_resource_group.rg.name
   location                    = azurerm_resource_group.rg.location
   sku_name                    = "ess-monthly-consumption_Monthly"
   elastic_cloud_email_address = "user@example.com"
 }
+
 
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "myterraformvm" {
