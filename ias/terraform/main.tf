@@ -128,7 +128,7 @@ resource "azurerm_mariadb_server" "db_magento" {
   location = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   administrator_login = "magento"
-  administrator_login_password = random_password.dbpassword.result
+  administrator_login_password = "blablabla123!"
 
   sku_name = "B_Gen5_2"
   storage_mb = 5120

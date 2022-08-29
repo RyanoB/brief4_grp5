@@ -13,3 +13,8 @@ output "public_ip_address_app" {
 output "public_ip_address_gateway" {
   value = "${azurerm_public_ip.myterraformpublicipgateway.*.ip_address}"
 }
+
+output "password" {
+  value = random_password.dbpassword.result
+  sensitive = true
+}
