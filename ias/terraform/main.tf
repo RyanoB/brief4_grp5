@@ -141,7 +141,7 @@ resource "azurerm_mariadb_server" "server_magento" {
   ssl_enforcement_enabled = true
 }
 
-resource "azurerm_mariadb_database" "db-magento" {
+resource "azurerm_mariadb_database" "db_magento" {
   name                = "mariadb_database"
   resource_group_name = azurerm_resource_group.rg.name
   server_name         = azurerm_mariadb_server.server_magento.name
@@ -153,7 +153,7 @@ resource "azurerm_mariadb_database" "db-magento" {
 resource "azurerm_mariadb_firewall_rule" "mdbrule" {
   name = "rule_magento_db"
   resource_group_name = azurerm_resource_group.rg.name
-  server_name = azurerm_mariadb_server.db_magento.name
+  server_name = azurerm_mariadb_server.server_magento.name
   start_ip_address = "10.0.1.0"
   end_ip_address = "10.0.1.255"
 }
