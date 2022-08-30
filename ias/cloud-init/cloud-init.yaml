@@ -1,11 +1,18 @@
-#cloud-config
-#--------------CREATION USERS QUENTIN RYANO STEPHANE--------------
+#cloud-config  
+package_update: true
+packages:
+  - nginx
+  - composer
+  - mariadb-client
+  - mariadb-client-10.1
+  - nfs-common
+  
 users:
   - default
   - name: quentin
     groups: sudo, root
     shell: /bin/bash
-    plain_text_passwd: bla123!
+    plain_text_passwd: blabla123!
     sudo: 'ALL=(ALL) NOPASSWD:ALL'
     ssh_authorized_keys: 
         - >-
@@ -13,7 +20,7 @@ users:
   - name: steph
     groups: sudo, root
     shell: /bin/bash
-    plain_text_passwd: bla123!
+    plain_text_passwd: blabla123!
     sudo: 'ALL=(ALL) NOPASSWD:ALL'
     ssh_authorized_keys: 
         - >-
@@ -21,12 +28,12 @@ users:
   - name: ryano
     groups: sudo, root
     shell: /bin/bash
-    plain_text_passwd: bla123!
+    plain_text_passwd: blabla123!
     sudo: 'ALL=(ALL) NOPASSWD:ALL'
     ssh_authorized_keys: 
         - >-
           ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCuQsDbdhzBOtJvetSRXRINBLZnKEzLctl+J3hFX22doPy1Btth8i7a4cigqyQ914MIgdYr/pPOFfH7YBLa5LhF2Racx3cRT1RPobmGn2DMEcNAcWjw1Qr9TRl3HcFK59ineQ4ukoDt4jZCUyRXliCFMhqBdQU0u182UvNFf0L5bLBVzlkWyNxPo79WDDGY97HCsQLYIQcqRfsYJ0YwJ5QyGUvtUWKmMO30bhlhyQJJmG/6QQlV/m6sMiHCiEt+7Qxv5n3+c9RH5hsRyaynzsLcNmzENDqsrDsngqwzK4oe8S71YKKVn395nvZ4MIr8PB6bE/ViWpvS0bhCzANDYAj8Exk2P5WR3aI06PobLOcUjxm3E1JOFa/YcXQ8GXzmUgjGpHMztB6qSH+NSHHTqBejmvsv2DQ9nYq/NL1s7k6e+FSwWQktZNXAlVIvUGMrX51MdUxtVXteNEFe/NCj4B66Y5i2MM8VJk1lsgm8PIUj0wDjlB0f8TlUFK+vqijLt80= utilisateur@UTILISA-ASVHC0M
-
+          
 runcmd:
   - sudo apt install software-properties-common && sudo add-apt-repository ppa:ondrej/php -y
   - sudo apt update
