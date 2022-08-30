@@ -5,7 +5,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 # Create virtual network
-resource "azurerm_virtual_network" "myterraformnetwork" {
+resource "azurerm_virtual_network" "network" {
   name                = var.network_name
   address_space       = var.network_address
   location            = azurerm_resource_group.rg.location
@@ -13,37 +13,44 @@ resource "azurerm_virtual_network" "myterraformnetwork" {
 }
 
 # Create subnet
-resource "azurerm_subnet" "myterraformsubnetgateway" {
+resource "azurerm_subnet" "subnet_gateway" {
   name                 = var.subnet_gateway_name
   resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.myterraformnetwork.name
+  virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = var.subnet_gateway_address
 }
 
-resource "azurerm_subnet" "myterraformsubnetapp" {
+resource "azurerm_subnet" "subnet_app" {
   name                 = var.subnet_app_name
   resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.myterraformnetwork.name
+  virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = var.subnet_app_address
 }
 
-resource "azurerm_subnet" "myterraformsubnetbdd" {
+resource "azurerm_subnet" "subnet_bdd" {
   name                 = "subnet_bdd"
   resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.myterraformnetwork.name
+  virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = ["10.3.0.0/16"]
   service_endpoints    = ["Microsoft.Sql", "Microsoft.Storage"] # pour liaison sql et  compte de stockage
 }
 
+resource "azurerm_subnet" "subnet_elastic" {
+  name                 = "subnet_elastic"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.network.name
+  address_prefixes     = ["10.4.0.0/16"]
+}
 
-resource "azurerm_public_ip" "myterraformpublicipapp" {
+
+resource "azurerm_public_ip" "public_ipapp" {
   name                = var.ip_app_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
 }
 
-resource "azurerm_public_ip" "myterraformpublicipgateway" {
+resource "azurerm_public_ip" "public_ipgateway" {
   name                = var.ip_gateway_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -58,7 +65,7 @@ resource "azurerm_ssh_public_key" "azurekey" {
 }
 
 # Create Network Security Group and rule
-resource "azurerm_network_security_group" "myterraformnsg" {
+resource "azurerm_network_security_group" "nsg" {
   name                = "myNetworkSecurityGroup"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -77,23 +84,23 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 }
 
 # Create network interface
-resource "azurerm_network_interface" "myterraformnic" {
+resource "azurerm_network_interface" "nic_app" {
   name                = "nic_app"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
     name                          = "nic_app_config"
-    subnet_id                     = azurerm_subnet.myterraformsubnetapp.id
+    subnet_id                     = azurerm_subnet.subnet_app.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.myterraformpublicipapp.id
+    public_ip_address_id          = azurerm_public_ip.public_ipapp.id
   }
 }
 
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "example" {
-  network_interface_id      = azurerm_network_interface.myterraformnic.id
-  network_security_group_id = azurerm_network_security_group.myterraformnsg.id
+  network_interface_id      = azurerm_network_interface.nic_app.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
 # Create storage account for boot diagnostics
@@ -168,7 +175,7 @@ resource "azurerm_mariadb_firewall_rule" "mdbrule" {
 
 #creation storage account
 resource "azurerm_storage_account" "magento-storage" {
-  name = "magentostorage"
+  name = "magentostoragequentin"
   resource_group_name = azurerm_resource_group.rg.name
   location = azurerm_resource_group.rg.location
   account_tier = "Standard"
@@ -180,19 +187,8 @@ resource "azurerm_storage_account" "magento-storage" {
   nfsv3_enabled = true
   network_rules {
     default_action="Deny"
-    virtual_network_subnet_ids = [azurerm_subnet.myterraformsubnetapp.id]
-
+    virtual_network_subnet_ids = [azurerm_subnet.subnet_bdd.id]
   }
-
-}
-
-
-resource "azurerm_elastic_cloud_elasticsearch" "elastic_magento" {
-  name                        = "elastic_magento"
-  resource_group_name         = azurerm_resource_group.rg.name
-  location                    = azurerm_resource_group.rg.location
-  sku_name                    = "ess-monthly-consumption_Monthly"
-  elastic_cloud_email_address = "user@example.com"
 }
 
 
@@ -201,7 +197,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
   name                  = "vm_app"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.myterraformnic.id]
+  network_interface_ids = [azurerm_network_interface.nic_app.id]
   size                  = "Standard_DS1_v2"
 
   os_disk {
@@ -227,7 +223,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
   }
 
   boot_diagnostics {
-    storage_account_uri = azurerm_storage_account.mystorageaccount.primary_blob_endpoint
+    storage_account_uri = azurerm_storage_account.magento-storage.primary_blob_endpoint
   }
 }
 
