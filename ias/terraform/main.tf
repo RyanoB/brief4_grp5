@@ -25,8 +25,16 @@ resource "azurerm_subnet" "myterraformsubnetapp" {
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.myterraformnetwork.name
   address_prefixes     = var.subnet_app_address
+}
+
+resource "azurerm_subnet" "myterraformsubnetbdd" {
+  name                 = "subnet_bdd"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.myterraformnetwork.name
+  address_prefixes     = ["10.3.0.0/16"]
   service_endpoints    = ["Microsoft.Sql", "Microsoft.Storage"] # pour liaison sql et  compte de stockage
 }
+
 
 resource "azurerm_public_ip" "myterraformpublicipapp" {
   name                = var.ip_app_name
@@ -138,10 +146,10 @@ resource "azurerm_mariadb_server" "server_magento" {
   backup_retention_days = 14
   geo_redundant_backup_enabled = false
   public_network_access_enabled = true
-  ssl_enforcement_enabled = true
+  ssl_enforcement_enabled = false
 }
 
-resource "azurerm_mariadb_database" "db-magento" {
+resource "azurerm_mariadb_database" "db_magento" {
   name                = "mariadb_database"
   resource_group_name = azurerm_resource_group.rg.name
   server_name         = azurerm_mariadb_server.server_magento.name
@@ -153,9 +161,9 @@ resource "azurerm_mariadb_database" "db-magento" {
 resource "azurerm_mariadb_firewall_rule" "mdbrule" {
   name = "rule_magento_db"
   resource_group_name = azurerm_resource_group.rg.name
-  server_name = azurerm_mariadb_server.db_magento.name
-  start_ip_address = "10.0.1.0"
-  end_ip_address = "10.0.1.255"
+  server_name = azurerm_mariadb_server.server_magento.name
+  start_ip_address = "52.147.201.40"
+  end_ip_address = "52.147.201.40"
 }
 
 #creation storage account

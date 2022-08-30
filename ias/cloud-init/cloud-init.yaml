@@ -4,6 +4,8 @@ package_update: true
 packages:
   - nginx
   - composer
+  - mariadb-client
+  - mariadb-client-10.1
   - nfs-common
 
 runcmd:
