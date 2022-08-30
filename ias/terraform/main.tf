@@ -162,6 +162,7 @@ resource "azurerm_mariadb_firewall_rule" "mdbrule" {
   name = "rule_magento_db"
   resource_group_name = azurerm_resource_group.rg.name
   server_name = azurerm_mariadb_server.server_magento.name
+
   start_ip_address = "52.147.201.40"
   end_ip_address = "52.147.201.40"
 }
