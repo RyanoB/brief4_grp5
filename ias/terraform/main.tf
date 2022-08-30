@@ -234,7 +234,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
 # resource "azurerm_subnet" "myterraformsubnetgateway" {
 #   name                 = var.subnet_gateway_name
 #   resource_group_name  = azurerm_resource_group.rg.name
-#   virtual_network_name = azurerm_virtual_network.myterraformnetwork.name
+#   virtual_network_name = azurerm_virtual_network.network.name
 #   address_prefixes     = var.subnet_gateway_address
 # }
 
@@ -243,16 +243,16 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
 #creation d'une gateway
 
 locals {
-  backend_address_pool_name      = "${azurerm_virtual_network.myterraformnetwork.name}-beap"
-  frontend_port_name             = "${azurerm_virtual_network.myterraformnetwork.name}-feport"
-  frontend_ip_configuration_name = "${azurerm_virtual_network.myterraformnetwork.name}-feip"
-  http_setting_name              = "${azurerm_virtual_network.myterraformnetwork.name}-be-htst"
-  listener_name                  = "${azurerm_virtual_network.myterraformnetwork.name}-httplstn"
-  request_routing_rule_name      = "${azurerm_virtual_network.myterraformnetwork.name}-rqrt"
-  redirect_configuration_name    = "${azurerm_virtual_network.myterraformnetwork.name}-rdrcfg"
+  backend_address_pool_name      = "${azurerm_virtual_network.network.name}-beap"
+  frontend_port_name             = "${azurerm_virtual_network.network.name}-feport"
+  frontend_ip_configuration_name = "${azurerm_virtual_network.network.name}-feip"
+  http_setting_name              = "${azurerm_virtual_network.network.name}-be-htst"
+  listener_name                  = "${azurerm_virtual_network.network.name}-httplstn"
+  request_routing_rule_name      = "${azurerm_virtual_network.network.name}-rqrt"
+  redirect_configuration_name    = "${azurerm_virtual_network.network.name}-rdrcfg"
 }
 
-resource "azurerm_application_gateway" "network" {
+resource "azurerm_application_gateway" "network_gateway" {
   name                = "example-appgateway"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
@@ -265,7 +265,7 @@ resource "azurerm_application_gateway" "network" {
 
   gateway_ip_configuration {
     name      = "my-gateway-ip-configuration"
-    subnet_id = azurerm_subnet.myterraformsubnetgateway.id
+    subnet_id = azurerm_subnet.subnet_gateway.id
   }
 
   frontend_port {
