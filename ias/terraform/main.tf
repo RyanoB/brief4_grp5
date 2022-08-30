@@ -54,14 +54,7 @@ resource "azurerm_public_ip" "public_ipgateway" {
   name                = var.ip_gateway_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Static"
-}
-
-resource "azurerm_ssh_public_key" "azurekey" {
-  name                = "azurekey"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  public_key          = file("~/.ssh/azure.pub")
+  allocation_method   = "Dynamic"
 }
 
 # Create Network Security Group and rule
@@ -117,7 +110,7 @@ resource "azurerm_ssh_public_key" "ssh_nomad" {
   name                = "ssh_key_nomad"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  public_key          = file("~/.ssh/azure.pub")
+  public_key          = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAXuIAe8DVtQ+qHpbTnCMn5iP1u7WQEOLDE76PTRZ0lYc0TrWJvH+zWzpEbTK/fwzx5sw7yAlBnuR83cAOtm6y8Gk5yktOogsk71VnJ9cXKV7QWtX5o/nysqhliBWAW2jQmEMLHBf4DOFXcKpCdl0OBOtrPct976tnFXhM5n5WF0wrQ4dVikfWe57yg0BX+G+ZbNl7iDCHS8cAGEI2S0ziGOLjl0qJq+9jjCaj2bdVb5vtbz/ghplWtNKQvirxvfOC5H3XbX7aeH2sAlogeYbPs8DmFuz5Smq/+FLBZzqV7JhPMxBCpVFm6r+EzZDgiS2WB96Q3Jh0ItPz7wwJtgpLmSWeaBmWyPGAOh9MBal2RXgDIZ26EPOQTc9WX1377SaEMFSXgwq3e0mtFl5TYG+hzjujY9ik6nfjyLy1yNaPB7hq0z0cCijeJf0Nlm092Ukb1IJOndiS9LSZXjFJT+LRNz7hqyK/oj8nH4K2nx4DMH+Fj4JypSdsqmIk7aXLdYE= nomad@device"
 }
 
 # Generate random text for a unique storage account name
@@ -275,7 +268,7 @@ resource "azurerm_application_gateway" "network_gateway" {
 
   frontend_ip_configuration {
     name                 = local.frontend_ip_configuration_name
-    public_ip_address_id = azurerm_public_ip.myterraformpublicipgateway.id
+    public_ip_address_id = azurerm_public_ip.public_ipgateway.id
   }
 
   backend_address_pool {
