@@ -1,8 +1,8 @@
-#cloud-config  
+#cloud-config
 package_update: true
 packages:
   - apt-transport-https
-  
+
 users:
   - default
   - name: quentin
@@ -10,7 +10,7 @@ users:
     shell: /bin/bash
     plain_text_passwd: blabla123!
     sudo: 'ALL=(ALL) NOPASSWD:ALL'
-    ssh_authorized_keys: 
+    ssh_authorized_keys:
         - >-
           ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAXuIAe8DVtQ+qHpbTnCMn5iP1u7WQEOLDE76PTRZ0lYc0TrWJvH+zWzpEbTK/fwzx5sw7yAlBnuR83cAOtm6y8Gk5yktOogsk71VnJ9cXKV7QWtX5o/nysqhliBWAW2jQmEMLHBf4DOFXcKpCdl0OBOtrPct976tnFXhM5n5WF0wrQ4dVikfWe57yg0BX+G+ZbNl7iDCHS8cAGEI2S0ziGOLjl0qJq+9jjCaj2bdVb5vtbz/ghplWtNKQvirxvfOC5H3XbX7aeH2sAlogeYbPs8DmFuz5Smq/+FLBZzqV7JhPMxBCpVFm6r+EzZDgiS2WB96Q3Jh0ItPz7wwJtgpLmSWeaBmWyPGAOh9MBal2RXgDIZ26EPOQTc9WX1377SaEMFSXgwq3e0mtFl5TYG+hzjujY9ik6nfjyLy1yNaPB7hq0z0cCijeJf0Nlm092Ukb1IJOndiS9LSZXjFJT+LRNz7hqyK/oj8nH4K2nx4DMH+Fj4JypSdsqmIk7aXLdYE= nomad@device
   - name: steph
@@ -18,7 +18,7 @@ users:
     shell: /bin/bash
     plain_text_passwd: blabla123!
     sudo: 'ALL=(ALL) NOPASSWD:ALL'
-    ssh_authorized_keys: 
+    ssh_authorized_keys:
         - >-
           ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCnBYZRoOJm/hLnbGmUBNhBEsdvUAqVb48EQql7OeYgB4pO/FFu8OIhKofBCByf1l9owEWnbWFZJhfgwQ+iNZjd+1iZtmc6cidjqQypgEc+U43avchEVdZdjK1LidIIJt0O7o8L0gARNn1PjDFLP3eUI2XN3ALUzB3sRzXKTJ1QHz8S1ByhfWXw2vhsPa9I3Jv9aE8zZuCBx/gfVQQy/FyskgK8VWRHhUl3XCgNDxUYBppnBgCCDWHpYOdzH/5XuRORdgMccDgJ/NhcCgY+erva7DlkIlzRiVxm5uMK8kvEiDn+AWI3aGsgxt3LaS+xaiw4hLLoev4V4cWTjWhZPeJSITDeWk3HAsBxDBWGvx3716ywsh7mkDJpjyXow6RXpTBke2rTmr4X9+hVGop4ZjqyTTUuTkdbYllwiaTrsuKgOJ5ne2lWp1P1IT0cD0s9j0GNl/54KaN31HFiuHVYVVA8yGp532LfRjhthpMdHiuhJbswlKTrDJR3i1iccT0aiUk= utilisateur@UTILISA-2JUD7VR
   - name: ryano
@@ -26,11 +26,28 @@ users:
     shell: /bin/bash
     plain_text_passwd: blabla123!
     sudo: 'ALL=(ALL) NOPASSWD:ALL'
-    ssh_authorized_keys: 
+    ssh_authorized_keys:
         - >-
           ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCuQsDbdhzBOtJvetSRXRINBLZnKEzLctl+J3hFX22doPy1Btth8i7a4cigqyQ914MIgdYr/pPOFfH7YBLa5LhF2Racx3cRT1RPobmGn2DMEcNAcWjw1Qr9TRl3HcFK59ineQ4ukoDt4jZCUyRXliCFMhqBdQU0u182UvNFf0L5bLBVzlkWyNxPo79WDDGY97HCsQLYIQcqRfsYJ0YwJ5QyGUvtUWKmMO30bhlhyQJJmG/6QQlV/m6sMiHCiEt+7Qxv5n3+c9RH5hsRyaynzsLcNmzENDqsrDsngqwzK4oe8S71YKKVn395nvZ4MIr8PB6bE/ViWpvS0bhCzANDYAj8Exk2P5WR3aI06PobLOcUjxm3E1JOFa/YcXQ8GXzmUgjGpHMztB6qSH+NSHHTqBejmvsv2DQ9nYq/NL1s7k6e+FSwWQktZNXAlVIvUGMrX51MdUxtVXteNEFe/NCj4B66Y5i2MM8VJk1lsgm8PIUj0wDjlB0f8TlUFK+vqijLt80= utilisateur@UTILISA-ASVHC0M
-          
+
+write_files:
+  - path: /home/elastic/elasticsearch.yml
+    content: "cluster.name: my-application\nnode.name: node-1\npath.data: /var/lib/elasticsearch\npath.logs: /var/log/elasticsearch\nnetwork.host: 10.4.0.4\nxpack.security.enabled: true\nxpack.security.enrollment.enabled: true\nxpack.security.http.ssl:\n  enabled: false\n  keystore.path: certs/http.p12\n\nxpack.security.transport.ssl:\n  enabled: true\n  verification_mode: certificate\n  keystore.path: certs/transport.p12\n  truststore.path: certs/transport.p12\ncluster.initial_master_nodes: [\"node-1\"]\nhttp.host: 0.0.0.0\n"
+
+
 runcmd:
   - wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
   - echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
   - sudo apt-get update
+  - sudo apt install elasticsearch -y
+  - sudo cp /etc/elasticsearch/elasticsearch.yml /home/elastic/backup_elastisearch.yml
+  - sudo rm /etc/elasticsearch/elasticsearch.yml
+  - sudo cp /home/elastic/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
+  - sudo chown root:elasticsearch /etc/elasticsearch/elasticsearch.yml
+  - sudo chmod 660 /etc/elasticsearch/elasticsearch.yml
+  - sudo /bin/systemctl daemon-reload
+  - sudo /bin/systemctl enable elasticsearch.service
+  - sudo systemctl start elasticsearch.service
+  - cd /usr/share/elasticsearch/bin && sudo ./elasticsearch-users useradd magento -p blablabla123! -r superuser
+
+
