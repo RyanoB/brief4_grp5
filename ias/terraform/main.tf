@@ -57,6 +57,13 @@ resource "azurerm_public_ip" "public_ipgateway" {
   allocation_method   = "Dynamic"
 }
 
+resource "azurerm_public_ip" "public_ipelastic" {
+  name                = "ip_elastic"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Dynamic"
+}
+
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "nsg" {
   name                = "myNetworkSecurityGroup"
@@ -291,12 +298,18 @@ resource "azurerm_application_gateway" "network_gateway" {
     backend_http_settings_name = local.http_setting_name
   }
 }
-# Create network interface
+# Create network interface 2 pour elastic
 resource "azurerm_network_interface" "nic_elasticsrh" {
   name                = "nic_elasticsrh"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-
+  ip_configuration {
+    name                          = "nic_elastic_config"
+    subnet_id                     = azurerm_subnet.subnet_elastic.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.public_ipelastic.id
+  }
+}
 
 # Create virtual machine for elastic search
 resource "azurerm_linux_virtual_machine" "vmelasticsrh" {
@@ -307,7 +320,7 @@ resource "azurerm_linux_virtual_machine" "vmelasticsrh" {
   size                  = "Standard_DS1_v2"
 
   os_disk {
-    name                 = "myOsDisk"
+    name                 = "myOsDiskelastic"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }

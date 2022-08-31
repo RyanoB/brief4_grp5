@@ -44,10 +44,12 @@ variable "ip_app_name" {
 }
 
 # Render a part using a `template_file`
-data "template_file" "script" {
-  template = "${file("${path.module}/../cloud-init/cloud-init.yaml")}"
+data "template_file" "scriptapp" {
+  template = "${file("${path.module}/../cloud-init/cloud-init-app.yaml")}"
 }
-
+data "template_file" "scriptelastic" {
+  template = "${file("${path.module}/../cloud-init/cloud-init-elastic.yaml")}"
+}
 data "template_cloudinit_config" "configapp" {
   gzip          = true
   base64_encode = true
@@ -56,7 +58,7 @@ data "template_cloudinit_config" "configapp" {
   part {
     filename     = "../cloud-init/cloud-init-app.yaml"
     content_type = "text/cloud-config"
-    content      = "${data.template_file.script.rendered}"
+    content      = "${data.template_file.scriptapp.rendered}"
   }
 }
 
@@ -68,6 +70,6 @@ data "template_cloudinit_config" "configelastic" {
   part {
     filename     = "../cloud-init/cloud-init-elastic.yaml"
     content_type = "text/cloud-config"
-    content      = "${data.template_file.script.rendered}"
+    content      = "${data.template_file.scriptelastic.rendered}"
   }
 }
