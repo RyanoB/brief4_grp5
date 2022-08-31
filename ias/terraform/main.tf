@@ -206,7 +206,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
     sku       = "18.04-LTS"
     version   = "latest"
   }
-  custom_data = data.template_cloudinit_config.config.rendered
+  custom_data = data.template_cloudinit_config.configapp.rendered
   computer_name                   = "magento"
   admin_username                  = "magento"
   disable_password_authentication = true
@@ -297,6 +297,43 @@ resource "azurerm_application_gateway" "network_gateway" {
     http_listener_name         = local.listener_name
     backend_address_pool_name  = local.backend_address_pool_name
     backend_http_settings_name = local.http_setting_name
+  }
+}
+# Create network interface
+resource "azurerm_network_interface" "nic_elasticsrh" {
+  name                = "nic_elasticsrh"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+
+# Create virtual machine for elastic search
+resource "azurerm_linux_virtual_machine" "vmelasticsrh" {
+  name                  = "vm_elasticsrh"
+  location              = azurerm_resource_group.rg.location
+  resource_group_name   = azurerm_resource_group.rg.name
+  network_interface_ids = [azurerm_network_interface.nic_elasticsrh.id]
+  size                  = "Standard_DS1_v2"
+
+  os_disk {
+    name                 = "myOsDisk"
+    caching              = "ReadWrite"
+    storage_account_type = "Premium_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+  custom_data = data.template_cloudinit_config.configelastic.rendered
+  computer_name                   = "elastic"
+  admin_username                  = "elastic"
+  disable_password_authentication = true
+
+  admin_ssh_key {
+    username   = "elastic"
+    public_key = azurerm_ssh_public_key.ssh_nomad.public_key
   }
 }
 

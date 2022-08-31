@@ -48,13 +48,25 @@ data "template_file" "script" {
   template = "${file("${path.module}/../cloud-init/cloud-init.yaml")}"
 }
 
-data "template_cloudinit_config" "config" {
+data "template_cloudinit_config" "configapp" {
   gzip          = true
   base64_encode = true
 
   # Main cloud-config configuration file.
   part {
-    filename     = "../cloud-init/cloud-init.yaml"
+    filename     = "../cloud-init/cloud-init-app.yaml"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.script.rendered}"
+  }
+}
+
+data "template_cloudinit_config" "configelastic" {
+  gzip          = true
+  base64_encode = true
+
+  # Main cloud-config configuration file.
+  part {
+    filename     = "../cloud-init/cloud-init-elastic.yaml"
     content_type = "text/cloud-config"
     content      = "${data.template_file.script.rendered}"
   }
