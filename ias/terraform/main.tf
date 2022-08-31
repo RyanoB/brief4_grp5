@@ -157,15 +157,7 @@ resource "azurerm_mariadb_database" "db_magento" {
   collation           = "utf8_general_ci"
 }
 
-#rule VM autorization
-resource "azurerm_mariadb_firewall_rule" "mdbrule" {
-  name = "rule_magento_db"
-  resource_group_name = azurerm_resource_group.rg.name
-  server_name = azurerm_mariadb_server.server_magento.name
 
-  start_ip_address = "52.147.201.40"
-  end_ip_address = "52.147.201.40"
-}
 
 #creation storage account
 resource "azurerm_storage_account" "magento-storage" {
@@ -223,7 +215,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
 
 
 
-#creation d'un gateway subnet 
+#creation d'un gateway subnet
 # resource "azurerm_subnet" "myterraformsubnetgateway" {
 #   name                 = var.subnet_gateway_name
 #   resource_group_name  = azurerm_resource_group.rg.name
@@ -301,4 +293,12 @@ resource "azurerm_application_gateway" "network_gateway" {
 }
 
 
+#rule VM autorization
+resource "azurerm_mariadb_firewall_rule" "mdbrule" {
+  name = "rule_magento_db"
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name = azurerm_mariadb_server.server_magento.name
 
+  start_ip_address = azurerm_public_ip.public_ipapp.ip_address
+  end_ip_address = azurerm_public_ip.public_ipapp.ip_address
+}
