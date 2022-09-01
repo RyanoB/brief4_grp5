@@ -159,15 +159,6 @@ resource "azurerm_network_interface_security_group_association" "example" {
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
-# Create storage account for boot diagnostics
-resource "azurerm_storage_account" "mystorageaccount" {
-  name                     = "diag${random_id.randomId.hex}"
-  location                 = azurerm_resource_group.rg.location
-  resource_group_name      = azurerm_resource_group.rg.name
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-}
-
 # SSH key
 resource "azurerm_ssh_public_key" "ssh_nomad" {
   name                = "ssh_key_nomad"
@@ -237,7 +228,7 @@ resource "azurerm_private_endpoint" "private_bdd" {
 
 #creation storage account
 resource "azurerm_storage_account" "magento-storage" {
-  name = "magentostoragequentin"
+  name = "magentostorage"
   resource_group_name = azurerm_resource_group.rg.name
   location = azurerm_resource_group.rg.location
   account_tier = "Standard"
