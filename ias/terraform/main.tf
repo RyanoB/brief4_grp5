@@ -325,7 +325,7 @@ resource "azurerm_linux_virtual_machine" "vm_bastion" {
     sku       = "18.04-LTS"
     version   = "latest"
   }
-  custom_data = data.template_cloudinit_config.configapp.rendered
+  custom_data = data.template_cloudinit_config.configbastion.rendered
   computer_name                   = "bastion"
   admin_username                  = "bastion"
   disable_password_authentication = true

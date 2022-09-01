@@ -78,6 +78,21 @@ data "template_cloudinit_config" "configelastic" {
   }
 }
 
+data "template_file" "scriptbastion" {
+  template = "${file("${path.module}/../cloud-init/cloud-init-bastion.yaml")}"
+}
+
+data "template_cloudinit_config" "configbastion" {
+  gzip          = true
+  base64_encode = true
+
+  # Main cloud-config configuration file.
+  part {
+    filename     = "../cloud-init/cloud-init-bastion.yaml"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.scriptbastion.rendered}"
+  }
+}
 variable "request_routing_rule_name" {
 default =  "rule_magento"
 description = "rule for magento gateway"
