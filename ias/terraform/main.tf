@@ -32,7 +32,8 @@ resource "azurerm_subnet" "subnet_bdd" {
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = ["10.3.0.0/16"]
-  service_endpoints    = ["Microsoft.Sql", "Microsoft.Storage"] # pour liaison sql et  compte de stockage
+
+  private_endpoint_network_policies_enabled = true
 }
 
 resource "azurerm_subnet" "subnet_elastic" {
@@ -200,7 +201,7 @@ resource "azurerm_mariadb_server" "server_magento" {
   administrator_login = "magento"
   administrator_login_password = "blablabla123!"
 
-  sku_name = "B_Gen5_2"
+  sku_name = "MO_Gen5_2"
   storage_mb = 5120
   version = "10.2"
 
@@ -220,6 +221,19 @@ resource "azurerm_mariadb_database" "db_magento" {
 }
 
 
+resource "azurerm_private_endpoint" "private_bdd" {
+  name = "private_bdd"
+  location = azurerm_resource_group.rg.location
+  resource_group_name =azurerm_resource_group.rg.name
+  subnet_id = azurerm_subnet.subnet_bdd.id
+
+  private_service_connection {
+    name = "private_service_bdd"
+    private_connection_resource_id = azurerm_mariadb_server.server_magento.id
+    subresource_names = ["mariadbServer"]
+    is_manual_connection = false
+  }
+}
 
 #creation storage account
 resource "azurerm_storage_account" "magento-storage" {
@@ -260,7 +274,7 @@ resource "azurerm_linux_virtual_machine" "vmelasticsrh" {
   size                  = "Standard_DS1_v2"
 
   os_disk {
-    name                 = "myOsDiskelastic"
+    name                 = "disk_elastic"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }

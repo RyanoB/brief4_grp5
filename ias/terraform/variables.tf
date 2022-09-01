@@ -46,6 +46,10 @@ variable "ip_app_name" {
 # Render a part using a `template_file`
 data "template_file" "scriptapp" {
   template = "${file("${path.module}/../cloud-init/cloud-init-app.yaml")}"
+
+  vars = {
+    ip_bdd = azurerm_private_endpoint.private_bdd.private_service_connection.0.private_ip_address
+  }
 }
 data "template_file" "scriptelastic" {
   template = "${file("${path.module}/../cloud-init/cloud-init-elastic.yaml")}"
@@ -75,6 +79,6 @@ data "template_cloudinit_config" "configelastic" {
 }
 
 variable "request_routing_rule_name" {
-default =  "rule_magento" 
+default =  "rule_magento"
 description = "rule for magento gateway"
 }
