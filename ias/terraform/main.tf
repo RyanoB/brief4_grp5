@@ -42,6 +42,12 @@ resource "azurerm_subnet" "subnet_elastic" {
   address_prefixes     = ["10.4.0.0/16"]
 }
 
+resource "azurerm_subnet" "subnet_app_ssh" {
+  name                 = "subnet_app_ssh"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.network.name
+  address_prefixes     = ["10.5.0.0/16"]  
+}
 
 resource "azurerm_public_ip" "public_ipapp" {
   name                = var.ip_app_name
@@ -54,7 +60,8 @@ resource "azurerm_public_ip" "public_ipgateway" {
   name                = var.ip_gateway_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
+  sku = "Standard"
 }
 
 resource "azurerm_public_ip" "public_ipelastic" {
@@ -62,6 +69,8 @@ resource "azurerm_public_ip" "public_ipelastic" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
+
+ 
 }
 
 # Create Network Security Group and rule
@@ -83,7 +92,21 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
-# Create network interface
+# Create network interface for app
+resource "azurerm_network_interface" "nic_app_ssh" {
+  name                = "nic_app_ssh"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "nic_app_config_ssh"
+    subnet_id                     = azurerm_subnet.subnet_app_ssh.id
+    private_ip_address_allocation = "Static"
+    private_ip_address = "10.5.0.19"
+    public_ip_address_id = azurerm_public_ip.public_ipapp.id
+  }
+}
+# Create network interface for gateway
 resource "azurerm_network_interface" "nic_app" {
   name                = "nic_app"
   location            = azurerm_resource_group.rg.location
@@ -92,14 +115,12 @@ resource "azurerm_network_interface" "nic_app" {
   ip_configuration {
     name                          = "nic_app_config"
     subnet_id                     = azurerm_subnet.subnet_app.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.public_ipapp.id
+    private_ip_address_allocation = "Static"
   }
 }
-
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "example" {
-  network_interface_id      = azurerm_network_interface.nic_app.id
+  network_interface_id      = azurerm_network_interface.nic_app_ssh.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
@@ -242,7 +263,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
   name                  = "vm_app"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.nic_app.id]
+  network_interface_ids = [azurerm_network_interface.nic_app_ssh.id,azurerm_network_interface.nic_app.id]
   size                  = "Standard_DS1_v2"
 
   os_disk {
@@ -282,7 +303,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
 #   address_prefixes     = var.subnet_gateway_address
 # }
 
-
+#
 
 #creation d'une gateway
 
@@ -302,8 +323,8 @@ resource "azurerm_application_gateway" "network_gateway" {
   location            = azurerm_resource_group.rg.location
 
   sku {
-    name     = "Standard_Small"
-    tier     = "Standard"
+    name     = "Standard_v2"
+    tier     = "Standard_v2"
     capacity = 2
   }
 
@@ -329,7 +350,7 @@ resource "azurerm_application_gateway" "network_gateway" {
   backend_http_settings {
     name                  = local.http_setting_name
     cookie_based_affinity = "Disabled"
-    path                  = "/path1/"
+    path                  = "/"
     port                  = 80
     protocol              = "Http"
     request_timeout       = 60
@@ -342,13 +363,23 @@ resource "azurerm_application_gateway" "network_gateway" {
     protocol                       = "Http"
   }
 
-  request_routing_rule {
-    name                       = local.request_routing_rule_name
+   request_routing_rule {
+    name                       = var.request_routing_rule_name
     rule_type                  = "Basic"
     http_listener_name         = local.listener_name
     backend_address_pool_name  = local.backend_address_pool_name
     backend_http_settings_name = local.http_setting_name
+    priority = 100
   }
+
+
+}
+
+resource "azurerm_network_interface_application_gateway_backend_address_pool_association" "poolbackend" {
+  network_interface_id = azurerm_network_interface.nic_app.id
+  ip_configuration_name = "nic_app_config"
+  backend_address_pool_id = tolist(azurerm_application_gateway.network_gateway.backend_address_pool).0.id
+
 }
 
 

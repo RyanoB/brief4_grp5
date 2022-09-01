@@ -73,3 +73,8 @@ data "template_cloudinit_config" "configelastic" {
     content      = "${data.template_file.scriptelastic.rendered}"
   }
 }
+
+variable "request_routing_rule_name" {
+default =  "rule_magento" 
+description = "rule for magento gateway"
+}
