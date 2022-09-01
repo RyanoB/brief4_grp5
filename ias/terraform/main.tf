@@ -42,11 +42,18 @@ resource "azurerm_subnet" "subnet_elastic" {
   address_prefixes     = ["10.4.0.0/16"]
 }
 
-resource "azurerm_subnet" "subnet_app_ssh" {
-  name                 = "subnet_app_ssh"
-  resource_group_name  = azurerm_resource_group.rg.name
+resource "azurerm_subnet" "subnet_bastion" {
+  name = "subnet_bastion"
+  resource_group_name = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.network.name
-  address_prefixes     = ["10.5.0.0/16"]  
+  address_prefixes     = ["10.6.0.0/16"]
+}
+
+resource "azurerm_subnet" "subnet_bastion_app" {
+  name = "subnet_bastion_app"
+  resource_group_name = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.network.name
+  address_prefixes     = ["10.7.0.0/16"]
 }
 
 resource "azurerm_public_ip" "public_ipapp" {
@@ -69,8 +76,6 @@ resource "azurerm_public_ip" "public_ipelastic" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
-
- 
 }
 
 # Create Network Security Group and rule
@@ -93,16 +98,16 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 # Create network interface for app
-resource "azurerm_network_interface" "nic_app_ssh" {
-  name                = "nic_app_ssh"
+resource "azurerm_network_interface" "nic_bastion" {
+  name                = "nic_bastion"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
-    name                          = "nic_app_config_ssh"
-    subnet_id                     = azurerm_subnet.subnet_app_ssh.id
+    name                          = "nic_bastion_config"
+    subnet_id                     = azurerm_subnet.subnet_bastion.id
     private_ip_address_allocation = "Static"
-    private_ip_address = "10.5.0.19"
+    private_ip_address = "10.6.0.19"
     public_ip_address_id = azurerm_public_ip.public_ipapp.id
   }
 }
@@ -115,12 +120,41 @@ resource "azurerm_network_interface" "nic_app" {
   ip_configuration {
     name                          = "nic_app_config"
     subnet_id                     = azurerm_subnet.subnet_app.id
+    private_ip_address = "10.2.0.19"
     private_ip_address_allocation = "Static"
+  }
+}
+
+# Create network interface for app
+resource "azurerm_network_interface" "nic_bastion_app" {
+  name                = "nic_bastion_app"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "nic_app_config_bastion_app"
+    subnet_id                     = azurerm_subnet.subnet_bastion_app.id
+    private_ip_address_allocation = "Static"
+    private_ip_address = "10.7.0.19"
+  }
+}
+
+# Create network interface for app
+resource "azurerm_network_interface" "nic_app_bastion" {
+  name                = "nic_app_bastion"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "nic_app_config_app_bastion"
+    subnet_id                     = azurerm_subnet.subnet_bastion_app.id
+    private_ip_address_allocation = "Static"
+    private_ip_address = "10.7.0.29"
   }
 }
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "example" {
-  network_interface_id      = azurerm_network_interface.nic_app_ssh.id
+  network_interface_id      = azurerm_network_interface.nic_bastion.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
@@ -258,12 +292,42 @@ resource "azurerm_mariadb_firewall_rule" "mdbrule" {
   end_ip_address = azurerm_public_ip.public_ipapp.ip_address
 }
 
+resource "azurerm_linux_virtual_machine" "vm_bastion" {
+  name = "vm_bastion"
+  location              = azurerm_resource_group.rg.location
+  resource_group_name   = azurerm_resource_group.rg.name
+  network_interface_ids = [azurerm_network_interface.nic_bastion.id,azurerm_network_interface.nic_bastion_app.id]
+  size                  = "Standard_DS1_v2"
+
+  os_disk {
+    name                 = "disk_bastion"
+    caching              = "ReadWrite"
+    storage_account_type = "Premium_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+  custom_data = data.template_cloudinit_config.configapp.rendered
+  computer_name                   = "bastion"
+  admin_username                  = "bastion"
+  disable_password_authentication = true
+
+  admin_ssh_key {
+    username   = "bastion"
+    public_key = azurerm_ssh_public_key.ssh_nomad.public_key
+  }
+}
+
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "myterraformvm" {
   name                  = "vm_app"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.nic_app_ssh.id,azurerm_network_interface.nic_app.id]
+  network_interface_ids = [azurerm_network_interface.nic_app.id,azurerm_network_interface.nic_app_bastion.id]
   size                  = "Standard_DS1_v2"
 
   os_disk {
