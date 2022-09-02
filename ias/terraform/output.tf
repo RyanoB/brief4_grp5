@@ -18,3 +18,7 @@ output "password" {
   value = random_password.dbpassword.result
   sensitive = true
 }
+
+output "test" {
+  value = azurerm_private_dns_zone.private_dns_mariadb.name
+}

@@ -33,6 +33,7 @@ resource "azurerm_subnet" "subnet_bdd" {
   virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = ["10.3.0.0/16"]
 
+  service_endpoints    = ["Microsoft.Sql", "Microsoft.Storage"] # pour liaison sql et  compte de stockage
   private_endpoint_network_policies_enabled = true
 }
 
@@ -50,13 +51,6 @@ resource "azurerm_subnet" "subnet_bastion" {
   address_prefixes     = ["10.6.0.0/16"]
 }
 
-resource "azurerm_subnet" "subnet_bastion_app" {
-  name = "subnet_bastion_app"
-  resource_group_name = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.network.name
-  address_prefixes     = ["10.7.0.0/16"]
-}
-
 resource "azurerm_public_ip" "public_ipapp" {
   name                = var.ip_app_name
   location            = azurerm_resource_group.rg.location
@@ -70,13 +64,6 @@ resource "azurerm_public_ip" "public_ipgateway" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
   sku = "Standard"
-}
-
-resource "azurerm_public_ip" "public_ipelastic" {
-  name                = "ip_elastic"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Dynamic"
 }
 
 # Create Network Security Group and rule
@@ -126,33 +113,7 @@ resource "azurerm_network_interface" "nic_app" {
   }
 }
 
-# Create network interface for app
-resource "azurerm_network_interface" "nic_bastion_app" {
-  name                = "nic_bastion_app"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
 
-  ip_configuration {
-    name                          = "nic_app_config_bastion_app"
-    subnet_id                     = azurerm_subnet.subnet_bastion_app.id
-    private_ip_address_allocation = "Static"
-    private_ip_address = "10.7.0.19"
-  }
-}
-
-# Create network interface for app
-resource "azurerm_network_interface" "nic_app_bastion" {
-  name                = "nic_app_bastion"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  ip_configuration {
-    name                          = "nic_app_config_app_bastion"
-    subnet_id                     = azurerm_subnet.subnet_bastion_app.id
-    private_ip_address_allocation = "Static"
-    private_ip_address = "10.7.0.29"
-  }
-}
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "example" {
   network_interface_id      = azurerm_network_interface.nic_bastion.id
@@ -211,6 +172,10 @@ resource "azurerm_mariadb_database" "db_magento" {
   collation           = "utf8_general_ci"
 }
 
+resource "azurerm_private_dns_zone" "private_dns_mariadb" {
+  name                = "privatelink.mariadb.database.azure.com"
+  resource_group_name = azurerm_resource_group.rg.name
+}
 
 resource "azurerm_private_endpoint" "private_bdd" {
   name = "private_bdd"
@@ -218,12 +183,25 @@ resource "azurerm_private_endpoint" "private_bdd" {
   resource_group_name =azurerm_resource_group.rg.name
   subnet_id = azurerm_subnet.subnet_bdd.id
 
+  private_dns_zone_group {
+    name                 = "private-dns-zone-group"
+    private_dns_zone_ids = [azurerm_private_dns_zone.private_dns_mariadb.id]
+  }
+
   private_service_connection {
     name = "private_service_bdd"
     private_connection_resource_id = azurerm_mariadb_server.server_magento.id
     subresource_names = ["mariadbServer"]
     is_manual_connection = false
   }
+}
+
+# Link network with private link beacause need for link dns name with local ip
+resource "azurerm_private_dns_zone_virtual_network_link" "link_bdd" {
+  name                  = "link_bdd"
+  resource_group_name   = azurerm_resource_group.rg.name
+  private_dns_zone_name = azurerm_private_dns_zone.private_dns_mariadb.name
+  virtual_network_id    = azurerm_virtual_network.network.id
 }
 
 #creation storage account
@@ -252,7 +230,6 @@ resource "azurerm_network_interface" "nic_elasticsrh" {
     name                          = "nic_elastic_config"
     subnet_id                     = azurerm_subnet.subnet_elastic.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.public_ipelastic.id
   }
 }
 
@@ -301,7 +278,7 @@ resource "azurerm_linux_virtual_machine" "vm_bastion" {
   name = "vm_bastion"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.nic_bastion.id,azurerm_network_interface.nic_bastion_app.id]
+  network_interface_ids = [azurerm_network_interface.nic_bastion.id]
   size                  = "Standard_DS1_v2"
 
   os_disk {
@@ -329,10 +306,10 @@ resource "azurerm_linux_virtual_machine" "vm_bastion" {
 
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "myterraformvm" {
-  name                  = "vm_app"
+  name                  = "vm_app_test"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.nic_app.id,azurerm_network_interface.nic_app_bastion.id]
+  network_interface_ids = [azurerm_network_interface.nic_app.id]
   size                  = "Standard_DS1_v2"
 
   os_disk {
