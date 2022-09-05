@@ -49,6 +49,7 @@ data "template_file" "scriptapp" {
 
   vars = {
     ip_bdd = azurerm_private_endpoint.private_bdd.private_service_connection.0.private_ip_address
+    ip_public = azurerm_public_ip.public_ipgateway.ip_address
   }
 }
 data "template_file" "scriptelastic" {
@@ -57,6 +58,7 @@ data "template_file" "scriptelastic" {
 data "template_cloudinit_config" "configapp" {
   gzip          = true
   base64_encode = true
+
 
   # Main cloud-config configuration file.
   part {
