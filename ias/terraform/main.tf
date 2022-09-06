@@ -113,7 +113,59 @@ resource "azurerm_network_interface" "nic_app" {
   }
 }
 
+// Key Vault
+data "azurerm_client_config" "current" {}
 
+resource "azurerm_key_vault" "keyvault" {
+  name                        = "keyvaultmagento"
+  location                    = azurerm_resource_group.rg.location
+  resource_group_name         = azurerm_resource_group.rg.name
+  enabled_for_disk_encryption = true
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  soft_delete_retention_days  = 7
+  purge_protection_enabled    = false
+
+  sku_name = "standard"
+
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    key_permissions = [
+      "Get",
+    ]
+
+    secret_permissions = [
+      "Get",
+    ]
+
+    storage_permissions = [
+      "Get",
+    ]
+  }
+}
+
+resource "azurerm_storage_account" "stockagetls" {
+  name                     = "stockagetls"
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+resource "azurerm_storage_container" "containertls" {
+  name                  = "containertls"
+  storage_account_name  = azurerm_storage_account.stockagetls.name
+  container_access_type = "blob"
+}
+
+resource "azurerm_storage_blob" "blob_tls" {
+  name                   = ".well-known/acme-challenge/test.txt"
+  storage_account_name   = azurerm_storage_account.stockagetls.name
+  storage_container_name = azurerm_storage_container.containertls.name
+  type                   = "Block"
+  source                 = "./test.txt"
+}
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "example" {
   network_interface_id      = azurerm_network_interface.nic_bastion.id
@@ -356,9 +408,11 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
 locals {
   backend_address_pool_name      = "${azurerm_virtual_network.network.name}-beap"
   frontend_port_name             = "${azurerm_virtual_network.network.name}-feport"
+  frontend_port_name2            = "${azurerm_virtual_network.network.name}-feport2"
   frontend_ip_configuration_name = "${azurerm_virtual_network.network.name}-feip"
   http_setting_name              = "${azurerm_virtual_network.network.name}-be-htst"
   listener_name                  = "${azurerm_virtual_network.network.name}-httplstn"
+  listener_name2                  = "${azurerm_virtual_network.network.name}-httplstn2"
   request_routing_rule_name      = "${azurerm_virtual_network.network.name}-rqrt"
   redirect_configuration_name    = "${azurerm_virtual_network.network.name}-rdrcfg"
 }
@@ -383,7 +437,10 @@ resource "azurerm_application_gateway" "network_gateway" {
     name = local.frontend_port_name
     port = 80
   }
-
+  frontend_port {
+    name = local.frontend_port_name2
+    port = 443
+  }
   frontend_ip_configuration {
     name                 = local.frontend_ip_configuration_name
     public_ip_address_id = azurerm_public_ip.public_ipgateway.id
@@ -408,7 +465,12 @@ resource "azurerm_application_gateway" "network_gateway" {
     frontend_port_name             = local.frontend_port_name
     protocol                       = "Http"
   }
-
+  http_listener {
+    name                           = local.listener_name2
+    frontend_ip_configuration_name = local.frontend_ip_configuration_name
+    frontend_port_name             = local.frontend_port_name2
+    protocol                       = "Https"
+  }
    request_routing_rule {
     name                       = var.request_routing_rule_name
     rule_type                  = "Basic"
@@ -417,7 +479,31 @@ resource "azurerm_application_gateway" "network_gateway" {
     backend_http_settings_name = local.http_setting_name
     priority = 100
   }
+  request_routing_rule {
+    name               = "tls-rule"
+    rule_type          = "PathBasedRouting"
+    http_listener_name = local.listener_name2
+    url_path_map_name  = "test"
+    priority = 200
+  }
 
+  redirect_configuration {
+    name          = "LetsEncryptChallenge"
+    redirect_type = "Permanent"
+    target_url    = "http://stockagetls.blob.core.windows.net/containertls//.well-known/acme-challenge/"
+  }
+
+  url_path_map {
+    name                               = "test"
+    default_backend_address_pool_name  = local.backend_address_pool_name
+    default_backend_http_settings_name = local.http_setting_name
+
+    path_rule {
+      name                        = "letsencrypt"
+      paths                       = ["/.well-known/acme-challenge/*"]
+      redirect_configuration_name = "LetsEncryptChallenge"
+    }
+  }
 
 }
 
