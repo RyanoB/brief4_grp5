@@ -39,8 +39,8 @@ variable "ip_gateway_name" {
     default = "ip_gateway"
 }
 
-variable "ip_app_name" {
-    default = "ip_app"
+variable "ip_bastion_name" {
+    default = "ip_bastion"
 }
 
 # Render a part using a `template_file`
@@ -49,7 +49,7 @@ data "template_file" "scriptapp" {
 
   vars = {
     ip_bdd = azurerm_private_endpoint.private_bdd.private_service_connection.0.private_ip_address
-    ip_public = azurerm_public_ip.public_ipgateway.ip_address
+    ip_public = azurerm_public_ip.public_ip_gateway.ip_address
   }
 }
 data "template_file" "scriptelastic" {

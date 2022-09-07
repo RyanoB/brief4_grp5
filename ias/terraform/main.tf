@@ -51,14 +51,14 @@ resource "azurerm_subnet" "subnet_bastion" {
   address_prefixes     = ["10.6.0.0/16"]
 }
 
-resource "azurerm_public_ip" "public_ipapp" {
-  name                = var.ip_app_name
+resource "azurerm_public_ip" "public_ip_bastion" {
+  name                = var.ip_bastion_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
 }
 
-resource "azurerm_public_ip" "public_ipgateway" {
+resource "azurerm_public_ip" "public_ip_gateway" {
   name                = var.ip_gateway_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -67,8 +67,8 @@ resource "azurerm_public_ip" "public_ipgateway" {
 }
 
 # Create Network Security Group and rule
-resource "azurerm_network_security_group" "nsg" {
-  name                = "myNetworkSecurityGroup"
+resource "azurerm_network_security_group" "nsg_bastion" {
+  name                = "nsg_bastion"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -85,6 +85,35 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
+resource "azurerm_network_security_group" "nsg_app" {
+  name                = "nsg_app"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  security_rule {
+    name                       = "PING"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Icmp"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+}
+
+# Connect the security group to the network interface
+resource "azurerm_network_interface_security_group_association" "assoc-nic-nsg-bastion" {
+  network_interface_id      = azurerm_network_interface.nic_bastion.id
+  network_security_group_id = azurerm_network_security_group.nsg_bastion.id
+}
+
+resource "azurerm_network_interface_security_group_association" "assoc-nic-nsg-app" {
+  network_interface_id      = azurerm_network_interface.nic_app.id
+  network_security_group_id = azurerm_network_security_group.nsg_app.id
+}
+
 # Create network interface for app
 resource "azurerm_network_interface" "nic_bastion" {
   name                = "nic_bastion"
@@ -96,7 +125,7 @@ resource "azurerm_network_interface" "nic_bastion" {
     subnet_id                     = azurerm_subnet.subnet_bastion.id
     private_ip_address_allocation = "Static"
     private_ip_address = "10.6.0.19"
-    public_ip_address_id = azurerm_public_ip.public_ipapp.id
+    public_ip_address_id = azurerm_public_ip.public_ip_bastion.id
   }
 }
 # Create network interface for gateway
@@ -145,31 +174,26 @@ resource "azurerm_key_vault" "keyvault" {
   }
 }
 
-resource "azurerm_storage_account" "stockagetls" {
-  name                     = "stockagetls"
+resource "azurerm_storage_account" "storage-tls" {
+  name                     = "statls"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
 
-resource "azurerm_storage_container" "containertls" {
-  name                  = "containertls"
-  storage_account_name  = azurerm_storage_account.stockagetls.name
+resource "azurerm_storage_container" "storage-container-tls" {
+  name                  = "stacontainer"
+  storage_account_name  = azurerm_storage_account.storage-tls.name
   container_access_type = "blob"
 }
 
 resource "azurerm_storage_blob" "blob_tls" {
   name                   = ".well-known/acme-challenge/test.txt"
-  storage_account_name   = azurerm_storage_account.stockagetls.name
-  storage_container_name = azurerm_storage_container.containertls.name
+  storage_account_name   = azurerm_storage_account.storage-tls.name
+  storage_container_name = azurerm_storage_container.storage-container-tls.name
   type                   = "Block"
   source                 = "./test.txt"
-}
-# Connect the security group to the network interface
-resource "azurerm_network_interface_security_group_association" "example" {
-  network_interface_id      = azurerm_network_interface.nic_bastion.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
 # SSH key
@@ -248,7 +272,7 @@ resource "azurerm_private_endpoint" "private_bdd" {
   }
 }
 
-# Link network with private link beacause need for link dns name with local ip
+# Link network with private link because need for link dns name with local ip
 resource "azurerm_private_dns_zone_virtual_network_link" "link_bdd" {
   name                  = "link_bdd"
   resource_group_name   = azurerm_resource_group.rg.name
@@ -257,8 +281,8 @@ resource "azurerm_private_dns_zone_virtual_network_link" "link_bdd" {
 }
 
 #creation storage account
-resource "azurerm_storage_account" "magento-storage" {
-  name = "magentostorage"
+resource "azurerm_storage_account" "storage-bdd" {
+  name = "stabdd"
   resource_group_name = azurerm_resource_group.rg.name
   location = azurerm_resource_group.rg.location
   account_tier = "Standard"
@@ -322,8 +346,8 @@ resource "azurerm_mariadb_firewall_rule" "mdbrule" {
   resource_group_name = azurerm_resource_group.rg.name
   server_name = azurerm_mariadb_server.server_magento.name
 
-  start_ip_address = azurerm_public_ip.public_ipapp.ip_address
-  end_ip_address = azurerm_public_ip.public_ipapp.ip_address
+  start_ip_address = azurerm_public_ip.public_ip_bastion.ip_address
+  end_ip_address = azurerm_public_ip.public_ip_bastion.ip_address
 }
 
 resource "azurerm_linux_virtual_machine" "vm_bastion" {
@@ -357,15 +381,15 @@ resource "azurerm_linux_virtual_machine" "vm_bastion" {
 }
 
 # Create virtual machine
-resource "azurerm_linux_virtual_machine" "myterraformvm" {
-  name                  = "vm_app_test"
+resource "azurerm_linux_virtual_machine" "vm_app" {
+  name                  = "vm_app"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.nic_app.id]
   size                  = "Standard_DS1_v2"
 
   os_disk {
-    name                 = "myOsDisk"
+    name                 = "disk_app"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }
@@ -387,7 +411,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
   }
 
   boot_diagnostics {
-    storage_account_uri = azurerm_storage_account.magento-storage.primary_blob_endpoint
+    storage_account_uri = azurerm_storage_account.storage-bdd.primary_blob_endpoint
   }
 }
 
@@ -418,7 +442,7 @@ locals {
 }
 
 resource "azurerm_application_gateway" "network_gateway" {
-  name                = "example-appgateway"
+  name                = "gateway-brief4"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
 
@@ -443,7 +467,7 @@ resource "azurerm_application_gateway" "network_gateway" {
   }
   frontend_ip_configuration {
     name                 = local.frontend_ip_configuration_name
-    public_ip_address_id = azurerm_public_ip.public_ipgateway.id
+    public_ip_address_id = azurerm_public_ip.public_ip_gateway.id
   }
 
   backend_address_pool {
@@ -465,12 +489,12 @@ resource "azurerm_application_gateway" "network_gateway" {
     frontend_port_name             = local.frontend_port_name
     protocol                       = "Http"
   }
-  http_listener {
-    name                           = local.listener_name2
-    frontend_ip_configuration_name = local.frontend_ip_configuration_name
-    frontend_port_name             = local.frontend_port_name2
-    protocol                       = "Https"
-  }
+  # http_listener {
+  #   name                           = local.listener_name2
+  #   frontend_ip_configuration_name = local.frontend_ip_configuration_name
+  #   frontend_port_name             = local.frontend_port_name2
+  #   protocol                       = "Https"
+  # }
    request_routing_rule {
     name                       = var.request_routing_rule_name
     rule_type                  = "Basic"
@@ -479,31 +503,31 @@ resource "azurerm_application_gateway" "network_gateway" {
     backend_http_settings_name = local.http_setting_name
     priority = 100
   }
-  request_routing_rule {
-    name               = "tls-rule"
-    rule_type          = "PathBasedRouting"
-    http_listener_name = local.listener_name2
-    url_path_map_name  = "test"
-    priority = 200
-  }
+  # request_routing_rule {
+  #   name               = "tls-rule"
+  #   rule_type          = "PathBasedRouting"
+  #   http_listener_name = local.listener_name2
+  #   url_path_map_name  = "test"
+  #   priority = 200
+  # }
 
-  redirect_configuration {
-    name          = "LetsEncryptChallenge"
-    redirect_type = "Permanent"
-    target_url    = "http://stockagetls.blob.core.windows.net/containertls//.well-known/acme-challenge/"
-  }
+  # redirect_configuration {
+  #   name          = "LetsEncryptChallenge"
+  #   redirect_type = "Permanent"
+  #   target_url    = "http://stockagetls.blob.core.windows.net/containertls//.well-known/acme-challenge/"
+  # }
 
-  url_path_map {
-    name                               = "test"
-    default_backend_address_pool_name  = local.backend_address_pool_name
-    default_backend_http_settings_name = local.http_setting_name
+  # url_path_map {
+  #   name                               = "test"
+  #   default_backend_address_pool_name  = local.backend_address_pool_name
+  #   default_backend_http_settings_name = local.http_setting_name
 
-    path_rule {
-      name                        = "letsencrypt"
-      paths                       = ["/.well-known/acme-challenge/*"]
-      redirect_configuration_name = "LetsEncryptChallenge"
-    }
-  }
+  #   path_rule {
+  #     name                        = "letsencrypt"
+  #     paths                       = ["/.well-known/acme-challenge/*"]
+  #     redirect_configuration_name = "LetsEncryptChallenge"
+  #   }
+  # }
 
 }
 
@@ -516,3 +540,134 @@ resource "azurerm_network_interface_application_gateway_backend_address_pool_ass
 
 
 
+// Monitoring
+resource "azurerm_storage_account" "storage-monitor" {
+  name                     = "stamonitor"
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+resource "azurerm_monitor_action_group" "group-monitor" {
+  name                = "group-monitor"
+  resource_group_name = azurerm_resource_group.rg.name
+  short_name          = "monitor-grp"
+}
+
+resource "azurerm_monitor_metric_alert" "alert-vm-cpu" {
+  name                = "alert-vm-cpu"
+  resource_group_name = azurerm_resource_group.rg.name
+  scopes              = [azurerm_linux_virtual_machine.vm_app.id]
+  description         = "VM App cpu alert"
+  target_resource_type = "Microsoft.Compute/virtualMachines"
+
+  criteria {
+    metric_namespace = "Microsoft.Compute/virtualMachines"
+    metric_name      = "Percentage CPU"
+    aggregation      = "Total"
+    operator         = "GreaterThan"
+    threshold        = 90
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.group-monitor.id
+  }
+}
+
+resource "azurerm_monitor_metric_alert" "alert-stock" {
+  name                = "alert-stock-capacity"
+  resource_group_name = azurerm_resource_group.rg.name
+  scopes              = [azurerm_storage_account.storage-bdd.id]
+  description         = "Space alert"
+  target_resource_type = "Microsoft.Storage/storageAccounts"
+  frequency = "PT1H"
+  window_size = "PT12H"
+
+  criteria {
+    metric_namespace = "Microsoft.Storage/storageAccounts"
+    metric_name      = "UsedCapacity"
+    aggregation      = "Average"
+    operator         = "GreaterThan"
+    threshold        = 450000
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.group-monitor.id
+  }
+}
+
+resource "azurerm_application_insights" "insight" {
+  name                = "insights-magento"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  application_type    = "web"
+
+}
+
+resource "azurerm_template_deployment" "example" {
+  name                = "acctesttemplate-01"
+  resource_group_name = azurerm_resource_group.rg.name
+
+  template_body = <<DEPLOY
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "webtests_requesthttp_insights_app_name": {
+            "defaultValue": "requesthttp-insights-app",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.insights/webtests",
+            "apiVersion": "2022-06-15",
+            "name": "[parameters('webtests_requesthttp_insights_app_name')]",
+            "location": "eastus2",
+            "tags": {
+                "hidden-link:${azurerm_application_insights.insight.id}": "Resource"
+            },
+            "properties": {
+                "SyntheticMonitorId": "[parameters('webtests_requesthttp_insights_app_name')]",
+                "Name": "requesthttp",
+                "Enabled": true,
+                "Frequency": 300,
+                "Timeout": 120,
+                "Kind": "standard",
+                "RetryEnabled": true,
+                "Locations": [
+                    {
+                        "Id": "us-va-ash-azr"
+                    },
+                    {
+                        "Id": "us-ca-sjc-azr"
+                    },
+                    {
+                        "Id": "us-fl-mia-edge"
+                    },
+                    {
+                        "Id": "apac-sg-sin-azr"
+                    },
+                    {
+                        "Id": "emea-ru-msa-edge"
+                    }
+                ],
+                "Request": {
+                    "RequestUrl": "http://${azurerm_public_ip.public_ip_gateway.ip_address}/",
+                    "HttpVerb": "GET",
+                    "ParseDependentRequests": false
+                },
+                "ValidationRules": {
+                    "ExpectedHttpStatusCode": 200,
+                    "SSLCheck": false
+                }
+            }
+        }
+    ]
+}
+DEPLOY
+
+  deployment_mode = "Incremental"
+}

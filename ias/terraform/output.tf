@@ -7,11 +7,11 @@ output "ip_private" {
 }
 
 output "public_ip_address_app" {
-  value = "${azurerm_public_ip.public_ipapp.*.ip_address}"
+  value = "${azurerm_public_ip.public_ip_bastion.*.ip_address}"
 }
 
 output "public_ip_address_gateway" {
-  value = "${azurerm_public_ip.public_ipgateway.*.ip_address}"
+  value = "${azurerm_public_ip.public_ip_gateway.*.ip_address}"
 }
 
 output "password" {
