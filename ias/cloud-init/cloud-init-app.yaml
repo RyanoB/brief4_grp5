@@ -53,7 +53,8 @@ runcmd:
   - sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} +
   - sudo chown -R www-data:www-data /var/www/html
   - sudo chmod u+x bin/magento
-  - cd /var/www/html/magento2 && sudo php bin/magento setup:install -vvv --base-url=http://${ip_public} --db-host=magento-mariadb-server.privatelink.mariadb.database.azure.com --db-name=mariadb_database --db-user=magento@magento-mariadb-server --db-password=blablabla123! --admin-firstname=admin --admin-lastname=admin --admin-email=admin@admin.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1 --search-engine=elasticsearch7 --elasticsearch-host=10.4.0.4 --elasticsearch-port=9200 --elasticsearch-index-prefix=magento2 --elasticsearch-timeout=15 --elasticsearch-username=magento --elasticsearch-password=blablabla123! --elasticsearch-enable-auth=1
+
+  - cd /var/www/html/magento2 && sudo php bin/magento setup:install -vvv --base-url=http://${ip_public} --db-host=magento-mariadb-server.privatelink.mariadb.database.azure.com --db-name=mariadb_database --db-user=magento@magento-mariadb-server --db-password=blablabla123! --admin-firstname=admin --admin-lastname=admin --admin-email=ryanmagento@gmail.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1 --search-engine=elasticsearch7 --elasticsearch-host=10.4.0.4 --elasticsearch-port=9200 --elasticsearch-index-prefix=magento2 --elasticsearch-timeout=15 --elasticsearch-username=magento --elasticsearch-password=blablabla123! --elasticsearch-enable-auth=1
   - sudo apt-get remove apache2 -y
   - sudo apt-get autoremove apache2 -y
   - sudo apt-get purge apache2 -y
@@ -71,3 +72,12 @@ runcmd:
   - sudo chmod 775 ./generated/
   - cd /var/www/html/magento2 && sudo bin/magento setup:di:compile
   - sudo systemctl restart nginx
+  - sudo cp -R /var/www/html/magento2/pub /home/magento/pub
+  - sudo mkdir /etc/smbcredentials
+  - sudo bash -c 'echo "username=staapp" >> /etc/smbcredentials/staapp.cred'
+  - sudo bash -c 'echo "password=${password}" >> /etc/smbcredentials/staapp.cred'
+  - sudo chmod 600 /etc/smbcredentials/staapp.cred
+  - sudo bash -c 'echo "//staapp.file.core.windows.net/magentoshare01 /var/www/html/magento2/pub cifs nofail,credentials=/etc/smbcredentials/staapp.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30" >> /etc/fstab'
+  - sudo mount -t cifs //staapp.file.core.windows.net/magentoshare01 /var/www/html/magento2/pub -o credentials=/etc/smbcredentials/staapp.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30
+  - sudo cp -R /home/magento/pub/* /var/www/html/magento2/pub
+  - rm var/.maintenance.flag

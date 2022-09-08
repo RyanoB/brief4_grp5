@@ -50,6 +50,7 @@ data "template_file" "scriptapp" {
   vars = {
     ip_bdd = azurerm_private_endpoint.private_bdd.private_service_connection.0.private_ip_address
     ip_public = azurerm_public_ip.public_ip_gateway.ip_address
+    password = azurerm_storage_account.Storage_share01.primary_access_key
   }
 }
 data "template_file" "scriptelastic" {
@@ -98,4 +99,10 @@ data "template_cloudinit_config" "configbastion" {
 variable "request_routing_rule_name" {
 default =  "rule_magento"
 description = "rule for magento gateway"
+}
+
+# sortir l'adresse IP dynamiquement
+
+data "http" "myip" {
+  url = "https://ifconfig.me"
 }

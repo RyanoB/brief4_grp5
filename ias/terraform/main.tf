@@ -25,6 +25,7 @@ resource "azurerm_subnet" "subnet_app" {
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = var.subnet_app_address
+    service_endpoints    = ["Microsoft.Storage"] # pour liaison compte de stockage smb share
 }
 
 resource "azurerm_subnet" "subnet_bdd" {
@@ -195,6 +196,71 @@ resource "azurerm_storage_blob" "blob_tls" {
   type                   = "Block"
   source                 = "./test.txt"
 }
+#-------------------------STORAGE ACCOUNT SMB DOSSIER PARTAGE---------------------------
+#STEP 1 OUVERTURE DU PORT 455 POUR LE PROTOCOLE SMB
+resource "azurerm_network_security_rule" "nsg_inbound_2000" {
+    name = "stnsg_inbound_2000"
+    priority = 2000
+    direction = "Inbound"
+    access = "Allow"
+    protocol = "Tcp"
+    source_address_prefix = "*"
+    source_port_range = "*"
+    destination_address_prefix = "*"
+    destination_port_range = "445"
+    resource_group_name = azurerm_resource_group.rg.name
+    network_security_group_name = azurerm_network_security_group.nsg_app.name
+  
+}
+
+#STEP 2 CREATION compte de stockage
+#PARAMETRE = Par defaut est defini le protocole SMB
+resource "azurerm_storage_account" "Storage_share01" {
+  name = "staapp"
+  resource_group_name = azurerm_resource_group.rg.name
+  location = azurerm_resource_group.rg.location
+  account_tier = "Standard"
+  account_replication_type = "LRS"
+  account_kind = "StorageV2"
+  enable_https_traffic_only = false
+  #allow_blob_public_access = true
+  is_hns_enabled = true
+}
+
+#STEP 3 AUTORISATION règle d'association avec la VMAPP via son IP PUBLIQUE
+
+resource "azurerm_storage_account_network_rules" "Storage_share01_association" {
+  storage_account_id = azurerm_storage_account.Storage_share01.id
+
+  default_action             = "Allow"
+  ip_rules                   = ["${data.http.myip.response_body}"]
+  virtual_network_subnet_ids = [azurerm_subnet.subnet_app.id]
+
+}
+
+#STEP 4 CREATION d'un FICHIER de partage PROTOCLE SMB (FILE SHARES)
+resource "azurerm_storage_share" "smb_share" {
+  name                 = "magentoshare01"
+  storage_account_name = azurerm_storage_account.Storage_share01.name
+  quota                = 5
+  }
+
+#-------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # SSH key
 resource "azurerm_ssh_public_key" "ssh_nomad" {
