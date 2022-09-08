@@ -8,6 +8,9 @@ variable "resource_group_location" {
   description   = "Location of the resource group."
 }
 
+variable "fqdn" {
+  default = "magentobrief4"
+}
 variable "network_name" {
     default = "network"
     description = "Name of network."
@@ -50,6 +53,7 @@ data "template_file" "scriptapp" {
   vars = {
     ip_bdd = azurerm_private_endpoint.private_bdd.private_service_connection.0.private_ip_address
     ip_public = azurerm_public_ip.public_ip_gateway.ip_address
+    fqdn_app = "${var.fqdn}.${var.resource_group_location}.cloudapp.azure.com"
   }
 }
 data "template_file" "scriptelastic" {

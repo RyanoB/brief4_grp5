@@ -64,6 +64,7 @@ resource "azurerm_public_ip" "public_ip_gateway" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
   sku = "Standard"
+  domain_name_label = var.fqdn
 }
 
 # Create Network Security Group and rule
@@ -655,7 +656,7 @@ resource "azurerm_template_deployment" "example" {
                     }
                 ],
                 "Request": {
-                    "RequestUrl": "http://${azurerm_public_ip.public_ip_gateway.ip_address}/",
+                    "RequestUrl": "http://${var.fqdn}.${var.resource_group_location}.cloudapp.azure.com",
                     "HttpVerb": "GET",
                     "ParseDependentRequests": false
                 },
