@@ -672,3 +672,78 @@ DEPLOY
 
   deployment_mode = "Incremental"
 }
+
+
+variable private_key_size {
+    default = 4096
+}
+variable private_key_algorithim {
+    default = "RSA"
+}
+resource tls_private_key ca_key {
+   algorithm = var.private_key_algorithim
+   rsa_bits  = var.private_key_size
+}
+
+
+resource tls_self_signed_cert ca_cert {
+   private_key_pem = tls_private_key.ca_key.private_key_pem
+   key_algorithm = "RSA"
+   subject {
+     common_name         = var.common_name
+     organization        = var.issuer_organization.organization
+     organizational_unit = var.issuer_organization.organizational_unit
+     street_address      = var.issuer_organization.street_address
+     locality            = var.issuer_organization.locality
+     province            = var.issuer_organization.province
+     country             = var.issuer_organization.country
+     postal_code         = var.issuer_organization.postal_code
+
+   }
+   # 175200 = 20 years
+   validity_period_hours = 175200
+   allowed_uses = [
+     "cert_signing",
+     "crl_signing"
+   ]
+   is_ca_certificate = true
+
+}
+resource local_file private_key {
+    sensitive_content = tls_private_key.ca_key.private_key_pem
+    filename = "./privKey.pem"
+    file_permission = "0600"
+}
+resource local_file ca_file {
+    sensitive_content = tls_self_signed_cert.ca_cert.cert_pem
+    filename = "./cert.pem"
+    file_permission = "0600"
+}
+
+resource azurerm_key_vault_certificate ca_cert {
+  name          = var.service_settings.cert_name
+  key_vault_id  = var.service_settings.key_vault_resource_id
+
+  certificate {
+    contents = "${tls_private_key.ca_key.private_key_pem}${tls_self_signed_cert.ca_cert.cert_pem}"
+    #contents = file("./secrets/test.pem")
+    password = ""
+  }
+  certificate_policy {
+    key_properties {
+      exportable = "true"
+      key_size   = var.private_key_size
+      key_type   = var.private_key_algorithim
+      reuse_key  = "true"
+    }
+    issuer_parameters {
+      name = "Self"
+    }
+    secret_properties {
+      content_type = "application/x-pem-file"
+    }
+  }
+
+
+
+}
