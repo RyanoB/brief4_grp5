@@ -1,10 +1,14 @@
-# Create ressource group.
+# CREATE RESOURCE GROUP
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group
+
 resource "azurerm_resource_group" "rg" {
   name      = var.resource_group_name
   location  = var.resource_group_location
 }
 
-# Create virtual network
+# CREATE VIRTUAL NETWORK 
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network
+
 resource "azurerm_virtual_network" "network" {
   name                = var.network_name
   address_space       = var.network_address
@@ -12,7 +16,9 @@ resource "azurerm_virtual_network" "network" {
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-# Create subnet
+# CREATE SUBNET
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
+
 resource "azurerm_subnet" "subnet_gateway" {
   name                 = var.subnet_gateway_name
   resource_group_name  = azurerm_resource_group.rg.name
@@ -52,6 +58,9 @@ resource "azurerm_subnet" "subnet_bastion" {
   address_prefixes     = ["10.6.0.0/16"]
 }
 
+# CREATE IP ADDRESS
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip
+
 resource "azurerm_public_ip" "public_ip_bastion" {
   name                = var.ip_bastion_name
   location            = azurerm_resource_group.rg.location
@@ -68,7 +77,9 @@ resource "azurerm_public_ip" "public_ip_gateway" {
   domain_name_label = var.fqdn
 }
 
-# Create Network Security Group and rule
+# CREATE NETWORK SECURITY GROUP AND RULES
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group
+
 resource "azurerm_network_security_group" "nsg_bastion" {
   name                = "nsg_bastion"
   location            = azurerm_resource_group.rg.location
@@ -105,7 +116,9 @@ resource "azurerm_network_security_group" "nsg_app" {
   }
 }
 
-# Connect the security group to the network interface
+# CONNECT THE SECURITY GROUP TO THE NETWORK INTERFACE
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_security_group_association
+
 resource "azurerm_network_interface_security_group_association" "assoc-nic-nsg-bastion" {
   network_interface_id      = azurerm_network_interface.nic_bastion.id
   network_security_group_id = azurerm_network_security_group.nsg_bastion.id
@@ -116,7 +129,9 @@ resource "azurerm_network_interface_security_group_association" "assoc-nic-nsg-a
   network_security_group_id = azurerm_network_security_group.nsg_app.id
 }
 
-# Create network interface for app
+# CREATE NETWORK INTERFACE FOR THE BASTION
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_application_security_group_association
+
 resource "azurerm_network_interface" "nic_bastion" {
   name                = "nic_bastion"
   location            = azurerm_resource_group.rg.location
@@ -130,7 +145,9 @@ resource "azurerm_network_interface" "nic_bastion" {
     public_ip_address_id = azurerm_public_ip.public_ip_bastion.id
   }
 }
-# Create network interface for gateway
+# CREATE NETWORK INTERFACE FOR APP
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_application_security_group_association
+
 resource "azurerm_network_interface" "nic_app" {
   name                = "nic_app"
   location            = azurerm_resource_group.rg.location
@@ -144,6 +161,12 @@ resource "azurerm_network_interface" "nic_app" {
   }
 }
 
+<<<<<<< HEAD
+=======
+# CREATE KEY VAULT 
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config
+
+>>>>>>> 6b484cf2ff87f8bbca1c78b7fb3d02ce6df2ed13
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "keyvault" {
@@ -178,6 +201,9 @@ resource "azurerm_key_vault" "keyvault" {
   }
 }
 
+# CREATE AN AZURE STORAGE ACCOUNT
+#https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account
+
 resource "azurerm_storage_account" "storage-tls" {
   name                     = "statls"
   resource_group_name      = azurerm_resource_group.rg.name
@@ -186,11 +212,17 @@ resource "azurerm_storage_account" "storage-tls" {
   account_replication_type = "LRS"
 }
 
+# CREATE A CONTAINER WITHIN AN AZURE STORAGE ACCOUNT
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container
+
 resource "azurerm_storage_container" "storage-container-tls" {
   name                  = "stacontainer"
   storage_account_name  = azurerm_storage_account.storage-tls.name
   container_access_type = "blob"
 }
+
+# CREATE A BLOB WITHIN A STORAGE CONTAINER
+#https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_blob
 
 resource "azurerm_storage_blob" "blob_tls" {
   name                   = ".well-known/acme-challenge/test.txt"
@@ -199,8 +231,10 @@ resource "azurerm_storage_blob" "blob_tls" {
   type                   = "Block"
   source                 = "./test.txt"
 }
+
 #-------------------------STORAGE ACCOUNT SMB DOSSIER PARTAGE---------------------------
 #STEP 1 OUVERTURE DU PORT 455 POUR LE PROTOCOLE SMB
+
 resource "azurerm_network_security_rule" "nsg_inbound_2000" {
     name = "stnsg_inbound_2000"
     priority = 2000
@@ -213,11 +247,11 @@ resource "azurerm_network_security_rule" "nsg_inbound_2000" {
     destination_port_range = "445"
     resource_group_name = azurerm_resource_group.rg.name
     network_security_group_name = azurerm_network_security_group.nsg_app.name
-
 }
 
 #STEP 2 CREATION compte de stockage
 #PARAMETRE = Par defaut est defini le protocole SMB
+
 resource "azurerm_storage_account" "Storage_share01" {
   name = "staapp"
   resource_group_name = azurerm_resource_group.rg.name
@@ -238,34 +272,19 @@ resource "azurerm_storage_account_network_rules" "Storage_share01_association" {
   default_action             = "Allow"
   ip_rules                   = ["${data.http.myip.response_body}"]
   virtual_network_subnet_ids = [azurerm_subnet.subnet_app.id]
-
 }
 
 #STEP 4 CREATION d'un FICHIER de partage PROTOCLE SMB (FILE SHARES)
+
 resource "azurerm_storage_share" "smb_share" {
   name                 = "magentoshare01"
   storage_account_name = azurerm_storage_account.Storage_share01.name
   quota                = 5
   }
 
-#-------------------------------------------------------------------------------------
+# SSH KEY
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/ssh_public_key
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# SSH key
 resource "azurerm_ssh_public_key" "ssh_nomad" {
   name                = "ssh_key_nomad"
   resource_group_name = azurerm_resource_group.rg.name
@@ -273,13 +292,16 @@ resource "azurerm_ssh_public_key" "ssh_nomad" {
   public_key          = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAXuIAe8DVtQ+qHpbTnCMn5iP1u7WQEOLDE76PTRZ0lYc0TrWJvH+zWzpEbTK/fwzx5sw7yAlBnuR83cAOtm6y8Gk5yktOogsk71VnJ9cXKV7QWtX5o/nysqhliBWAW2jQmEMLHBf4DOFXcKpCdl0OBOtrPct976tnFXhM5n5WF0wrQ4dVikfWe57yg0BX+G+ZbNl7iDCHS8cAGEI2S0ziGOLjl0qJq+9jjCaj2bdVb5vtbz/ghplWtNKQvirxvfOC5H3XbX7aeH2sAlogeYbPs8DmFuz5Smq/+FLBZzqV7JhPMxBCpVFm6r+EzZDgiS2WB96Q3Jh0ItPz7wwJtgpLmSWeaBmWyPGAOh9MBal2RXgDIZ26EPOQTc9WX1377SaEMFSXgwq3e0mtFl5TYG+hzjujY9ik6nfjyLy1yNaPB7hq0z0cCijeJf0Nlm092Ukb1IJOndiS9LSZXjFJT+LRNz7hqyK/oj8nH4K2nx4DMH+Fj4JypSdsqmIk7aXLdYE= nomad@device"
 }
 
-# Generate random text for a unique storage account name
+# GENERATE RANDOM TEXT FOR A UNIQUE STORAGE ACCOUNT NAME
+#https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id
+
 resource "random_id" "randomId" {
   byte_length = 8
 }
 
-#generation d'un random password pour database
-#peut necessiter un terraform init -upgrade pour activer le random
+# GENERATION D'UN RANDOM PASSWORD POUR DATABASE
+# PEU NECESSITER UN TERRAFORM INIT -UPGRADE POUR ACTIVER LE RANDOM
+# https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password
 
 resource "random_password" "dbpassword" {
   length           = 16
@@ -287,9 +309,8 @@ resource "random_password" "dbpassword" {
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
-#creation database
+# CREATION DATABASE
 #https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mariadb_server
-
 
 resource "azurerm_mariadb_server" "server_magento" {
   name = "magento-mariadb-server"
@@ -308,8 +329,10 @@ resource "azurerm_mariadb_server" "server_magento" {
   public_network_access_enabled = true
   ssl_enforcement_enabled = false
 }
+# MANAGES A MARIADB DATABASE WITHIN MARIADB SERVER
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mariadb_database
 
-resource "azurerm_mariadb_database" "db_magento" {
+resource "azurerm_mariadb_database" "db_magento" { 
   name                = "mariadb_database"
   resource_group_name = azurerm_resource_group.rg.name
   server_name         = azurerm_mariadb_server.server_magento.name
@@ -317,11 +340,20 @@ resource "azurerm_mariadb_database" "db_magento" {
   collation           = "utf8_general_ci"
 }
 
+# CREATE PRIVATE DNS ZONE
+
 resource "azurerm_private_dns_zone" "private_dns_mariadb" {
   name                = "privatelink.mariadb.database.azure.com"
   resource_group_name = azurerm_resource_group.rg.name
 }
 
+<<<<<<< HEAD
+# CREATION D'UN ENDPOINT POUR OBTENIR MARIADB DANS MON RESEAU LOCAL
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint
+
+=======
+# Creation d'un endpoint pour obtenir mariadb dans mon réseau local
+>>>>>>> ffaf6e0f53bd7b1a11a5ced45760127f3b6a91e4
 resource "azurerm_private_endpoint" "private_bdd" {
   name = "private_bdd"
   location = azurerm_resource_group.rg.location
@@ -336,12 +368,14 @@ resource "azurerm_private_endpoint" "private_bdd" {
   private_service_connection {
     name = "private_service_bdd"
     private_connection_resource_id = azurerm_mariadb_server.server_magento.id
-    subresource_names = ["mariadbServer"]
+    subresource_names = ["mariadbServer"] # subresource = type de ressources
     is_manual_connection = false
   }
 }
 
-# Link network with private link because need for link dns name with local ip
+# lINK NETWORK WITH PRIVATE LINK BECAUSE NEED FOR LINK DNS NAME WITH LOCAL IP
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link
+
 resource "azurerm_private_dns_zone_virtual_network_link" "link_bdd" {
   name                  = "link_bdd"
   resource_group_name   = azurerm_resource_group.rg.name
@@ -349,7 +383,9 @@ resource "azurerm_private_dns_zone_virtual_network_link" "link_bdd" {
   virtual_network_id    = azurerm_virtual_network.network.id
 }
 
-#creation storage account
+# CREATE STORAGE ACCOUNT FOR BDD
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account
+
 resource "azurerm_storage_account" "storage-bdd" {
   name = "stabdd"
   resource_group_name = azurerm_resource_group.rg.name
@@ -366,7 +402,10 @@ resource "azurerm_storage_account" "storage-bdd" {
     virtual_network_subnet_ids = [azurerm_subnet.subnet_bdd.id]
   }
 }
-# Create network interface 2 pour elastic
+
+# CREATION NIC POUR ELASTICSEARCH
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface
+
 resource "azurerm_network_interface" "nic_elasticsrh" {
   name                = "nic_elasticsrh"
   location            = azurerm_resource_group.rg.location
@@ -378,7 +417,9 @@ resource "azurerm_network_interface" "nic_elasticsrh" {
   }
 }
 
-# Create virtual machine for elastic search
+# CREATION D'UNE MACHINE VIRTUELLE POUR ELASTIC SEARCH
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine
+
 resource "azurerm_linux_virtual_machine" "vmelasticsrh" {
   name                  = "vm_elasticsrh"
   location              = azurerm_resource_group.rg.location
@@ -409,7 +450,10 @@ resource "azurerm_linux_virtual_machine" "vmelasticsrh" {
   }
 }
 
-#rule VM autorization
+
+# REGLES FIREWALL QUI AUTORISE LA PLAGE RESEAU QUI COMMUNIQUE AVEC MARIADB
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mariadb_firewall_rule
+
 resource "azurerm_mariadb_firewall_rule" "mdbrule" {
   name = "rule_magento_db"
   resource_group_name = azurerm_resource_group.rg.name
@@ -418,6 +462,9 @@ resource "azurerm_mariadb_firewall_rule" "mdbrule" {
   start_ip_address = azurerm_public_ip.public_ip_bastion.ip_address
   end_ip_address = azurerm_public_ip.public_ip_bastion.ip_address
 }
+
+# CREATION D UNE VM BASTION
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine
 
 resource "azurerm_linux_virtual_machine" "vm_bastion" {
   name = "vm_bastion"
@@ -438,6 +485,10 @@ resource "azurerm_linux_virtual_machine" "vm_bastion" {
     sku       = "18.04-LTS"
     version   = "latest"
   }
+
+# GENERER LE FICHIER YAML CLOUD-INIT POUR CONFIGURATION DE LA VM BASTION
+# https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config
+
   custom_data = data.template_cloudinit_config.configbastion.rendered
   computer_name                   = "bastion"
   admin_username                  = "bastion"
@@ -449,7 +500,9 @@ resource "azurerm_linux_virtual_machine" "vm_bastion" {
   }
 }
 
-# Create virtual machine
+# CREATION D UNE VM APP
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine
+
 resource "azurerm_linux_virtual_machine" "vm_app" {
   name                  = "vm_app"
   location              = azurerm_resource_group.rg.location
@@ -469,6 +522,10 @@ resource "azurerm_linux_virtual_machine" "vm_app" {
     sku       = "18.04-LTS"
     version   = "latest"
   }
+
+# GENERER LE FICHIER YAML CLOUD-INIT POUR CONFIGURATION DE LA VM BASTION
+# https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config
+
   custom_data = data.template_cloudinit_config.configapp.rendered
   computer_name                   = "magento"
   admin_username                  = "magento"
@@ -486,7 +543,7 @@ resource "azurerm_linux_virtual_machine" "vm_app" {
 
 
 
-#creation d'un gateway subnet
+# creation d'un gateway subnet
 # resource "azurerm_subnet" "myterraformsubnetgateway" {
 #   name                 = var.subnet_gateway_name
 #   resource_group_name  = azurerm_resource_group.rg.name
@@ -494,9 +551,11 @@ resource "azurerm_linux_virtual_machine" "vm_app" {
 #   address_prefixes     = var.subnet_gateway_address
 # }
 
-#
 
-#creation d'une gateway
+
+# AZURE APPLICATION GATEWAY 
+# STEP 1 - INITIATIONS DES VARIABLES 
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway
 
 locals {
   backend_address_pool_name      = "${azurerm_virtual_network.network.name}-beap"
@@ -511,13 +570,16 @@ locals {
   redirect_configuration_name    = "${azurerm_virtual_network.network.name}-rdrcfg"
 }
 
+# STEP 2 - CREATION DE LA RESSOURCE AZURE APPLICATION GATEWAY
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway
+
 resource "azurerm_application_gateway" "network_gateway" {
   name                = "gateway-brief4"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
 
   sku {
-    name     = "Standard_v2"
+    name     = "Standard_v2" # format obligatoire
     tier     = "Standard_v2"
     capacity = 2
   }
@@ -533,7 +595,7 @@ resource "azurerm_application_gateway" "network_gateway" {
   }
   frontend_port {
     name = local.frontend_port_name2
-    port = 443
+    port = 443 # tcp
   }
   frontend_ip_configuration {
     name                 = local.frontend_ip_configuration_name
@@ -614,6 +676,9 @@ resource "azurerm_application_gateway" "network_gateway" {
 
 }
 
+# STEP 3 ASSOCIATION DE AZURE APP GATEWAY AVEC LE POOL BACKEND
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_application_gateway_backend_address_pool_association
+
 resource "azurerm_network_interface_application_gateway_backend_address_pool_association" "poolbackend" {
   network_interface_id = azurerm_network_interface.nic_app.id
   ip_configuration_name = "nic_app_config"
@@ -623,7 +688,9 @@ resource "azurerm_network_interface_application_gateway_backend_address_pool_ass
 
 
 
-// Monitoring
+# MONITORING
+# STEP 1 CREATION D'UN COMPTE DE STOCKAGE
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account
 resource "azurerm_storage_account" "storage-monitor" {
   name                     = "stamonitor"
   resource_group_name      = azurerm_resource_group.rg.name
@@ -631,12 +698,17 @@ resource "azurerm_storage_account" "storage-monitor" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
+# STEP 2 CREATION DU GROUPE QUI SERA MONITORER
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_action_group
 
 resource "azurerm_monitor_action_group" "group-monitor" {
   name                = "group-monitor"
   resource_group_name = azurerm_resource_group.rg.name
   short_name          = "monitor-grp"
 }
+
+# STEP 3 MISE EN PLACE DE L'ALERTE POUR LA VM "APP"
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert
 
 resource "azurerm_monitor_metric_alert" "alert-vm-cpu" {
   name                = "alert-vm-cpu"
@@ -657,6 +729,9 @@ resource "azurerm_monitor_metric_alert" "alert-vm-cpu" {
     action_group_id = azurerm_monitor_action_group.group-monitor.id
   }
 }
+
+# MISE EN PLACE DE L'ALERTE POUR LA VM "BDD"
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert
 
 resource "azurerm_monitor_metric_alert" "alert-stock" {
   name                = "alert-stock-capacity"
@@ -679,6 +754,8 @@ resource "azurerm_monitor_metric_alert" "alert-stock" {
     action_group_id = azurerm_monitor_action_group.group-monitor.id
   }
 }
+# AZURE APPLICATION INSIGHT (MESURE DE PERFORMANCE DE L'APPLICATION)
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_insights
 
 resource "azurerm_application_insights" "insight" {
   name                = "insights-magento"
@@ -687,6 +764,9 @@ resource "azurerm_application_insights" "insight" {
   application_type    = "web"
 
 }
+
+# CREATION D'UNE RESSOURCE QUI GENERE UN TEMPLATE AU FORMAT JSON
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/template_deployment
 
 resource "azurerm_template_deployment" "example" {
   name                = "acctesttemplate-01"
