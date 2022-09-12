@@ -22,3 +22,7 @@ output "password" {
 output "test" {
   value = azurerm_private_dns_zone.private_dns_mariadb.name
 }
+
+output arm_example_output {
+  value = jsondecode(azurerm_resource_group_template_deployment.example.output_content)
+}

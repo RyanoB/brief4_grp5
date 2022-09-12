@@ -185,9 +185,11 @@ resource "azurerm_key_vault" "keyvault" {
 
   sku_name = "premium"
 
- access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
+}
+resource "azurerm_key_vault_access_policy" "admin" {
+  key_vault_id = azurerm_key_vault.keyvault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_client_config.current.object_id
 
    certificate_permissions = [
       "Create",
@@ -234,12 +236,12 @@ resource "azurerm_key_vault" "keyvault" {
       "Restore",
       "Set",
     ]
-  }
 }
 
-resource "azurerm_key_vault_access_policy" "example" {
+
+resource "azurerm_key_vault_access_policy" "app" {
   key_vault_id = azurerm_key_vault.keyvault.id
-  tenant_id    = azurerm_user_assigned_identity.id-magento.tenant_id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = azurerm_user_assigned_identity.id-magento.principal_id
 
    certificate_permissions = [
@@ -287,6 +289,16 @@ resource "azurerm_key_vault_access_policy" "example" {
       "Restore",
       "Set",
     ]
+}
+
+resource "azurerm_key_vault_certificate" "example" {
+  name         = "key-magento-app"
+  key_vault_id = azurerm_key_vault.keyvault.id
+
+  certificate {
+    contents = filebase64("cert.pfx")
+    password = ""
+  }
 }
 # CREATE AN AZURE STORAGE ACCOUNT
 #https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account
@@ -773,6 +785,16 @@ resource "azurerm_network_interface_application_gateway_backend_address_pool_ass
 
 
 # MONITORING
+# AZURE APPLICATION INSIGHT (MESURE DE PERFORMANCE DE L'APPLICATION)
+# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_insights
+
+resource "azurerm_application_insights" "insight" {
+  name                = "insights-magento"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  application_type    = "web"
+
+}
 # STEP 1 CREATION D'UN COMPTE DE STOCKAGE
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account
 resource "azurerm_storage_account" "storage-monitor" {
@@ -789,6 +811,11 @@ resource "azurerm_monitor_action_group" "group-monitor" {
   name                = "group-monitor"
   resource_group_name = azurerm_resource_group.rg.name
   short_name          = "monitor-grp"
+
+   email_receiver {
+    name          = "sendtoadmin"
+    email_address = "ryanomagento@gmail.com"
+  }
 }
 
 # STEP 3 MISE EN PLACE DE L'ALERTE POUR LA VM "APP"
@@ -838,25 +865,20 @@ resource "azurerm_monitor_metric_alert" "alert-stock" {
     action_group_id = azurerm_monitor_action_group.group-monitor.id
   }
 }
-# AZURE APPLICATION INSIGHT (MESURE DE PERFORMANCE DE L'APPLICATION)
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_insights
 
-resource "azurerm_application_insights" "insight" {
-  name                = "insights-magento"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  application_type    = "web"
 
-}
+
+
 
 # CREATION D'UNE RESSOURCE QUI GENERE UN TEMPLATE AU FORMAT JSON
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/template_deployment
 
-resource "azurerm_template_deployment" "example" {
-  name                = "acctesttemplate-01"
+resource "azurerm_resource_group_template_deployment" "example" {
+  name                = "example-deploy"
   resource_group_name = azurerm_resource_group.rg.name
+  deployment_mode     = "Incremental"
 
-  template_body = <<DEPLOY
+  template_content = <<DEPLOY
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
@@ -915,17 +937,6 @@ resource "azurerm_template_deployment" "example" {
     ]
 }
 DEPLOY
-
-  deployment_mode = "Incremental"
 }
 
 
-resource "azurerm_key_vault_certificate" "example" {
-  name         = "key-magento"
-  key_vault_id = azurerm_key_vault.keyvault.id
-
-  certificate {
-    contents = filebase64("cert.pfx")
-    password = ""
-  }
-}
