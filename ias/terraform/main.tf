@@ -144,7 +144,6 @@ resource "azurerm_network_interface" "nic_app" {
   }
 }
 
-// Key Vault
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "keyvault" {
@@ -152,26 +151,29 @@ resource "azurerm_key_vault" "keyvault" {
   location                    = azurerm_resource_group.rg.location
   resource_group_name         = azurerm_resource_group.rg.name
   enabled_for_disk_encryption = true
-  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  tenant_id = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days  = 7
   purge_protection_enabled    = false
 
-  sku_name = "standard"
+  sku_name = "premium"
 
-  access_policy {
+ access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azurerm_client_config.current.object_id
 
-    key_permissions = [
+    certificate_permissions = [
+      "Create",
+      "Delete",
+      "DeleteIssuers",
       "Get",
-    ]
-
-    secret_permissions = [
-      "Get",
-    ]
-
-    storage_permissions = [
-      "Get",
+      "GetIssuers",
+      "Import",
+      "List",
+      "ListIssuers",
+      "ManageContacts",
+      "ManageIssuers",
+      "SetIssuers",
+      "Update",
     ]
   }
 }
@@ -504,6 +506,7 @@ locals {
   http_setting_name              = "${azurerm_virtual_network.network.name}-be-htst"
   listener_name                  = "${azurerm_virtual_network.network.name}-httplstn"
   listener_name2                  = "${azurerm_virtual_network.network.name}-httplstn2"
+  listener_name3                  = "${azurerm_virtual_network.network.name}-httplstn3"
   request_routing_rule_name      = "${azurerm_virtual_network.network.name}-rqrt"
   redirect_configuration_name    = "${azurerm_virtual_network.network.name}-rdrcfg"
 }
@@ -556,45 +559,58 @@ resource "azurerm_application_gateway" "network_gateway" {
     frontend_port_name             = local.frontend_port_name
     protocol                       = "Http"
   }
-  # http_listener {
-  #   name                           = local.listener_name2
-  #   frontend_ip_configuration_name = local.frontend_ip_configuration_name
-  #   frontend_port_name             = local.frontend_port_name2
-  #   protocol                       = "Https"
-  # }
-   request_routing_rule {
+  request_routing_rule {
     name                       = var.request_routing_rule_name
     rule_type                  = "Basic"
     http_listener_name         = local.listener_name
     backend_address_pool_name  = local.backend_address_pool_name
     backend_http_settings_name = local.http_setting_name
-    priority = 100
+    priority = 200
   }
-  # request_routing_rule {
-  #   name               = "tls-rule"
-  #   rule_type          = "PathBasedRouting"
-  #   http_listener_name = local.listener_name2
-  #   url_path_map_name  = "test"
-  #   priority = 200
-  # }
 
-  # redirect_configuration {
-  #   name          = "LetsEncryptChallenge"
-  #   redirect_type = "Permanent"
-  #   target_url    = "http://stockagetls.blob.core.windows.net/containertls//.well-known/acme-challenge/"
-  # }
+  ssl_certificate {
+    name = "tls_cert"
+    key_vault_secret_id = azurerm_key_vault_certificate.example.secret_id
+  }
 
-  # url_path_map {
-  #   name                               = "test"
-  #   default_backend_address_pool_name  = local.backend_address_pool_name
-  #   default_backend_http_settings_name = local.http_setting_name
+  http_listener {
+    name                           = local.listener_name2
+    frontend_ip_configuration_name = local.frontend_ip_configuration_name
+    frontend_port_name             = local.frontend_port_name2
+    protocol                       = "Https"
+    ssl_certificate_name = "tls_cert"
+  }
 
-  #   path_rule {
-  #     name                        = "letsencrypt"
-  #     paths                       = ["/.well-known/acme-challenge/*"]
-  #     redirect_configuration_name = "LetsEncryptChallenge"
-  #   }
-  # }
+
+  identity {
+    type = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.base.id]
+  }
+   request_routing_rule {
+     name               = "tls-rule"
+      rule_type          = "PathBasedRouting"
+      http_listener_name = local.listener_name2
+      url_path_map_name  = "test"
+      priority = 100
+    }
+
+    redirect_configuration {
+      name          = "LetsEncryptChallenge"
+      redirect_type = "Permanent"
+      target_url    = "https://statls.blob.core.windows.net/stacontainer/.well-known/acme-challenge/"
+    }
+
+    url_path_map {
+      name                               = "test"
+      default_backend_address_pool_name  = local.backend_address_pool_name
+      default_backend_http_settings_name = local.http_setting_name
+
+      path_rule {
+        name                        = "letsencrypt"
+        paths                       = ["/.well-known/acme-challenge/*"]
+        redirect_configuration_name = "LetsEncryptChallenge"
+      }
+    }
 
 }
 
@@ -740,3 +756,12 @@ DEPLOY
 }
 
 
+resource "azurerm_key_vault_certificate" "example" {
+  name         = "imported-cert"
+  key_vault_id = azurerm_key_vault.keyvault.id
+
+  certificate {
+    contents = filebase64("cert.pfx")
+    password = ""
+  }
+}
