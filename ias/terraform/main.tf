@@ -6,7 +6,7 @@ resource "azurerm_resource_group" "rg" {
   location  = var.resource_group_location
 }
 
-# CREATE VIRTUAL NETWORK 
+# CREATE VIRTUAL NETWORK
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network
 
 resource "azurerm_virtual_network" "network" {
@@ -161,13 +161,18 @@ resource "azurerm_network_interface" "nic_app" {
   }
 }
 
-<<<<<<< HEAD
-=======
-# CREATE KEY VAULT 
+# CREATE KEY VAULT
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config
 
->>>>>>> 6b484cf2ff87f8bbca1c78b7fb3d02ce6df2ed13
+resource "azurerm_user_assigned_identity" "id-magento" {
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+
+  name = "id-magento"
+}
+
 data "azurerm_client_config" "current" {}
+
 
 resource "azurerm_key_vault" "keyvault" {
   name                        = "keyvaultmagento"
@@ -184,7 +189,7 @@ resource "azurerm_key_vault" "keyvault" {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azurerm_client_config.current.object_id
 
-    certificate_permissions = [
+   certificate_permissions = [
       "Create",
       "Delete",
       "DeleteIssuers",
@@ -197,10 +202,92 @@ resource "azurerm_key_vault" "keyvault" {
       "ManageIssuers",
       "SetIssuers",
       "Update",
+      "Purge",
+    ]
+
+    key_permissions = [
+      "Backup",
+      "Create",
+      "Decrypt",
+      "Delete",
+      "Encrypt",
+      "Get",
+      "Import",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Sign",
+      "UnwrapKey",
+      "Update",
+      "Verify",
+      "WrapKey",
+    ]
+
+    secret_permissions = [
+      "Backup",
+      "Delete",
+      "Get",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Set",
     ]
   }
 }
 
+resource "azurerm_key_vault_access_policy" "example" {
+  key_vault_id = azurerm_key_vault.keyvault.id
+  tenant_id    = azurerm_user_assigned_identity.id-magento.tenant_id
+  object_id    = azurerm_user_assigned_identity.id-magento.principal_id
+
+   certificate_permissions = [
+      "Create",
+      "Delete",
+      "DeleteIssuers",
+      "Get",
+      "GetIssuers",
+      "Import",
+      "List",
+      "ListIssuers",
+      "ManageContacts",
+      "ManageIssuers",
+      "SetIssuers",
+      "Update",
+      "Purge",
+    ]
+
+    key_permissions = [
+      "Backup",
+      "Create",
+      "Decrypt",
+      "Delete",
+      "Encrypt",
+      "Get",
+      "Import",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Sign",
+      "UnwrapKey",
+      "Update",
+      "Verify",
+      "WrapKey",
+    ]
+
+    secret_permissions = [
+      "Backup",
+      "Delete",
+      "Get",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Set",
+    ]
+}
 # CREATE AN AZURE STORAGE ACCOUNT
 #https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account
 
@@ -332,7 +419,7 @@ resource "azurerm_mariadb_server" "server_magento" {
 # MANAGES A MARIADB DATABASE WITHIN MARIADB SERVER
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mariadb_database
 
-resource "azurerm_mariadb_database" "db_magento" { 
+resource "azurerm_mariadb_database" "db_magento" {
   name                = "mariadb_database"
   resource_group_name = azurerm_resource_group.rg.name
   server_name         = azurerm_mariadb_server.server_magento.name
@@ -347,13 +434,10 @@ resource "azurerm_private_dns_zone" "private_dns_mariadb" {
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-<<<<<<< HEAD
 # CREATION D'UN ENDPOINT POUR OBTENIR MARIADB DANS MON RESEAU LOCAL
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint
 
-=======
 # Creation d'un endpoint pour obtenir mariadb dans mon réseau local
->>>>>>> ffaf6e0f53bd7b1a11a5ced45760127f3b6a91e4
 resource "azurerm_private_endpoint" "private_bdd" {
   name = "private_bdd"
   location = azurerm_resource_group.rg.location
@@ -553,8 +637,8 @@ resource "azurerm_linux_virtual_machine" "vm_app" {
 
 
 
-# AZURE APPLICATION GATEWAY 
-# STEP 1 - INITIATIONS DES VARIABLES 
+# AZURE APPLICATION GATEWAY
+# STEP 1 - INITIATIONS DES VARIABLES
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway
 
 locals {
@@ -646,7 +730,7 @@ resource "azurerm_application_gateway" "network_gateway" {
 
   identity {
     type = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.base.id]
+    identity_ids = [azurerm_user_assigned_identity.id-magento.id]
   }
    request_routing_rule {
      name               = "tls-rule"
@@ -837,7 +921,7 @@ DEPLOY
 
 
 resource "azurerm_key_vault_certificate" "example" {
-  name         = "imported-cert"
+  name         = "key-magento"
   key_vault_id = azurerm_key_vault.keyvault.id
 
   certificate {
