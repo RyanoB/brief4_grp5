@@ -1,7 +1,7 @@
 {
   "version": 4,
   "terraform_version": "1.2.7",
-  "serial": 1008,
+  "serial": 856,
   "lineage": "637868ba-fbc7-98ab-33b2-e4b1c8b7c29a",
   "outputs": {
     "ip_private": {
@@ -9,13 +9,13 @@
       "type": "string"
     },
     "password": {
-      "value": "zb5W0{sfE!%58s}a",
+      "value": "dVDqNvf+z9ed4FVC",
       "type": "string",
       "sensitive": true
     },
     "public_ip_address_app": {
       "value": [
-        "20.12.17.221"
+        "20.14.128.204"
       ],
       "type": [
         "tuple",
@@ -26,7 +26,7 @@
     },
     "public_ip_address_gateway": {
       "value": [
-        "20.7.47.153"
+        "20.14.128.183"
       ],
       "type": [
         "tuple",
@@ -36,7 +36,7 @@
       ]
     },
     "resource_group_name": {
-      "value": "brief4_QB",
+      "value": "brief4_QB2",
       "type": "string"
     },
     "test": {
@@ -47,160 +47,10 @@
   "resources": [
     {
       "mode": "data",
-      "type": "azurerm_client_config",
-      "name": "current",
-      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "client_id": "04b07795-8ddb-461a-bbee-02f9e1bf7b46",
-            "id": "2022-09-13 10:57:54.201407305 +0000 UTC",
-            "object_id": "d91c4c59-4443-4767-ae8f-2e2c81dd76d6",
-            "subscription_id": "a1f74e2d-ec58-4f9a-a112-088e3469febb",
-            "tenant_id": "a2e466aa-4f86-4545-b5b8-97da7c8febf3",
-            "timeouts": null
-          },
-          "sensitive_attributes": []
-        }
-      ]
-    },
-    {
-      "mode": "data",
       "type": "external",
       "name": "id_alert_requesthttp",
       "provider": "provider[\"registry.terraform.io/hashicorp/external\"]",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "id": "-",
-            "program": [
-              "sh",
-              "./getAzRequest.sh"
-            ],
-            "query": {
-              "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Resources/deployments/arm-deploy"
-            },
-            "result": {
-              "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/microsoft.insights/webtests/requesthttp-insights-app"
-            },
-            "working_dir": null
-          },
-          "sensitive_attributes": []
-        }
-      ]
-    },
-    {
-      "mode": "data",
-      "type": "http",
-      "name": "myip",
-      "provider": "provider[\"registry.terraform.io/hashicorp/http\"]",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "body": "212.51.190.22",
-            "id": "https://ifconfig.me",
-            "method": null,
-            "request_body": null,
-            "request_headers": null,
-            "response_body": "212.51.190.22",
-            "response_headers": {
-              "Access-Control-Allow-Origin": "*",
-              "Alt-Svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
-              "Content-Length": "13",
-              "Content-Type": "text/plain; charset=utf-8",
-              "Date": "Tue, 13 Sep 2022 10:57:44 GMT",
-              "Server": "istio-envoy",
-              "Strict-Transport-Security": "max-age=2592000; includeSubDomains",
-              "Via": "1.1 google",
-              "X-Envoy-Upstream-Service-Time": "1"
-            },
-            "status_code": 200,
-            "url": "https://ifconfig.me"
-          },
-          "sensitive_attributes": []
-        }
-      ]
-    },
-    {
-      "mode": "data",
-      "type": "template_cloudinit_config",
-      "name": "configapp",
-      "provider": "provider[\"registry.terraform.io/hashicorp/template\"]",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "base64_encode": true,
-            "gzip": true,
-            "id": "4275967297",
-            "part": [
-              {
-                "content": "#cloud-config\npackage_update: true\npackages:\n  - nginx\n  - composer\n  - mariadb-client\n  - mariadb-client-10.1\n  - nfs-common\n\nusers:\n  - default\n  - name: quentin\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blablabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAXuIAe8DVtQ+qHpbTnCMn5iP1u7WQEOLDE76PTRZ0lYc0TrWJvH+zWzpEbTK/fwzx5sw7yAlBnuR83cAOtm6y8Gk5yktOogsk71VnJ9cXKV7QWtX5o/nysqhliBWAW2jQmEMLHBf4DOFXcKpCdl0OBOtrPct976tnFXhM5n5WF0wrQ4dVikfWe57yg0BX+G+ZbNl7iDCHS8cAGEI2S0ziGOLjl0qJq+9jjCaj2bdVb5vtbz/ghplWtNKQvirxvfOC5H3XbX7aeH2sAlogeYbPs8DmFuz5Smq/+FLBZzqV7JhPMxBCpVFm6r+EzZDgiS2WB96Q3Jh0ItPz7wwJtgpLmSWeaBmWyPGAOh9MBal2RXgDIZ26EPOQTc9WX1377SaEMFSXgwq3e0mtFl5TYG+hzjujY9ik6nfjyLy1yNaPB7hq0z0cCijeJf0Nlm092Ukb1IJOndiS9LSZXjFJT+LRNz7hqyK/oj8nH4K2nx4DMH+Fj4JypSdsqmIk7aXLdYE= nomad@device\n  - name: steph\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blablabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCnBYZRoOJm/hLnbGmUBNhBEsdvUAqVb48EQql7OeYgB4pO/FFu8OIhKofBCByf1l9owEWnbWFZJhfgwQ+iNZjd+1iZtmc6cidjqQypgEc+U43avchEVdZdjK1LidIIJt0O7o8L0gARNn1PjDFLP3eUI2XN3ALUzB3sRzXKTJ1QHz8S1ByhfWXw2vhsPa9I3Jv9aE8zZuCBx/gfVQQy/FyskgK8VWRHhUl3XCgNDxUYBppnBgCCDWHpYOdzH/5XuRORdgMccDgJ/NhcCgY+erva7DlkIlzRiVxm5uMK8kvEiDn+AWI3aGsgxt3LaS+xaiw4hLLoev4V4cWTjWhZPeJSITDeWk3HAsBxDBWGvx3716ywsh7mkDJpjyXow6RXpTBke2rTmr4X9+hVGop4ZjqyTTUuTkdbYllwiaTrsuKgOJ5ne2lWp1P1IT0cD0s9j0GNl/54KaN31HFiuHVYVVA8yGp532LfRjhthpMdHiuhJbswlKTrDJR3i1iccT0aiUk= utilisateur@UTILISA-2JUD7VR\n  - name: ryano\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blablabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCuQsDbdhzBOtJvetSRXRINBLZnKEzLctl+J3hFX22doPy1Btth8i7a4cigqyQ914MIgdYr/pPOFfH7YBLa5LhF2Racx3cRT1RPobmGn2DMEcNAcWjw1Qr9TRl3HcFK59ineQ4ukoDt4jZCUyRXliCFMhqBdQU0u182UvNFf0L5bLBVzlkWyNxPo79WDDGY97HCsQLYIQcqRfsYJ0YwJ5QyGUvtUWKmMO30bhlhyQJJmG/6QQlV/m6sMiHCiEt+7Qxv5n3+c9RH5hsRyaynzsLcNmzENDqsrDsngqwzK4oe8S71YKKVn395nvZ4MIr8PB6bE/ViWpvS0bhCzANDYAj8Exk2P5WR3aI06PobLOcUjxm3E1JOFa/YcXQ8GXzmUgjGpHMztB6qSH+NSHHTqBejmvsv2DQ9nYq/NL1s7k6e+FSwWQktZNXAlVIvUGMrX51MdUxtVXteNEFe/NCj4B66Y5i2MM8VJk1lsgm8PIUj0wDjlB0f8TlUFK+vqijLt80= utilisateur@UTILISA-ASVHC0M\n\nwrite_files:\n  - path: /home/magento/magento\n    content: \"upstream fastcgi_backend {\\n  server  unix:/run/php/php8.1-fpm.sock;\\n}\\n\\nserver {\\n  listen 10.2.0.19:80;\\n  server_name _;\\n  set $MAGE_ROOT /var/www/html/magento2;\\n  include /var/www/html/magento2/nginx.conf.sample;\\n}\\n\"\n\nruncmd:\n  - sudo apt install software-properties-common \u0026\u0026 sudo add-apt-repository ppa:ondrej/php -y\n  - sudo apt update\n  - sudo export PATH=$PATH:/var/www/html/magento2/bin\n  - sudo apt upgrade -y\n  - sudo apt install -y libxml2 libxml2-dev libssl-dev libssl1.1\n  - sudo apt install -y php8.1 php8.1-common php8.1-xml php8.1-mbstring php8.1-curl php8.1-gd php8.1-intl php-json php8.1-mysql php8.1-soap php-sodium php-tokenizer php8.1-xsl php-zip php-bcmath php8.1-fpm\n  - sudo mkdir /var/www/html/magento2\n  - cd /home/magento \u0026\u0026 sudo curl -O https://MAG005875421:af7e13b80644f2a44187f446f55bb76d5c156b3b@www.magentocommerce.com/products/downloads/file/Magento-CE-2.4.4.tar.bz2\n  - sudo tar -C /var/www/html/magento2/ -xvf /home/magento/Magento-CE-2.4.4.tar.bz2\n  - cd /var/www/html/\n  - sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +\n  - sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} +\n  - sudo chown -R www-data:www-data /var/www/html\n  - sudo chmod u+x bin/magento\n  - cd /var/www/html/magento2 \u0026\u0026 sudo php bin/magento setup:install -vvv --base-url=https://magentobrief4.eastus2.cloudapp.azure.com --db-host=magento-mariadb-server.privatelink.mariadb.database.azure.com --db-name=mariadb_database --db-user=magento@magento-mariadb-server --db-password=blablabla123! --admin-firstname=admin --admin-lastname=admin --admin-email=ryanmagento@gmail.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1 --search-engine=elasticsearch7 --elasticsearch-host=10.4.0.4 --elasticsearch-port=9200 --elasticsearch-index-prefix=magento2 --elasticsearch-timeout=15 --elasticsearch-username=magento --elasticsearch-password=blablabla123! --elasticsearch-enable-auth=1\n  - sudo apt-get remove apache2 -y\n  - sudo apt-get autoremove apache2 -y\n  - sudo apt-get purge apache2 -y\n  - sudo apt-get autoremove --purge apache2 -y\n  - sudo cp /home/magento/magento /etc/nginx/conf.d/magento.conf\n  - sudo rm /etc/nginx/sites-enabled/default\n  - chown www-data:www-data -R /var/www/html/magento2/var/\n  - sudo echo \"memory_limit = 2G\" \u003e\u003e vim /etc/php/8.1/fpm/php.ini\n  - sudo echo \"max_execution_time = 1800\" \u003e\u003e vim /etc/php/8.1/fpm/php.ini\n  - sudo echo \"zlib.output_compression = On\" \u003e\u003e vim /etc/php/8.1/fpm/php.ini\n  - sudo echo \"memory_limit = 2G\" \u003e\u003e vim /etc/php/8.1/cli/php.ini\n  - sudo echo \"max_execution_time = 1800\" \u003e\u003e vim /etc/php/8.1/cli/php.ini\n  - sudo echo \"zlib.output_compression = On\" \u003e\u003e vim /etc/php/8.1/cli/php.ini\n  - sudo systemctl restart php8.1-fpm\n  - sudo chmod 775 ./generated/\n  - cd /var/www/html/magento2 \u0026\u0026 sudo bin/magento setup:di:compile\n  - sudo systemctl restart nginx\n  - sudo cp -R /var/www/html/magento2/pub /home/magento/pub\n  - sudo mkdir /etc/smbcredentials\n  - sudo bash -c 'echo \"username=staapp\" \u003e\u003e /etc/smbcredentials/staapp.cred'\n  - sudo bash -c 'echo \"password=IeZmYz2jWpQ2x9NO35MJPP6WktOhxpI7fmrNqHDQzQ2Vr3A7RUtFqpW6RSUWbaJ7pjXne5AFjl/m+AStcChztg==\" \u003e\u003e /etc/smbcredentials/staapp.cred'\n  - sudo chmod 600 /etc/smbcredentials/staapp.cred\n  - sudo bash -c 'echo \"//staapp.file.core.windows.net/magentoshare01 /var/www/html/magento2/pub cifs nofail,credentials=/etc/smbcredentials/staapp.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30\" \u003e\u003e /etc/fstab'\n  - sudo mount -t cifs //staapp.file.core.windows.net/magentoshare01 /var/www/html/magento2/pub -o credentials=/etc/smbcredentials/staapp.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30\n  - sudo cp -R /home/magento/pub/* /var/www/html/magento2/pub\n  - rm var/.maintenance.flag",
-                "content_type": "text/cloud-config",
-                "filename": "../cloud-init/cloud-init-app.yaml",
-                "merge_type": ""
-              }
-            ],
-            "rendered": "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"
-          },
-          "sensitive_attributes": []
-        }
-      ]
-    },
-    {
-      "mode": "data",
-      "type": "template_cloudinit_config",
-      "name": "configbastion",
-      "provider": "provider[\"registry.terraform.io/hashicorp/template\"]",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "base64_encode": true,
-            "gzip": true,
-            "id": "3740291837",
-            "part": [
-              {
-                "content": "#cloud-config\npackage_update: true\npackages:\n  - apt-transport-https\n\nusers:\n  - default\n  - name: quentin\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAXuIAe8DVtQ+qHpbTnCMn5iP1u7WQEOLDE76PTRZ0lYc0TrWJvH+zWzpEbTK/fwzx5sw7yAlBnuR83cAOtm6y8Gk5yktOogsk71VnJ9cXKV7QWtX5o/nysqhliBWAW2jQmEMLHBf4DOFXcKpCdl0OBOtrPct976tnFXhM5n5WF0wrQ4dVikfWe57yg0BX+G+ZbNl7iDCHS8cAGEI2S0ziGOLjl0qJq+9jjCaj2bdVb5vtbz/ghplWtNKQvirxvfOC5H3XbX7aeH2sAlogeYbPs8DmFuz5Smq/+FLBZzqV7JhPMxBCpVFm6r+EzZDgiS2WB96Q3Jh0ItPz7wwJtgpLmSWeaBmWyPGAOh9MBal2RXgDIZ26EPOQTc9WX1377SaEMFSXgwq3e0mtFl5TYG+hzjujY9ik6nfjyLy1yNaPB7hq0z0cCijeJf0Nlm092Ukb1IJOndiS9LSZXjFJT+LRNz7hqyK/oj8nH4K2nx4DMH+Fj4JypSdsqmIk7aXLdYE= nomad@device\n  - name: steph\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCnBYZRoOJm/hLnbGmUBNhBEsdvUAqVb48EQql7OeYgB4pO/FFu8OIhKofBCByf1l9owEWnbWFZJhfgwQ+iNZjd+1iZtmc6cidjqQypgEc+U43avchEVdZdjK1LidIIJt0O7o8L0gARNn1PjDFLP3eUI2XN3ALUzB3sRzXKTJ1QHz8S1ByhfWXw2vhsPa9I3Jv9aE8zZuCBx/gfVQQy/FyskgK8VWRHhUl3XCgNDxUYBppnBgCCDWHpYOdzH/5XuRORdgMccDgJ/NhcCgY+erva7DlkIlzRiVxm5uMK8kvEiDn+AWI3aGsgxt3LaS+xaiw4hLLoev4V4cWTjWhZPeJSITDeWk3HAsBxDBWGvx3716ywsh7mkDJpjyXow6RXpTBke2rTmr4X9+hVGop4ZjqyTTUuTkdbYllwiaTrsuKgOJ5ne2lWp1P1IT0cD0s9j0GNl/54KaN31HFiuHVYVVA8yGp532LfRjhthpMdHiuhJbswlKTrDJR3i1iccT0aiUk= utilisateur@UTILISA-2JUD7VR\n  - name: ryano\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCuQsDbdhzBOtJvetSRXRINBLZnKEzLctl+J3hFX22doPy1Btth8i7a4cigqyQ914MIgdYr/pPOFfH7YBLa5LhF2Racx3cRT1RPobmGn2DMEcNAcWjw1Qr9TRl3HcFK59ineQ4ukoDt4jZCUyRXliCFMhqBdQU0u182UvNFf0L5bLBVzlkWyNxPo79WDDGY97HCsQLYIQcqRfsYJ0YwJ5QyGUvtUWKmMO30bhlhyQJJmG/6QQlV/m6sMiHCiEt+7Qxv5n3+c9RH5hsRyaynzsLcNmzENDqsrDsngqwzK4oe8S71YKKVn395nvZ4MIr8PB6bE/ViWpvS0bhCzANDYAj8Exk2P5WR3aI06PobLOcUjxm3E1JOFa/YcXQ8GXzmUgjGpHMztB6qSH+NSHHTqBejmvsv2DQ9nYq/NL1s7k6e+FSwWQktZNXAlVIvUGMrX51MdUxtVXteNEFe/NCj4B66Y5i2MM8VJk1lsgm8PIUj0wDjlB0f8TlUFK+vqijLt80= utilisateur@UTILISA-ASVHC0M\n",
-                "content_type": "text/cloud-config",
-                "filename": "../cloud-init/cloud-init-bastion.yaml",
-                "merge_type": ""
-              }
-            ],
-            "rendered": "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"
-          },
-          "sensitive_attributes": []
-        }
-      ]
-    },
-    {
-      "mode": "data",
-      "type": "template_cloudinit_config",
-      "name": "configelastic",
-      "provider": "provider[\"registry.terraform.io/hashicorp/template\"]",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "base64_encode": true,
-            "gzip": true,
-            "id": "863804561",
-            "part": [
-              {
-                "content": "#cloud-config\npackage_update: true\npackages:\n  - apt-transport-https\n\nusers:\n  - default\n  - name: quentin\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAXuIAe8DVtQ+qHpbTnCMn5iP1u7WQEOLDE76PTRZ0lYc0TrWJvH+zWzpEbTK/fwzx5sw7yAlBnuR83cAOtm6y8Gk5yktOogsk71VnJ9cXKV7QWtX5o/nysqhliBWAW2jQmEMLHBf4DOFXcKpCdl0OBOtrPct976tnFXhM5n5WF0wrQ4dVikfWe57yg0BX+G+ZbNl7iDCHS8cAGEI2S0ziGOLjl0qJq+9jjCaj2bdVb5vtbz/ghplWtNKQvirxvfOC5H3XbX7aeH2sAlogeYbPs8DmFuz5Smq/+FLBZzqV7JhPMxBCpVFm6r+EzZDgiS2WB96Q3Jh0ItPz7wwJtgpLmSWeaBmWyPGAOh9MBal2RXgDIZ26EPOQTc9WX1377SaEMFSXgwq3e0mtFl5TYG+hzjujY9ik6nfjyLy1yNaPB7hq0z0cCijeJf0Nlm092Ukb1IJOndiS9LSZXjFJT+LRNz7hqyK/oj8nH4K2nx4DMH+Fj4JypSdsqmIk7aXLdYE= nomad@device\n  - name: steph\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCnBYZRoOJm/hLnbGmUBNhBEsdvUAqVb48EQql7OeYgB4pO/FFu8OIhKofBCByf1l9owEWnbWFZJhfgwQ+iNZjd+1iZtmc6cidjqQypgEc+U43avchEVdZdjK1LidIIJt0O7o8L0gARNn1PjDFLP3eUI2XN3ALUzB3sRzXKTJ1QHz8S1ByhfWXw2vhsPa9I3Jv9aE8zZuCBx/gfVQQy/FyskgK8VWRHhUl3XCgNDxUYBppnBgCCDWHpYOdzH/5XuRORdgMccDgJ/NhcCgY+erva7DlkIlzRiVxm5uMK8kvEiDn+AWI3aGsgxt3LaS+xaiw4hLLoev4V4cWTjWhZPeJSITDeWk3HAsBxDBWGvx3716ywsh7mkDJpjyXow6RXpTBke2rTmr4X9+hVGop4ZjqyTTUuTkdbYllwiaTrsuKgOJ5ne2lWp1P1IT0cD0s9j0GNl/54KaN31HFiuHVYVVA8yGp532LfRjhthpMdHiuhJbswlKTrDJR3i1iccT0aiUk= utilisateur@UTILISA-2JUD7VR\n  - name: ryano\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCuQsDbdhzBOtJvetSRXRINBLZnKEzLctl+J3hFX22doPy1Btth8i7a4cigqyQ914MIgdYr/pPOFfH7YBLa5LhF2Racx3cRT1RPobmGn2DMEcNAcWjw1Qr9TRl3HcFK59ineQ4ukoDt4jZCUyRXliCFMhqBdQU0u182UvNFf0L5bLBVzlkWyNxPo79WDDGY97HCsQLYIQcqRfsYJ0YwJ5QyGUvtUWKmMO30bhlhyQJJmG/6QQlV/m6sMiHCiEt+7Qxv5n3+c9RH5hsRyaynzsLcNmzENDqsrDsngqwzK4oe8S71YKKVn395nvZ4MIr8PB6bE/ViWpvS0bhCzANDYAj8Exk2P5WR3aI06PobLOcUjxm3E1JOFa/YcXQ8GXzmUgjGpHMztB6qSH+NSHHTqBejmvsv2DQ9nYq/NL1s7k6e+FSwWQktZNXAlVIvUGMrX51MdUxtVXteNEFe/NCj4B66Y5i2MM8VJk1lsgm8PIUj0wDjlB0f8TlUFK+vqijLt80= utilisateur@UTILISA-ASVHC0M\n\nwrite_files:\n  - path: /home/elastic/elasticsearch.yml\n    content: \"cluster.name: my-application\\nnode.name: node-1\\npath.data: /var/lib/elasticsearch\\npath.logs: /var/log/elasticsearch\\nnetwork.host: 10.4.0.4\\nxpack.security.enabled: true\\nxpack.security.enrollment.enabled: true\\nxpack.security.http.ssl:\\n  enabled: false\\n  keystore.path: certs/http.p12\\n\\nxpack.security.transport.ssl:\\n  enabled: true\\n  verification_mode: certificate\\n  keystore.path: certs/transport.p12\\n  truststore.path: certs/transport.p12\\ncluster.initial_master_nodes: [\\\"node-1\\\"]\\nhttp.host: 0.0.0.0\\n\"\n\n\nruncmd:\n  - wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg\n  - echo \"deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main\" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list\n  - sudo apt-get update\n  - sudo apt install elasticsearch -y\n  - sudo cp /etc/elasticsearch/elasticsearch.yml /home/elastic/backup_elastisearch.yml\n  - sudo rm /etc/elasticsearch/elasticsearch.yml\n  - sudo cp /home/elastic/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml\n  - sudo chown root:elasticsearch /etc/elasticsearch/elasticsearch.yml\n  - sudo chmod 660 /etc/elasticsearch/elasticsearch.yml\n  - sudo /bin/systemctl daemon-reload\n  - sudo /bin/systemctl enable elasticsearch.service\n  - sudo systemctl start elasticsearch.service\n  - cd /usr/share/elasticsearch/bin \u0026\u0026 sudo ./elasticsearch-users useradd magento -p blablabla123! -r superuser\n\n\n",
-                "content_type": "text/cloud-config",
-                "filename": "../cloud-init/cloud-init-elastic.yaml",
-                "merge_type": ""
-              }
-            ],
-            "rendered": "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"
-          },
-          "sensitive_attributes": []
-        }
-      ]
+      "instances": []
     },
     {
       "mode": "data",
@@ -212,14 +62,14 @@
           "schema_version": 0,
           "attributes": {
             "filename": null,
-            "id": "125e309d3fa68034e6c688e93f0a0e5e7c9820d66a9547442c735e2a756e6be4",
-            "rendered": "#cloud-config\npackage_update: true\npackages:\n  - nginx\n  - composer\n  - mariadb-client\n  - mariadb-client-10.1\n  - nfs-common\n\nusers:\n  - default\n  - name: quentin\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blablabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAXuIAe8DVtQ+qHpbTnCMn5iP1u7WQEOLDE76PTRZ0lYc0TrWJvH+zWzpEbTK/fwzx5sw7yAlBnuR83cAOtm6y8Gk5yktOogsk71VnJ9cXKV7QWtX5o/nysqhliBWAW2jQmEMLHBf4DOFXcKpCdl0OBOtrPct976tnFXhM5n5WF0wrQ4dVikfWe57yg0BX+G+ZbNl7iDCHS8cAGEI2S0ziGOLjl0qJq+9jjCaj2bdVb5vtbz/ghplWtNKQvirxvfOC5H3XbX7aeH2sAlogeYbPs8DmFuz5Smq/+FLBZzqV7JhPMxBCpVFm6r+EzZDgiS2WB96Q3Jh0ItPz7wwJtgpLmSWeaBmWyPGAOh9MBal2RXgDIZ26EPOQTc9WX1377SaEMFSXgwq3e0mtFl5TYG+hzjujY9ik6nfjyLy1yNaPB7hq0z0cCijeJf0Nlm092Ukb1IJOndiS9LSZXjFJT+LRNz7hqyK/oj8nH4K2nx4DMH+Fj4JypSdsqmIk7aXLdYE= nomad@device\n  - name: steph\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blablabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCnBYZRoOJm/hLnbGmUBNhBEsdvUAqVb48EQql7OeYgB4pO/FFu8OIhKofBCByf1l9owEWnbWFZJhfgwQ+iNZjd+1iZtmc6cidjqQypgEc+U43avchEVdZdjK1LidIIJt0O7o8L0gARNn1PjDFLP3eUI2XN3ALUzB3sRzXKTJ1QHz8S1ByhfWXw2vhsPa9I3Jv9aE8zZuCBx/gfVQQy/FyskgK8VWRHhUl3XCgNDxUYBppnBgCCDWHpYOdzH/5XuRORdgMccDgJ/NhcCgY+erva7DlkIlzRiVxm5uMK8kvEiDn+AWI3aGsgxt3LaS+xaiw4hLLoev4V4cWTjWhZPeJSITDeWk3HAsBxDBWGvx3716ywsh7mkDJpjyXow6RXpTBke2rTmr4X9+hVGop4ZjqyTTUuTkdbYllwiaTrsuKgOJ5ne2lWp1P1IT0cD0s9j0GNl/54KaN31HFiuHVYVVA8yGp532LfRjhthpMdHiuhJbswlKTrDJR3i1iccT0aiUk= utilisateur@UTILISA-2JUD7VR\n  - name: ryano\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blablabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCuQsDbdhzBOtJvetSRXRINBLZnKEzLctl+J3hFX22doPy1Btth8i7a4cigqyQ914MIgdYr/pPOFfH7YBLa5LhF2Racx3cRT1RPobmGn2DMEcNAcWjw1Qr9TRl3HcFK59ineQ4ukoDt4jZCUyRXliCFMhqBdQU0u182UvNFf0L5bLBVzlkWyNxPo79WDDGY97HCsQLYIQcqRfsYJ0YwJ5QyGUvtUWKmMO30bhlhyQJJmG/6QQlV/m6sMiHCiEt+7Qxv5n3+c9RH5hsRyaynzsLcNmzENDqsrDsngqwzK4oe8S71YKKVn395nvZ4MIr8PB6bE/ViWpvS0bhCzANDYAj8Exk2P5WR3aI06PobLOcUjxm3E1JOFa/YcXQ8GXzmUgjGpHMztB6qSH+NSHHTqBejmvsv2DQ9nYq/NL1s7k6e+FSwWQktZNXAlVIvUGMrX51MdUxtVXteNEFe/NCj4B66Y5i2MM8VJk1lsgm8PIUj0wDjlB0f8TlUFK+vqijLt80= utilisateur@UTILISA-ASVHC0M\n\nwrite_files:\n  - path: /home/magento/magento\n    content: \"upstream fastcgi_backend {\\n  server  unix:/run/php/php8.1-fpm.sock;\\n}\\n\\nserver {\\n  listen 10.2.0.19:80;\\n  server_name _;\\n  set $MAGE_ROOT /var/www/html/magento2;\\n  include /var/www/html/magento2/nginx.conf.sample;\\n}\\n\"\n\nruncmd:\n  - sudo apt install software-properties-common \u0026\u0026 sudo add-apt-repository ppa:ondrej/php -y\n  - sudo apt update\n  - sudo export PATH=$PATH:/var/www/html/magento2/bin\n  - sudo apt upgrade -y\n  - sudo apt install -y libxml2 libxml2-dev libssl-dev libssl1.1\n  - sudo apt install -y php8.1 php8.1-common php8.1-xml php8.1-mbstring php8.1-curl php8.1-gd php8.1-intl php-json php8.1-mysql php8.1-soap php-sodium php-tokenizer php8.1-xsl php-zip php-bcmath php8.1-fpm\n  - sudo mkdir /var/www/html/magento2\n  - cd /home/magento \u0026\u0026 sudo curl -O https://MAG005875421:af7e13b80644f2a44187f446f55bb76d5c156b3b@www.magentocommerce.com/products/downloads/file/Magento-CE-2.4.4.tar.bz2\n  - sudo tar -C /var/www/html/magento2/ -xvf /home/magento/Magento-CE-2.4.4.tar.bz2\n  - cd /var/www/html/\n  - sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +\n  - sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} +\n  - sudo chown -R www-data:www-data /var/www/html\n  - sudo chmod u+x bin/magento\n  - cd /var/www/html/magento2 \u0026\u0026 sudo php bin/magento setup:install -vvv --base-url=https://magentobrief4.eastus2.cloudapp.azure.com --db-host=magento-mariadb-server.privatelink.mariadb.database.azure.com --db-name=mariadb_database --db-user=magento@magento-mariadb-server --db-password=blablabla123! --admin-firstname=admin --admin-lastname=admin --admin-email=ryanmagento@gmail.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1 --search-engine=elasticsearch7 --elasticsearch-host=10.4.0.4 --elasticsearch-port=9200 --elasticsearch-index-prefix=magento2 --elasticsearch-timeout=15 --elasticsearch-username=magento --elasticsearch-password=blablabla123! --elasticsearch-enable-auth=1\n  - sudo apt-get remove apache2 -y\n  - sudo apt-get autoremove apache2 -y\n  - sudo apt-get purge apache2 -y\n  - sudo apt-get autoremove --purge apache2 -y\n  - sudo cp /home/magento/magento /etc/nginx/conf.d/magento.conf\n  - sudo rm /etc/nginx/sites-enabled/default\n  - chown www-data:www-data -R /var/www/html/magento2/var/\n  - sudo echo \"memory_limit = 2G\" \u003e\u003e vim /etc/php/8.1/fpm/php.ini\n  - sudo echo \"max_execution_time = 1800\" \u003e\u003e vim /etc/php/8.1/fpm/php.ini\n  - sudo echo \"zlib.output_compression = On\" \u003e\u003e vim /etc/php/8.1/fpm/php.ini\n  - sudo echo \"memory_limit = 2G\" \u003e\u003e vim /etc/php/8.1/cli/php.ini\n  - sudo echo \"max_execution_time = 1800\" \u003e\u003e vim /etc/php/8.1/cli/php.ini\n  - sudo echo \"zlib.output_compression = On\" \u003e\u003e vim /etc/php/8.1/cli/php.ini\n  - sudo systemctl restart php8.1-fpm\n  - sudo chmod 775 ./generated/\n  - cd /var/www/html/magento2 \u0026\u0026 sudo bin/magento setup:di:compile\n  - sudo systemctl restart nginx\n  - sudo cp -R /var/www/html/magento2/pub /home/magento/pub\n  - sudo mkdir /etc/smbcredentials\n  - sudo bash -c 'echo \"username=staapp\" \u003e\u003e /etc/smbcredentials/staapp.cred'\n  - sudo bash -c 'echo \"password=IeZmYz2jWpQ2x9NO35MJPP6WktOhxpI7fmrNqHDQzQ2Vr3A7RUtFqpW6RSUWbaJ7pjXne5AFjl/m+AStcChztg==\" \u003e\u003e /etc/smbcredentials/staapp.cred'\n  - sudo chmod 600 /etc/smbcredentials/staapp.cred\n  - sudo bash -c 'echo \"//staapp.file.core.windows.net/magentoshare01 /var/www/html/magento2/pub cifs nofail,credentials=/etc/smbcredentials/staapp.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30\" \u003e\u003e /etc/fstab'\n  - sudo mount -t cifs //staapp.file.core.windows.net/magentoshare01 /var/www/html/magento2/pub -o credentials=/etc/smbcredentials/staapp.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30\n  - sudo cp -R /home/magento/pub/* /var/www/html/magento2/pub\n  - rm var/.maintenance.flag",
+            "id": "2ee6a2e17e55271977f9ab19ae2075a676893949c4ac40aa1ec4d5d3940ce65b",
+            "rendered": "#cloud-config\npackage_update: true\npackages:\n  - nginx\n  - composer\n  - mariadb-client\n  - mariadb-client-10.1\n  - nfs-common\n\nusers:\n  - default\n  - name: quentin\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blablabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAXuIAe8DVtQ+qHpbTnCMn5iP1u7WQEOLDE76PTRZ0lYc0TrWJvH+zWzpEbTK/fwzx5sw7yAlBnuR83cAOtm6y8Gk5yktOogsk71VnJ9cXKV7QWtX5o/nysqhliBWAW2jQmEMLHBf4DOFXcKpCdl0OBOtrPct976tnFXhM5n5WF0wrQ4dVikfWe57yg0BX+G+ZbNl7iDCHS8cAGEI2S0ziGOLjl0qJq+9jjCaj2bdVb5vtbz/ghplWtNKQvirxvfOC5H3XbX7aeH2sAlogeYbPs8DmFuz5Smq/+FLBZzqV7JhPMxBCpVFm6r+EzZDgiS2WB96Q3Jh0ItPz7wwJtgpLmSWeaBmWyPGAOh9MBal2RXgDIZ26EPOQTc9WX1377SaEMFSXgwq3e0mtFl5TYG+hzjujY9ik6nfjyLy1yNaPB7hq0z0cCijeJf0Nlm092Ukb1IJOndiS9LSZXjFJT+LRNz7hqyK/oj8nH4K2nx4DMH+Fj4JypSdsqmIk7aXLdYE= nomad@device\n  - name: steph\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blablabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCnBYZRoOJm/hLnbGmUBNhBEsdvUAqVb48EQql7OeYgB4pO/FFu8OIhKofBCByf1l9owEWnbWFZJhfgwQ+iNZjd+1iZtmc6cidjqQypgEc+U43avchEVdZdjK1LidIIJt0O7o8L0gARNn1PjDFLP3eUI2XN3ALUzB3sRzXKTJ1QHz8S1ByhfWXw2vhsPa9I3Jv9aE8zZuCBx/gfVQQy/FyskgK8VWRHhUl3XCgNDxUYBppnBgCCDWHpYOdzH/5XuRORdgMccDgJ/NhcCgY+erva7DlkIlzRiVxm5uMK8kvEiDn+AWI3aGsgxt3LaS+xaiw4hLLoev4V4cWTjWhZPeJSITDeWk3HAsBxDBWGvx3716ywsh7mkDJpjyXow6RXpTBke2rTmr4X9+hVGop4ZjqyTTUuTkdbYllwiaTrsuKgOJ5ne2lWp1P1IT0cD0s9j0GNl/54KaN31HFiuHVYVVA8yGp532LfRjhthpMdHiuhJbswlKTrDJR3i1iccT0aiUk= utilisateur@UTILISA-2JUD7VR\n  - name: ryano\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blablabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCuQsDbdhzBOtJvetSRXRINBLZnKEzLctl+J3hFX22doPy1Btth8i7a4cigqyQ914MIgdYr/pPOFfH7YBLa5LhF2Racx3cRT1RPobmGn2DMEcNAcWjw1Qr9TRl3HcFK59ineQ4ukoDt4jZCUyRXliCFMhqBdQU0u182UvNFf0L5bLBVzlkWyNxPo79WDDGY97HCsQLYIQcqRfsYJ0YwJ5QyGUvtUWKmMO30bhlhyQJJmG/6QQlV/m6sMiHCiEt+7Qxv5n3+c9RH5hsRyaynzsLcNmzENDqsrDsngqwzK4oe8S71YKKVn395nvZ4MIr8PB6bE/ViWpvS0bhCzANDYAj8Exk2P5WR3aI06PobLOcUjxm3E1JOFa/YcXQ8GXzmUgjGpHMztB6qSH+NSHHTqBejmvsv2DQ9nYq/NL1s7k6e+FSwWQktZNXAlVIvUGMrX51MdUxtVXteNEFe/NCj4B66Y5i2MM8VJk1lsgm8PIUj0wDjlB0f8TlUFK+vqijLt80= utilisateur@UTILISA-ASVHC0M\n\nwrite_files:\n  - path: /home/magento/magento\n    content: \"upstream fastcgi_backend {\\n  server  unix:/run/php/php8.1-fpm.sock;\\n}\\n\\nserver {\\n  listen 10.2.0.19:80;\\n  server_name _;\\n  set $MAGE_ROOT /var/www/html/magento2;\\n  include /var/www/html/magento2/nginx.conf.sample;\\n}\\n\"\n\nruncmd:\n  - sudo apt install software-properties-common \u0026\u0026 sudo add-apt-repository ppa:ondrej/php -y\n  - sudo apt update\n  - sudo export PATH=$PATH:/var/www/html/magento2/bin\n  - sudo apt upgrade -y\n  - sudo apt install -y libxml2 libxml2-dev libssl-dev libssl1.1\n  - sudo apt install -y php8.1 php8.1-common php8.1-xml php8.1-mbstring php8.1-curl php8.1-gd php8.1-intl php-json php8.1-mysql php8.1-soap php-sodium php-tokenizer php8.1-xsl php-zip php-bcmath php8.1-fpm\n  - sudo mkdir /var/www/html/magento2\n  - cd /home/magento \u0026\u0026 sudo curl -O https://MAG005875421:af7e13b80644f2a44187f446f55bb76d5c156b3b@www.magentocommerce.com/products/downloads/file/Magento-CE-2.4.4.tar.bz2\n  - sudo tar -C /var/www/html/magento2/ -xvf /home/magento/Magento-CE-2.4.4.tar.bz2\n  - cd /var/www/html/\n  - sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +\n  - sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} +\n  - sudo chown -R www-data:www-data /var/www/html\n  - sudo chmod u+x bin/magento\n  - cd /var/www/html/magento2 \u0026\u0026 sudo php bin/magento setup:install -vvv --base-url=https://magentobrief42.eastus2.cloudapp.azure.com --db-host=magento-mariadb-server.privatelink.mariadb.database.azure.com --db-name=mariadb_database --db-user=magento@magento-mariadb-server --db-password=blablabla123! --admin-firstname=admin --admin-lastname=admin --admin-email=ryanmagento@gmail.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1 --search-engine=elasticsearch7 --elasticsearch-host=10.4.0.4 --elasticsearch-port=9200 --elasticsearch-index-prefix=magento2 --elasticsearch-timeout=15 --elasticsearch-username=magento --elasticsearch-password=blablabla123! --elasticsearch-enable-auth=1\n  - sudo apt-get remove apache2 -y\n  - sudo apt-get autoremove apache2 -y\n  - sudo apt-get purge apache2 -y\n  - sudo apt-get autoremove --purge apache2 -y\n  - sudo cp /home/magento/magento /etc/nginx/conf.d/magento.conf\n  - sudo rm /etc/nginx/sites-enabled/default\n  - chown www-data:www-data -R /var/www/html/magento2/var/\n  - sudo echo \"memory_limit = 2G\" \u003e\u003e vim /etc/php/8.1/fpm/php.ini\n  - sudo echo \"max_execution_time = 1800\" \u003e\u003e vim /etc/php/8.1/fpm/php.ini\n  - sudo echo \"zlib.output_compression = On\" \u003e\u003e vim /etc/php/8.1/fpm/php.ini\n  - sudo echo \"memory_limit = 2G\" \u003e\u003e vim /etc/php/8.1/cli/php.ini\n  - sudo echo \"max_execution_time = 1800\" \u003e\u003e vim /etc/php/8.1/cli/php.ini\n  - sudo echo \"zlib.output_compression = On\" \u003e\u003e vim /etc/php/8.1/cli/php.ini\n  - sudo systemctl restart php8.1-fpm\n  - sudo chmod 775 ./generated/\n  - cd /var/www/html/magento2 \u0026\u0026 sudo bin/magento setup:di:compile\n  - sudo systemctl restart nginx\n  - sudo cp -R /var/www/html/magento2/pub /home/magento/pub\n  - sudo mkdir /etc/smbcredentials\n  - sudo bash -c 'echo \"username=staapp\" \u003e\u003e /etc/smbcredentials/staapp.cred'\n  - sudo bash -c 'echo \"password=xxQ0a67YFp5eQMnsMOFP54CxP2yADERWbtIKAxeOypM7pErqjwsNyU/3s2yjY1H4KBRA7XBI4QjV+AStCrXihA==\" \u003e\u003e /etc/smbcredentials/staapp.cred'\n  - sudo chmod 600 /etc/smbcredentials/staapp.cred\n  - sudo bash -c 'echo \"//staapp.file.core.windows.net/magentoshare01 /var/www/html/magento2/pub cifs nofail,credentials=/etc/smbcredentials/staapp.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30\" \u003e\u003e /etc/fstab'\n  - sudo mount -t cifs //staapp.file.core.windows.net/magentoshare01 /var/www/html/magento2/pub -o credentials=/etc/smbcredentials/staapp.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30\n  - sudo cp -R /home/magento/pub/* /var/www/html/magento2/pub\n  - rm var/.maintenance.flag",
             "template": "#cloud-config\npackage_update: true\npackages:\n  - nginx\n  - composer\n  - mariadb-client\n  - mariadb-client-10.1\n  - nfs-common\n\nusers:\n  - default\n  - name: quentin\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blablabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAXuIAe8DVtQ+qHpbTnCMn5iP1u7WQEOLDE76PTRZ0lYc0TrWJvH+zWzpEbTK/fwzx5sw7yAlBnuR83cAOtm6y8Gk5yktOogsk71VnJ9cXKV7QWtX5o/nysqhliBWAW2jQmEMLHBf4DOFXcKpCdl0OBOtrPct976tnFXhM5n5WF0wrQ4dVikfWe57yg0BX+G+ZbNl7iDCHS8cAGEI2S0ziGOLjl0qJq+9jjCaj2bdVb5vtbz/ghplWtNKQvirxvfOC5H3XbX7aeH2sAlogeYbPs8DmFuz5Smq/+FLBZzqV7JhPMxBCpVFm6r+EzZDgiS2WB96Q3Jh0ItPz7wwJtgpLmSWeaBmWyPGAOh9MBal2RXgDIZ26EPOQTc9WX1377SaEMFSXgwq3e0mtFl5TYG+hzjujY9ik6nfjyLy1yNaPB7hq0z0cCijeJf0Nlm092Ukb1IJOndiS9LSZXjFJT+LRNz7hqyK/oj8nH4K2nx4DMH+Fj4JypSdsqmIk7aXLdYE= nomad@device\n  - name: steph\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blablabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCnBYZRoOJm/hLnbGmUBNhBEsdvUAqVb48EQql7OeYgB4pO/FFu8OIhKofBCByf1l9owEWnbWFZJhfgwQ+iNZjd+1iZtmc6cidjqQypgEc+U43avchEVdZdjK1LidIIJt0O7o8L0gARNn1PjDFLP3eUI2XN3ALUzB3sRzXKTJ1QHz8S1ByhfWXw2vhsPa9I3Jv9aE8zZuCBx/gfVQQy/FyskgK8VWRHhUl3XCgNDxUYBppnBgCCDWHpYOdzH/5XuRORdgMccDgJ/NhcCgY+erva7DlkIlzRiVxm5uMK8kvEiDn+AWI3aGsgxt3LaS+xaiw4hLLoev4V4cWTjWhZPeJSITDeWk3HAsBxDBWGvx3716ywsh7mkDJpjyXow6RXpTBke2rTmr4X9+hVGop4ZjqyTTUuTkdbYllwiaTrsuKgOJ5ne2lWp1P1IT0cD0s9j0GNl/54KaN31HFiuHVYVVA8yGp532LfRjhthpMdHiuhJbswlKTrDJR3i1iccT0aiUk= utilisateur@UTILISA-2JUD7VR\n  - name: ryano\n    groups: sudo, root\n    shell: /bin/bash\n    plain_text_passwd: blablabla123!\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n        - \u003e-\n          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCuQsDbdhzBOtJvetSRXRINBLZnKEzLctl+J3hFX22doPy1Btth8i7a4cigqyQ914MIgdYr/pPOFfH7YBLa5LhF2Racx3cRT1RPobmGn2DMEcNAcWjw1Qr9TRl3HcFK59ineQ4ukoDt4jZCUyRXliCFMhqBdQU0u182UvNFf0L5bLBVzlkWyNxPo79WDDGY97HCsQLYIQcqRfsYJ0YwJ5QyGUvtUWKmMO30bhlhyQJJmG/6QQlV/m6sMiHCiEt+7Qxv5n3+c9RH5hsRyaynzsLcNmzENDqsrDsngqwzK4oe8S71YKKVn395nvZ4MIr8PB6bE/ViWpvS0bhCzANDYAj8Exk2P5WR3aI06PobLOcUjxm3E1JOFa/YcXQ8GXzmUgjGpHMztB6qSH+NSHHTqBejmvsv2DQ9nYq/NL1s7k6e+FSwWQktZNXAlVIvUGMrX51MdUxtVXteNEFe/NCj4B66Y5i2MM8VJk1lsgm8PIUj0wDjlB0f8TlUFK+vqijLt80= utilisateur@UTILISA-ASVHC0M\n\nwrite_files:\n  - path: /home/magento/magento\n    content: \"upstream fastcgi_backend {\\n  server  unix:/run/php/php8.1-fpm.sock;\\n}\\n\\nserver {\\n  listen 10.2.0.19:80;\\n  server_name _;\\n  set $MAGE_ROOT /var/www/html/magento2;\\n  include /var/www/html/magento2/nginx.conf.sample;\\n}\\n\"\n\nruncmd:\n  - sudo apt install software-properties-common \u0026\u0026 sudo add-apt-repository ppa:ondrej/php -y\n  - sudo apt update\n  - sudo export PATH=$PATH:/var/www/html/magento2/bin\n  - sudo apt upgrade -y\n  - sudo apt install -y libxml2 libxml2-dev libssl-dev libssl1.1\n  - sudo apt install -y php8.1 php8.1-common php8.1-xml php8.1-mbstring php8.1-curl php8.1-gd php8.1-intl php-json php8.1-mysql php8.1-soap php-sodium php-tokenizer php8.1-xsl php-zip php-bcmath php8.1-fpm\n  - sudo mkdir /var/www/html/magento2\n  - cd /home/magento \u0026\u0026 sudo curl -O https://MAG005875421:af7e13b80644f2a44187f446f55bb76d5c156b3b@www.magentocommerce.com/products/downloads/file/Magento-CE-2.4.4.tar.bz2\n  - sudo tar -C /var/www/html/magento2/ -xvf /home/magento/Magento-CE-2.4.4.tar.bz2\n  - cd /var/www/html/\n  - sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +\n  - sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} +\n  - sudo chown -R www-data:www-data /var/www/html\n  - sudo chmod u+x bin/magento\n  - cd /var/www/html/magento2 \u0026\u0026 sudo php bin/magento setup:install -vvv --base-url=https://${fqdn_app} --db-host=magento-mariadb-server.privatelink.mariadb.database.azure.com --db-name=mariadb_database --db-user=magento@magento-mariadb-server --db-password=blablabla123! --admin-firstname=admin --admin-lastname=admin --admin-email=ryanmagento@gmail.com --admin-user=admin --admin-password=admin123 --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1 --search-engine=elasticsearch7 --elasticsearch-host=10.4.0.4 --elasticsearch-port=9200 --elasticsearch-index-prefix=magento2 --elasticsearch-timeout=15 --elasticsearch-username=magento --elasticsearch-password=blablabla123! --elasticsearch-enable-auth=1\n  - sudo apt-get remove apache2 -y\n  - sudo apt-get autoremove apache2 -y\n  - sudo apt-get purge apache2 -y\n  - sudo apt-get autoremove --purge apache2 -y\n  - sudo cp /home/magento/magento /etc/nginx/conf.d/magento.conf\n  - sudo rm /etc/nginx/sites-enabled/default\n  - chown www-data:www-data -R /var/www/html/magento2/var/\n  - sudo echo \"memory_limit = 2G\" \u003e\u003e vim /etc/php/8.1/fpm/php.ini\n  - sudo echo \"max_execution_time = 1800\" \u003e\u003e vim /etc/php/8.1/fpm/php.ini\n  - sudo echo \"zlib.output_compression = On\" \u003e\u003e vim /etc/php/8.1/fpm/php.ini\n  - sudo echo \"memory_limit = 2G\" \u003e\u003e vim /etc/php/8.1/cli/php.ini\n  - sudo echo \"max_execution_time = 1800\" \u003e\u003e vim /etc/php/8.1/cli/php.ini\n  - sudo echo \"zlib.output_compression = On\" \u003e\u003e vim /etc/php/8.1/cli/php.ini\n  - sudo systemctl restart php8.1-fpm\n  - sudo chmod 775 ./generated/\n  - cd /var/www/html/magento2 \u0026\u0026 sudo bin/magento setup:di:compile\n  - sudo systemctl restart nginx\n  - sudo cp -R /var/www/html/magento2/pub /home/magento/pub\n  - sudo mkdir /etc/smbcredentials\n  - sudo bash -c 'echo \"username=staapp\" \u003e\u003e /etc/smbcredentials/staapp.cred'\n  - sudo bash -c 'echo \"password=${password}\" \u003e\u003e /etc/smbcredentials/staapp.cred'\n  - sudo chmod 600 /etc/smbcredentials/staapp.cred\n  - sudo bash -c 'echo \"//staapp.file.core.windows.net/magentoshare01 /var/www/html/magento2/pub cifs nofail,credentials=/etc/smbcredentials/staapp.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30\" \u003e\u003e /etc/fstab'\n  - sudo mount -t cifs //staapp.file.core.windows.net/magentoshare01 /var/www/html/magento2/pub -o credentials=/etc/smbcredentials/staapp.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30\n  - sudo cp -R /home/magento/pub/* /var/www/html/magento2/pub\n  - rm var/.maintenance.flag",
             "vars": {
-              "fqdn_app": "magentobrief4.eastus2.cloudapp.azure.com",
+              "fqdn_app": "magentobrief42.eastus2.cloudapp.azure.com",
               "ip_bdd": "10.3.0.4",
-              "ip_public": "20.7.47.153",
-              "password": "IeZmYz2jWpQ2x9NO35MJPP6WktOhxpI7fmrNqHDQzQ2Vr3A7RUtFqpW6RSUWbaJ7pjXne5AFjl/m+AStcChztg=="
+              "ip_public": "20.14.128.183",
+              "password": "xxQ0a67YFp5eQMnsMOFP54CxP2yADERWbtIKAxeOypM7pErqjwsNyU/3s2yjY1H4KBRA7XBI4QjV+AStCrXihA=="
             }
           },
           "sensitive_attributes": [
@@ -283,260 +133,7 @@
       "type": "azurerm_application_gateway",
       "name": "network_gateway",
       "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "authentication_certificate": [],
-            "autoscale_configuration": [],
-            "backend_address_pool": [
-              {
-                "fqdns": [],
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/backendAddressPools/network-beap",
-                "ip_addresses": [],
-                "name": "network-beap"
-              }
-            ],
-            "backend_http_settings": [
-              {
-                "affinity_cookie_name": "",
-                "authentication_certificate": [],
-                "connection_draining": [],
-                "cookie_based_affinity": "Disabled",
-                "host_name": "",
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/backendHttpSettingsCollection/network-be-htst",
-                "name": "network-be-htst",
-                "path": "/",
-                "pick_host_name_from_backend_address": false,
-                "port": 80,
-                "probe_id": "",
-                "probe_name": "",
-                "protocol": "Http",
-                "request_timeout": 60,
-                "trusted_root_certificate_names": []
-              }
-            ],
-            "custom_error_configuration": [],
-            "enable_http2": false,
-            "fips_enabled": false,
-            "firewall_policy_id": null,
-            "force_firewall_policy_association": false,
-            "frontend_ip_configuration": [
-              {
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/frontendIPConfigurations/network-feip",
-                "name": "network-feip",
-                "private_ip_address": "",
-                "private_ip_address_allocation": "Dynamic",
-                "private_link_configuration_id": "",
-                "private_link_configuration_name": "",
-                "public_ip_address_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/publicIPAddresses/ip_gateway",
-                "subnet_id": ""
-              }
-            ],
-            "frontend_port": [
-              {
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/frontendPorts/network-feport",
-                "name": "network-feport",
-                "port": 80
-              },
-              {
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/frontendPorts/network-feport2",
-                "name": "network-feport2",
-                "port": 443
-              }
-            ],
-            "gateway_ip_configuration": [
-              {
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/gatewayIPConfigurations/my-gateway-ip-configuration",
-                "name": "my-gateway-ip-configuration",
-                "subnet_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_gateway"
-              }
-            ],
-            "global": [],
-            "http_listener": [
-              {
-                "custom_error_configuration": [],
-                "firewall_policy_id": "",
-                "frontend_ip_configuration_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/frontendIPConfigurations/network-feip",
-                "frontend_ip_configuration_name": "network-feip",
-                "frontend_port_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/frontendPorts/network-feport",
-                "frontend_port_name": "network-feport",
-                "host_name": "",
-                "host_names": [],
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/httpListeners/network-httplstn",
-                "name": "network-httplstn",
-                "protocol": "Http",
-                "require_sni": false,
-                "ssl_certificate_id": "",
-                "ssl_certificate_name": "",
-                "ssl_profile_id": "",
-                "ssl_profile_name": ""
-              },
-              {
-                "custom_error_configuration": [],
-                "firewall_policy_id": "",
-                "frontend_ip_configuration_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/frontendIPConfigurations/network-feip",
-                "frontend_ip_configuration_name": "network-feip",
-                "frontend_port_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/frontendPorts/network-feport2",
-                "frontend_port_name": "network-feport2",
-                "host_name": "",
-                "host_names": [],
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/httpListeners/network-httplstn2",
-                "name": "network-httplstn2",
-                "protocol": "Https",
-                "require_sni": false,
-                "ssl_certificate_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/sslCertificates/tls_cert",
-                "ssl_certificate_name": "tls_cert",
-                "ssl_profile_id": "",
-                "ssl_profile_name": ""
-              }
-            ],
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4",
-            "identity": [
-              {
-                "identity_ids": [
-                  "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-magento"
-                ],
-                "type": "UserAssigned"
-              }
-            ],
-            "location": "eastus2",
-            "name": "gateway-brief4",
-            "private_endpoint_connection": [],
-            "private_link_configuration": [],
-            "probe": [],
-            "redirect_configuration": [
-              {
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/redirectConfigurations/LetsEncryptChallenge",
-                "include_path": false,
-                "include_query_string": false,
-                "name": "LetsEncryptChallenge",
-                "redirect_type": "Permanent",
-                "target_listener_id": "",
-                "target_listener_name": "",
-                "target_url": "https://statls.blob.core.windows.net/stacontainer/.well-known/acme-challenge/"
-              }
-            ],
-            "request_routing_rule": [
-              {
-                "backend_address_pool_id": "",
-                "backend_address_pool_name": "",
-                "backend_http_settings_id": "",
-                "backend_http_settings_name": "",
-                "http_listener_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/httpListeners/network-httplstn2",
-                "http_listener_name": "network-httplstn2",
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/requestRoutingRules/tls-rule",
-                "name": "tls-rule",
-                "priority": 100,
-                "redirect_configuration_id": "",
-                "redirect_configuration_name": "",
-                "rewrite_rule_set_id": "",
-                "rewrite_rule_set_name": "",
-                "rule_type": "PathBasedRouting",
-                "url_path_map_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/urlPathMaps/test",
-                "url_path_map_name": "test"
-              },
-              {
-                "backend_address_pool_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/backendAddressPools/network-beap",
-                "backend_address_pool_name": "network-beap",
-                "backend_http_settings_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/backendHttpSettingsCollection/network-be-htst",
-                "backend_http_settings_name": "network-be-htst",
-                "http_listener_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/httpListeners/network-httplstn",
-                "http_listener_name": "network-httplstn",
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/requestRoutingRules/rule_magento",
-                "name": "rule_magento",
-                "priority": 200,
-                "redirect_configuration_id": "",
-                "redirect_configuration_name": "",
-                "rewrite_rule_set_id": "",
-                "rewrite_rule_set_name": "",
-                "rule_type": "Basic",
-                "url_path_map_id": "",
-                "url_path_map_name": ""
-              }
-            ],
-            "resource_group_name": "brief4_QB",
-            "rewrite_rule_set": [],
-            "sku": [
-              {
-                "capacity": 2,
-                "name": "Standard_v2",
-                "tier": "Standard_v2"
-              }
-            ],
-            "ssl_certificate": [
-              {
-                "data": "",
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/sslCertificates/tls_cert",
-                "key_vault_secret_id": "https://keyvaultmagento.vault.azure.net/secrets/key-magento-app/ccde2bf983aa442c93fc3fb9ff248120",
-                "name": "tls_cert",
-                "password": "",
-                "public_cert_data": ""
-              }
-            ],
-            "ssl_policy": [
-              {
-                "cipher_suites": [],
-                "disabled_protocols": [],
-                "min_protocol_version": "",
-                "policy_name": "AppGwSslPolicy20150501",
-                "policy_type": "Predefined"
-              }
-            ],
-            "ssl_profile": [],
-            "tags": {},
-            "timeouts": null,
-            "trusted_client_certificate": [],
-            "trusted_root_certificate": [],
-            "url_path_map": [
-              {
-                "default_backend_address_pool_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/backendAddressPools/network-beap",
-                "default_backend_address_pool_name": "network-beap",
-                "default_backend_http_settings_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/backendHttpSettingsCollection/network-be-htst",
-                "default_backend_http_settings_name": "network-be-htst",
-                "default_redirect_configuration_id": "",
-                "default_redirect_configuration_name": "",
-                "default_rewrite_rule_set_id": "",
-                "default_rewrite_rule_set_name": "",
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/urlPathMaps/test",
-                "name": "test",
-                "path_rule": [
-                  {
-                    "backend_address_pool_id": "",
-                    "backend_address_pool_name": "",
-                    "backend_http_settings_id": "",
-                    "backend_http_settings_name": "",
-                    "firewall_policy_id": "",
-                    "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/urlPathMaps/test/pathRules/letsencrypt",
-                    "name": "letsencrypt",
-                    "paths": [
-                      "/.well-known/acme-challenge/*"
-                    ],
-                    "redirect_configuration_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/redirectConfigurations/LetsEncryptChallenge",
-                    "redirect_configuration_name": "LetsEncryptChallenge",
-                    "rewrite_rule_set_id": "",
-                    "rewrite_rule_set_name": ""
-                  }
-                ]
-              }
-            ],
-            "waf_configuration": [],
-            "zones": []
-          },
-          "sensitive_attributes": [],
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo1NDAwMDAwMDAwMDAwLCJkZWxldGUiOjU0MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjo1NDAwMDAwMDAwMDAwfX0=",
-          "dependencies": [
-            "azurerm_key_vault.keyvault",
-            "azurerm_key_vault_certificate.example",
-            "azurerm_public_ip.public_ip_gateway",
-            "azurerm_resource_group.rg",
-            "azurerm_subnet.subnet_gateway",
-            "azurerm_user_assigned_identity.id-magento",
-            "azurerm_virtual_network.network",
-            "data.azurerm_client_config.current"
-          ]
-        }
-      ]
+      "instances": []
     },
     {
       "mode": "managed",
@@ -547,24 +144,24 @@
         {
           "schema_version": 1,
           "attributes": {
-            "app_id": "9d2c8cff-b11d-4144-b407-d07e6cf16bfc",
+            "app_id": "e7dd3ce1-33ef-4a5f-bf7c-d900fc3884fc",
             "application_type": "web",
-            "connection_string": "InstrumentationKey=57924847-cdea-45c0-8c06-f8e412a7fcd0;IngestionEndpoint=https://eastus2-0.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus2.livediagnostics.monitor.azure.com/",
+            "connection_string": "InstrumentationKey=3d1690a1-ae51-486f-b092-dcf2b1b1a1ca;IngestionEndpoint=https://eastus2-0.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus2.livediagnostics.monitor.azure.com/",
             "daily_data_cap_in_gb": 100,
             "daily_data_cap_notifications_disabled": false,
             "disable_ip_masking": false,
             "force_customer_storage_for_profiler": false,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Insights/components/insights-magento",
-            "instrumentation_key": "57924847-cdea-45c0-8c06-f8e412a7fcd0",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Insights/components/insights-magento",
+            "instrumentation_key": "3d1690a1-ae51-486f-b092-dcf2b1b1a1ca",
             "internet_ingestion_enabled": true,
             "internet_query_enabled": true,
             "local_authentication_disabled": false,
             "location": "eastus2",
             "name": "insights-magento",
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "retention_in_days": 90,
             "sampling_percentage": 100,
-            "tags": {},
+            "tags": null,
             "timeouts": null,
             "workspace_id": null
           },
@@ -578,397 +175,24 @@
     },
     {
       "mode": "managed",
-      "type": "azurerm_key_vault",
-      "name": "keyvault",
-      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
-      "instances": [
-        {
-          "schema_version": 2,
-          "attributes": {
-            "access_policy": [
-              {
-                "application_id": "",
-                "certificate_permissions": [
-                  "Create",
-                  "Delete",
-                  "DeleteIssuers",
-                  "Get",
-                  "GetIssuers",
-                  "Import",
-                  "List",
-                  "ListIssuers",
-                  "ManageContacts",
-                  "ManageIssuers",
-                  "SetIssuers",
-                  "Update",
-                  "Purge"
-                ],
-                "key_permissions": [
-                  "Backup",
-                  "Create",
-                  "Decrypt",
-                  "Delete",
-                  "Encrypt",
-                  "Get",
-                  "Import",
-                  "List",
-                  "Purge",
-                  "Recover",
-                  "Restore",
-                  "Sign",
-                  "UnwrapKey",
-                  "Update",
-                  "Verify",
-                  "WrapKey"
-                ],
-                "object_id": "d91c4c59-4443-4767-ae8f-2e2c81dd76d6",
-                "secret_permissions": [
-                  "Backup",
-                  "Delete",
-                  "Get",
-                  "List",
-                  "Purge",
-                  "Recover",
-                  "Restore",
-                  "Set"
-                ],
-                "storage_permissions": [],
-                "tenant_id": "a2e466aa-4f86-4545-b5b8-97da7c8febf3"
-              },
-              {
-                "application_id": "",
-                "certificate_permissions": [
-                  "Create",
-                  "Delete",
-                  "DeleteIssuers",
-                  "Get",
-                  "GetIssuers",
-                  "Import",
-                  "List",
-                  "ListIssuers",
-                  "ManageContacts",
-                  "ManageIssuers",
-                  "SetIssuers",
-                  "Update",
-                  "Purge"
-                ],
-                "key_permissions": [
-                  "Backup",
-                  "Create",
-                  "Decrypt",
-                  "Delete",
-                  "Encrypt",
-                  "Get",
-                  "Import",
-                  "List",
-                  "Purge",
-                  "Recover",
-                  "Restore",
-                  "Sign",
-                  "UnwrapKey",
-                  "Update",
-                  "Verify",
-                  "WrapKey"
-                ],
-                "object_id": "097011b1-744f-4707-9581-ad0aac54fd81",
-                "secret_permissions": [
-                  "Backup",
-                  "Delete",
-                  "Get",
-                  "List",
-                  "Purge",
-                  "Recover",
-                  "Restore",
-                  "Set"
-                ],
-                "storage_permissions": [],
-                "tenant_id": "a2e466aa-4f86-4545-b5b8-97da7c8febf3"
-              }
-            ],
-            "contact": [],
-            "enable_rbac_authorization": false,
-            "enabled_for_deployment": false,
-            "enabled_for_disk_encryption": true,
-            "enabled_for_template_deployment": false,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.KeyVault/vaults/keyvaultmagento",
-            "location": "eastus2",
-            "name": "keyvaultmagento",
-            "network_acls": [
-              {
-                "bypass": "AzureServices",
-                "default_action": "Allow",
-                "ip_rules": [],
-                "virtual_network_subnet_ids": []
-              }
-            ],
-            "public_network_access_enabled": true,
-            "purge_protection_enabled": false,
-            "resource_group_name": "brief4_QB",
-            "sku_name": "premium",
-            "soft_delete_retention_days": 7,
-            "tags": {},
-            "tenant_id": "a2e466aa-4f86-4545-b5b8-97da7c8febf3",
-            "timeouts": null,
-            "vault_uri": "https://keyvaultmagento.vault.azure.net/"
-          },
-          "sensitive_attributes": [],
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIyIn0=",
-          "dependencies": [
-            "azurerm_resource_group.rg",
-            "data.azurerm_client_config.current"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
       "type": "azurerm_key_vault_access_policy",
       "name": "admin",
       "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "application_id": "",
-            "certificate_permissions": [
-              "Create",
-              "Delete",
-              "DeleteIssuers",
-              "Get",
-              "GetIssuers",
-              "Import",
-              "List",
-              "ListIssuers",
-              "ManageContacts",
-              "ManageIssuers",
-              "SetIssuers",
-              "Update",
-              "Purge"
-            ],
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.KeyVault/vaults/keyvaultmagento/objectId/d91c4c59-4443-4767-ae8f-2e2c81dd76d6",
-            "key_permissions": [
-              "Backup",
-              "Create",
-              "Decrypt",
-              "Delete",
-              "Encrypt",
-              "Get",
-              "Import",
-              "List",
-              "Purge",
-              "Recover",
-              "Restore",
-              "Sign",
-              "UnwrapKey",
-              "Update",
-              "Verify",
-              "WrapKey"
-            ],
-            "key_vault_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.KeyVault/vaults/keyvaultmagento",
-            "object_id": "d91c4c59-4443-4767-ae8f-2e2c81dd76d6",
-            "secret_permissions": [
-              "Backup",
-              "Delete",
-              "Get",
-              "List",
-              "Purge",
-              "Recover",
-              "Restore",
-              "Set"
-            ],
-            "storage_permissions": [],
-            "tenant_id": "a2e466aa-4f86-4545-b5b8-97da7c8febf3",
-            "timeouts": null
-          },
-          "sensitive_attributes": [],
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfX0=",
-          "dependencies": [
-            "azurerm_key_vault.keyvault",
-            "azurerm_resource_group.rg",
-            "data.azurerm_client_config.current"
-          ]
-        }
-      ]
+      "instances": []
     },
     {
       "mode": "managed",
       "type": "azurerm_key_vault_access_policy",
       "name": "app",
       "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "application_id": "",
-            "certificate_permissions": [
-              "Create",
-              "Delete",
-              "DeleteIssuers",
-              "Get",
-              "GetIssuers",
-              "Import",
-              "List",
-              "ListIssuers",
-              "ManageContacts",
-              "ManageIssuers",
-              "SetIssuers",
-              "Update",
-              "Purge"
-            ],
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.KeyVault/vaults/keyvaultmagento/objectId/097011b1-744f-4707-9581-ad0aac54fd81",
-            "key_permissions": [
-              "Backup",
-              "Create",
-              "Decrypt",
-              "Delete",
-              "Encrypt",
-              "Get",
-              "Import",
-              "List",
-              "Purge",
-              "Recover",
-              "Restore",
-              "Sign",
-              "UnwrapKey",
-              "Update",
-              "Verify",
-              "WrapKey"
-            ],
-            "key_vault_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.KeyVault/vaults/keyvaultmagento",
-            "object_id": "097011b1-744f-4707-9581-ad0aac54fd81",
-            "secret_permissions": [
-              "Backup",
-              "Delete",
-              "Get",
-              "List",
-              "Purge",
-              "Recover",
-              "Restore",
-              "Set"
-            ],
-            "storage_permissions": [],
-            "tenant_id": "a2e466aa-4f86-4545-b5b8-97da7c8febf3",
-            "timeouts": null
-          },
-          "sensitive_attributes": [],
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfX0=",
-          "dependencies": [
-            "azurerm_key_vault.keyvault",
-            "azurerm_resource_group.rg",
-            "azurerm_user_assigned_identity.id-magento",
-            "data.azurerm_client_config.current"
-          ]
-        }
-      ]
+      "instances": []
     },
     {
       "mode": "managed",
       "type": "azurerm_key_vault_certificate",
       "name": "example",
       "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "certificate": [
-              {
-                "contents": "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",
-                "password": ""
-              }
-            ],
-            "certificate_attribute": [
-              {
-                "created": "2022-09-13T10:10:45Z",
-                "enabled": true,
-                "expires": "2022-12-07T11:18:10Z",
-                "not_before": "2022-09-08T11:18:11Z",
-                "recovery_level": "CustomizedRecoverable+Purgeable",
-                "updated": "2022-09-13T10:10:45Z"
-              }
-            ],
-            "certificate_data": "308205553082043DA0030201020212048104333256EDE1AF30A471E04197545348300D06092A864886F70D01010B05003032310B300906035504061302555331163014060355040A130D4C6574277320456E6372797074310B3009060355040313025233301E170D3232303930383131313831315A170D3232313230373131313831305A30333131302F060355040313286D6167656E746F6272696566342E656173747573322E636C6F75646170702E617A7572652E636F6D30820122300D06092A864886F70D01010105000382010F003082010A0282010100DE5B399A11ED47F333EB9DE38F7A9992599BE7D86BDF74C224C1DE35D7F0F0D25B043D9070B5CC83F51795EEDCFBCB5ED241E33D04BC4805DCA570CA9DC47E49B08D7BD27F89C3604CDF501C210ED7DB502169F40443E30E37070EABE2C7015EC5E0250BC78DE6DB7625D9C5FA57CC236C5411CAE827C03A53708248A58E944900DCE01F5306B2AA49CAA0C9E39264E518E57896CFCDC998695C985EB2436CFFE31109B9E634152B24D20244F80C6252AA07D792AF072A6FB101A955B585F51972CA95DD8A1068A583417F5BDD4E6759DCEAF7FA3F01EFEB00038E819D1496924E3CD48870350CBC39710A33D65FBE03CC29293037D477DD5839E3EFB378B2DD0203010001A38202623082025E300E0603551D0F0101FF0404030205A0301D0603551D250416301406082B0601050507030106082B06010505070302300C0603551D130101FF04023000301D0603551D0E04160414D370EB435C8E6EFE4CE3CD2424CB7B1CEC46F257301F0603551D23041830168014142EB317B75856CBAE500940E61FAF9D8B14C2C6305506082B0601050507010104493047302106082B060105050730018615687474703A2F2F72332E6F2E6C656E63722E6F7267302206082B060105050730028616687474703A2F2F72332E692E6C656E63722E6F72672F30330603551D11042C302A82286D6167656E746F6272696566342E656173747573322E636C6F75646170702E617A7572652E636F6D304C0603551D20044530433008060667810C0102013037060B2B0601040182DF130101013028302606082B06010505070201161A687474703A2F2F6370732E6C657473656E63727970742E6F726730820103060A2B06010401D6790204020481F40481F100EF00760041C8CAB1DF22464A10C6A13A0942875E4E318B1B03EBEB4BC768F090629606F6000001831D094C080000040300473045022100B900E5D34ED4975A06E1BE11D0B9A3825C63BD0A19E7DE5C6530C12472C07E690220796389DD4F3AE015BB66B26CD1B2F66A811B1ABCB75200BA630ED20A04F9C38D0075002979BEF09E393921F056739F63A577E5BE577D9C600AF8F94D5D265C255DC784000001831D094BEC0000040300463044022022A3E56506539C3C5DC984DF0169BE81328B1AE60DA026C7FD9D2B39F8E98FBD0220441CB56E850C910A73CB1FEF6709EFA56944748D64D72061F5AD8F89EC536FD8300D06092A864886F70D01010B0500038201010063A09E6219D7086686F243D8AC798C06B9A8D09B8FCF7CA3802F0F1FD57F7A28518C602E136B0AAAF8103C1245FAE4DBD86159BC3A95E0AC4449BA6CEF5F3C18FC62BF327A7C74D5B893B0C8A94F24A7998141DE809552EF84BD7F992C176B4ECC5C5547ADCB4BB91640491EAF6E907211182B65830453DB906861AB17824BBAD0A0D629EE0235C20D08F5A4CE7C7117F3EADEB5CD80A4645B7071E01215D6ECF1F86AE0876ABF48495B6337B81CA772DD6AE2E136CF072D0E60C8C23D1C815BBF7207BB1CC0561288B456607F7BECC127385686C8B1FC7B441F4EFB8CAFCCA3A2548EA2611918388890CFF77265E0EEBB16E9AE414F9CFF28DCFC0AE2088BBE",
-            "certificate_data_base64": "MIIFVTCCBD2gAwIBAgISBIEEMzJW7eGvMKRx4EGXVFNIMA0GCSqGSIb3DQEBCwUAMDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQDEwJSMzAeFw0yMjA5MDgxMTE4MTFaFw0yMjEyMDcxMTE4MTBaMDMxMTAvBgNVBAMTKG1hZ2VudG9icmllZjQuZWFzdHVzMi5jbG91ZGFwcC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDeWzmaEe1H8zPrneOPepmSWZvn2GvfdMIkwd411/Dw0lsEPZBwtcyD9ReV7tz7y17SQeM9BLxIBdylcMqdxH5JsI170n+Jw2BM31AcIQ7X21AhafQEQ+MONwcOq+LHAV7F4CULx43m23Yl2cX6V8wjbFQRyugnwDpTcIJIpY6USQDc4B9TBrKqScqgyeOSZOUY5XiWz83JmGlcmF6yQ2z/4xEJueY0FSsk0gJE+AxiUqoH15KvBypvsQGpVbWF9RlyypXdihBopYNBf1vdTmdZ3Or3+j8B7+sAA46BnRSWkk481IhwNQy8OXEKM9ZfvgPMKSkwN9R33Vg54++zeLLdAgMBAAGjggJiMIICXjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYEFNNw60Ncjm7+TOPNJCTLexzsRvJXMB8GA1UdIwQYMBaAFBQusxe3WFbLrlAJQOYfr52LFMLGMFUGCCsGAQUFBwEBBEkwRzAhBggrBgEFBQcwAYYVaHR0cDovL3IzLm8ubGVuY3Iub3JnMCIGCCsGAQUFBzAChhZodHRwOi8vcjMuaS5sZW5jci5vcmcvMDMGA1UdEQQsMCqCKG1hZ2VudG9icmllZjQuZWFzdHVzMi5jbG91ZGFwcC5henVyZS5jb20wTAYDVR0gBEUwQzAIBgZngQwBAgEwNwYLKwYBBAGC3xMBAQEwKDAmBggrBgEFBQcCARYaaHR0cDovL2Nwcy5sZXRzZW5jcnlwdC5vcmcwggEDBgorBgEEAdZ5AgQCBIH0BIHxAO8AdgBByMqx3yJGShDGoToJQodeTjGLGwPr60vHaPCQYpYG9gAAAYMdCUwIAAAEAwBHMEUCIQC5AOXTTtSXWgbhvhHQuaOCXGO9Chnn3lxlMMEkcsB+aQIgeWOJ3U864BW7ZrJs0bL2aoEbGry3UgC6Yw7SCgT5w40AdQApeb7wnjk5IfBWc59jpXflvld9nGAK+PlNXSZcJV3HhAAAAYMdCUvsAAAEAwBGMEQCICKj5WUGU5w8XcmE3wFpvoEyixrmDaAmx/2dKzn46Y+9AiBEHLVuhQyRCnPLH+9nCe+laUR0jWTXIGH1rY+J7FNv2DANBgkqhkiG9w0BAQsFAAOCAQEAY6CeYhnXCGaG8kPYrHmMBrmo0JuPz3yjgC8PH9V/eihRjGAuE2sKqvgQPBJF+uTb2GFZvDqV4KxESbps7188GPxivzJ6fHTVuJOwyKlPJKeZgUHegJVS74S9f5ksF2tOzFxVR63LS7kWQEker26QchEYK2WDBFPbkGhhqxeCS7rQoNYp7gI1wg0I9aTOfHEX8+retc2ApGRbcHHgEhXW7PH4auCHar9ISVtjN7gcp3LdauLhNs8HLQ5gyMI9HIFbv3IHuxzAVhKItFZgf3vswSc4VobIsfx7RB9O+4yvzKOiVI6iYRkYOIiQz/dyZeDuuxbprkFPnP8o3PwK4giLvg==",
-            "certificate_policy": [
-              {
-                "issuer_parameters": [
-                  {
-                    "name": "Unknown"
-                  }
-                ],
-                "key_properties": [
-                  {
-                    "curve": "",
-                    "exportable": true,
-                    "key_size": 2048,
-                    "key_type": "RSA",
-                    "reuse_key": false
-                  }
-                ],
-                "lifetime_action": [
-                  {
-                    "action": [
-                      {
-                        "action_type": "EmailContacts"
-                      }
-                    ],
-                    "trigger": [
-                      {
-                        "days_before_expiry": 0,
-                        "lifetime_percentage": 80
-                      }
-                    ]
-                  }
-                ],
-                "secret_properties": [
-                  {
-                    "content_type": "application/x-pkcs12"
-                  }
-                ],
-                "x509_certificate_properties": [
-                  {
-                    "extended_key_usage": [
-                      "1.3.6.1.5.5.7.3.1",
-                      "1.3.6.1.5.5.7.3.2"
-                    ],
-                    "key_usage": [
-                      "digitalSignature",
-                      "keyEncipherment"
-                    ],
-                    "subject": "CN=magentobrief4.eastus2.cloudapp.azure.com",
-                    "subject_alternative_names": [
-                      {
-                        "dns_names": [
-                          "magentobrief4.eastus2.cloudapp.azure.com"
-                        ],
-                        "emails": [],
-                        "upns": []
-                      }
-                    ],
-                    "validity_in_months": 3
-                  }
-                ]
-              }
-            ],
-            "id": "https://keyvaultmagento.vault.azure.net/certificates/key-magento-app/ccde2bf983aa442c93fc3fb9ff248120",
-            "key_vault_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.KeyVault/vaults/keyvaultmagento",
-            "name": "key-magento-app",
-            "secret_id": "https://keyvaultmagento.vault.azure.net/secrets/key-magento-app/ccde2bf983aa442c93fc3fb9ff248120",
-            "tags": {},
-            "thumbprint": "4B8BC7BE99C7FAA45923A73B84EB95ECFA6AB019",
-            "timeouts": null,
-            "version": "ccde2bf983aa442c93fc3fb9ff248120",
-            "versionless_id": "https://keyvaultmagento.vault.azure.net/certificates/key-magento-app",
-            "versionless_secret_id": "https://keyvaultmagento.vault.azure.net/secrets/key-magento-app"
-          },
-          "sensitive_attributes": [],
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozNjAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjE4MDAwMDAwMDAwMDAsInVwZGF0ZSI6MTgwMDAwMDAwMDAwMH19",
-          "dependencies": [
-            "azurerm_key_vault.keyvault",
-            "azurerm_resource_group.rg",
-            "data.azurerm_client_config.current"
-          ]
-        }
-      ]
+      "instances": []
     },
     {
       "mode": "managed",
@@ -997,7 +221,7 @@
             ],
             "capacity_reservation_group_id": "",
             "computer_name": "magento",
-            "custom_data": "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",
+            "custom_data": "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",
             "dedicated_host_group_id": "",
             "dedicated_host_id": "",
             "disable_password_authentication": true,
@@ -1005,14 +229,14 @@
             "encryption_at_host_enabled": false,
             "eviction_policy": "",
             "extensions_time_budget": "PT1H30M",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Compute/virtualMachines/vm_app",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Compute/virtualMachines/vm_app",
             "identity": [],
             "license_type": "",
             "location": "eastus2",
             "max_bid_price": -1,
             "name": "vm_app",
             "network_interface_ids": [
-              "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkInterfaces/nic_app"
+              "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkInterfaces/nic_app"
             ],
             "os_disk": [
               {
@@ -1039,7 +263,7 @@
             "proximity_placement_group_id": "",
             "public_ip_address": "",
             "public_ip_addresses": [],
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "secret": [],
             "secure_boot_enabled": false,
             "size": "Standard_DS1_v2",
@@ -1052,11 +276,11 @@
                 "version": "latest"
               }
             ],
-            "tags": {},
-            "termination_notification": [],
+            "tags": null,
+            "termination_notification": null,
             "timeouts": null,
             "user_data": "",
-            "virtual_machine_id": "623bf5f3-eba2-4d1e-85ed-a48b8b191804",
+            "virtual_machine_id": "114e047e-3736-44b1-9dd5-1d767c898473",
             "virtual_machine_scale_set_id": "",
             "vtpm_enabled": false,
             "zone": ""
@@ -1113,14 +337,14 @@
             "encryption_at_host_enabled": false,
             "eviction_policy": "",
             "extensions_time_budget": "PT1H30M",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Compute/virtualMachines/vm_bastion",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Compute/virtualMachines/vm_bastion",
             "identity": [],
             "license_type": "",
             "location": "eastus2",
             "max_bid_price": -1,
             "name": "vm_bastion",
             "network_interface_ids": [
-              "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkInterfaces/nic_bastion"
+              "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkInterfaces/nic_bastion"
             ],
             "os_disk": [
               {
@@ -1145,11 +369,11 @@
             ],
             "provision_vm_agent": true,
             "proximity_placement_group_id": "",
-            "public_ip_address": "20.12.17.221",
+            "public_ip_address": "20.14.128.204",
             "public_ip_addresses": [
-              "20.12.17.221"
+              "20.14.128.204"
             ],
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "secret": [],
             "secure_boot_enabled": false,
             "size": "Standard_DS1_v2",
@@ -1162,11 +386,11 @@
                 "version": "latest"
               }
             ],
-            "tags": {},
-            "termination_notification": [],
+            "tags": null,
+            "termination_notification": null,
             "timeouts": null,
             "user_data": "",
-            "virtual_machine_id": "85194e4f-52ef-48a2-98d4-50596e819ba8",
+            "virtual_machine_id": "ff08756d-fe10-46fd-8bc2-8d38aa740f17",
             "virtual_machine_scale_set_id": "",
             "vtpm_enabled": false,
             "zone": ""
@@ -1180,8 +404,7 @@
             "azurerm_ssh_public_key.ssh_nomad",
             "azurerm_subnet.subnet_bastion",
             "azurerm_virtual_network.network",
-            "data.template_cloudinit_config.configbastion",
-            "data.template_file.scriptbastion"
+            "data.template_cloudinit_config.configbastion"
           ]
         }
       ]
@@ -1217,14 +440,14 @@
             "encryption_at_host_enabled": false,
             "eviction_policy": "",
             "extensions_time_budget": "PT1H30M",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Compute/virtualMachines/vm_elasticsrh",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Compute/virtualMachines/vm_elasticsrh",
             "identity": [],
             "license_type": "",
             "location": "eastus2",
             "max_bid_price": -1,
             "name": "vm_elasticsrh",
             "network_interface_ids": [
-              "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkInterfaces/nic_elasticsrh"
+              "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkInterfaces/nic_elasticsrh"
             ],
             "os_disk": [
               {
@@ -1251,7 +474,7 @@
             "proximity_placement_group_id": "",
             "public_ip_address": "",
             "public_ip_addresses": [],
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "secret": [],
             "secure_boot_enabled": false,
             "size": "Standard_DS1_v2",
@@ -1264,11 +487,11 @@
                 "version": "latest"
               }
             ],
-            "tags": {},
-            "termination_notification": [],
+            "tags": null,
+            "termination_notification": null,
             "timeouts": null,
             "user_data": "",
-            "virtual_machine_id": "eb52ef03-1906-4af5-8fe0-0ca8a9748a47",
+            "virtual_machine_id": "549c40f9-c6fe-48d1-abc7-12ddb8e2f10d",
             "virtual_machine_scale_set_id": "",
             "vtpm_enabled": false,
             "zone": ""
@@ -1281,8 +504,7 @@
             "azurerm_ssh_public_key.ssh_nomad",
             "azurerm_subnet.subnet_elastic",
             "azurerm_virtual_network.network",
-            "data.template_cloudinit_config.configelastic",
-            "data.template_file.scriptelastic"
+            "data.template_cloudinit_config.configelastic"
           ]
         }
       ]
@@ -1298,9 +520,9 @@
           "attributes": {
             "charset": "utf8",
             "collation": "utf8_general_ci",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.DBforMariaDB/servers/magento-mariadb-server/databases/mariadb_database",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.DBforMariaDB/servers/magento-mariadb-server/databases/mariadb_database",
             "name": "mariadb_database",
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "server_name": "magento-mariadb-server",
             "timeouts": null
           },
@@ -1322,12 +544,12 @@
         {
           "schema_version": 0,
           "attributes": {
-            "end_ip_address": "20.12.17.221",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.DBforMariaDB/servers/magento-mariadb-server/firewallRules/rule_magento_db",
+            "end_ip_address": "20.14.128.204",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.DBforMariaDB/servers/magento-mariadb-server/firewallRules/rule_magento_db",
             "name": "rule_magento_db",
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "server_name": "magento-mariadb-server",
-            "start_ip_address": "20.12.17.221",
+            "start_ip_address": "20.14.128.204",
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -1357,16 +579,16 @@
             "creation_source_server_id": null,
             "fqdn": "magento-mariadb-server.mariadb.database.azure.com",
             "geo_redundant_backup_enabled": false,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.DBforMariaDB/servers/magento-mariadb-server",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.DBforMariaDB/servers/magento-mariadb-server",
             "location": "eastus2",
             "name": "magento-mariadb-server",
             "public_network_access_enabled": true,
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "restore_point_in_time": null,
             "sku_name": "MO_Gen5_2",
             "ssl_enforcement_enabled": false,
             "storage_mb": 5120,
-            "tags": {},
+            "tags": null,
             "timeouts": null,
             "version": "10.2"
           },
@@ -1400,14 +622,14 @@
             ],
             "enabled": true,
             "event_hub_receiver": [],
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Insights/actionGroups/group-monitor",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Insights/actionGroups/group-monitor",
             "itsm_receiver": [],
             "logic_app_receiver": [],
             "name": "group-monitor",
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "short_name": "monitor-grp",
             "sms_receiver": [],
-            "tags": {},
+            "tags": null,
             "timeouts": null,
             "voice_receiver": [],
             "webhook_receiver": []
@@ -1415,69 +637,6 @@
           "sensitive_attributes": [],
           "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
           "dependencies": [
-            "azurerm_resource_group.rg"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "azurerm_monitor_metric_alert",
-      "name": "alert-availability",
-      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
-      "instances": [
-        {
-          "schema_version": 1,
-          "attributes": {
-            "action": [
-              {
-                "action_group_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Insights/actionGroups/group-monitor",
-                "webhook_properties": null
-              }
-            ],
-            "application_insights_web_test_location_availability_criteria": [],
-            "auto_mitigate": true,
-            "criteria": [
-              {
-                "aggregation": "Average",
-                "dimension": [
-                  {
-                    "name": "availabilityResult/name",
-                    "operator": "Include",
-                    "values": [
-                      "requesthttp"
-                    ]
-                  }
-                ],
-                "metric_name": "availabilityResults/availabilityPercentage",
-                "metric_namespace": "Microsoft.Insights/components",
-                "operator": "LessThan",
-                "skip_metric_validation": false,
-                "threshold": 100
-              }
-            ],
-            "description": "Availability",
-            "dynamic_criteria": [],
-            "enabled": true,
-            "frequency": "PT1M",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Insights/metricAlerts/alert-availability",
-            "name": "alert-availability",
-            "resource_group_name": "brief4_QB",
-            "scopes": [
-              "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Insights/components/insights-magento"
-            ],
-            "severity": 3,
-            "tags": null,
-            "target_resource_location": "",
-            "target_resource_type": "",
-            "timeouts": null,
-            "window_size": "PT5M"
-          },
-          "sensitive_attributes": [],
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
-          "dependencies": [
-            "azurerm_application_insights.insight",
-            "azurerm_monitor_action_group.group-monitor",
             "azurerm_resource_group.rg"
           ]
         }
@@ -1494,8 +653,8 @@
           "attributes": {
             "action": [
               {
-                "action_group_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Insights/actionGroups/group-monitor",
-                "webhook_properties": {}
+                "action_group_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Insights/actionGroups/group-monitor",
+                "webhook_properties": null
               }
             ],
             "application_insights_web_test_location_availability_criteria": [],
@@ -1515,14 +674,14 @@
             "dynamic_criteria": [],
             "enabled": true,
             "frequency": "PT1H",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Insights/metricAlerts/alert-stock-capacity",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Insights/metricAlerts/alert-stock-capacity",
             "name": "alert-stock-capacity",
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "scopes": [
-              "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Storage/storageAccounts/stabdd"
+              "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Storage/storageAccounts/stabdd"
             ],
             "severity": 3,
-            "tags": {},
+            "tags": null,
             "target_resource_location": "",
             "target_resource_type": "Microsoft.Storage/storageAccounts",
             "timeouts": null,
@@ -1551,8 +710,8 @@
           "attributes": {
             "action": [
               {
-                "action_group_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Insights/actionGroups/group-monitor",
-                "webhook_properties": {}
+                "action_group_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Insights/actionGroups/group-monitor",
+                "webhook_properties": null
               }
             ],
             "application_insights_web_test_location_availability_criteria": [],
@@ -1572,14 +731,14 @@
             "dynamic_criteria": [],
             "enabled": true,
             "frequency": "PT1M",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Insights/metricAlerts/alert-vm-cpu",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Insights/metricAlerts/alert-vm-cpu",
             "name": "alert-vm-cpu",
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "scopes": [
-              "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Compute/virtualMachines/vm_app"
+              "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Compute/virtualMachines/vm_app"
             ],
             "severity": 3,
-            "tags": {},
+            "tags": null,
             "target_resource_location": "",
             "target_resource_type": "Microsoft.Compute/virtualMachines",
             "timeouts": null,
@@ -1622,9 +781,9 @@
             "edge_zone": "",
             "enable_accelerated_networking": false,
             "enable_ip_forwarding": false,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkInterfaces/nic_app",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkInterfaces/nic_app",
             "internal_dns_name_label": "",
-            "internal_domain_name_suffix": "ywere2pyfz1u1ih5ntbzr4lu3f.cx.internal.cloudapp.net",
+            "internal_domain_name_suffix": "xpw4sw1xqgsejaogdyhswg324c.cx.internal.cloudapp.net",
             "ip_configuration": [
               {
                 "gateway_load_balancer_frontend_ip_configuration_id": "",
@@ -1634,20 +793,20 @@
                 "private_ip_address_allocation": "Static",
                 "private_ip_address_version": "IPv4",
                 "public_ip_address_id": "",
-                "subnet_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_app"
+                "subnet_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_app"
               }
             ],
             "location": "eastus2",
-            "mac_address": "00-0D-3A-0E-4C-1A",
+            "mac_address": "",
             "name": "nic_app",
             "private_ip_address": "10.2.0.19",
             "private_ip_addresses": [
               "10.2.0.19"
             ],
-            "resource_group_name": "brief4_QB",
-            "tags": {},
+            "resource_group_name": "brief4_QB2",
+            "tags": null,
             "timeouts": null,
-            "virtual_machine_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Compute/virtualMachines/vm_app"
+            "virtual_machine_id": ""
           },
           "sensitive_attributes": [],
           "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfX0=",
@@ -1673,9 +832,9 @@
             "edge_zone": "",
             "enable_accelerated_networking": false,
             "enable_ip_forwarding": false,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkInterfaces/nic_bastion",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkInterfaces/nic_bastion",
             "internal_dns_name_label": "",
-            "internal_domain_name_suffix": "ywere2pyfz1u1ih5ntbzr4lu3f.cx.internal.cloudapp.net",
+            "internal_domain_name_suffix": "xpw4sw1xqgsejaogdyhswg324c.cx.internal.cloudapp.net",
             "ip_configuration": [
               {
                 "gateway_load_balancer_frontend_ip_configuration_id": "",
@@ -1684,21 +843,21 @@
                 "private_ip_address": "10.6.0.19",
                 "private_ip_address_allocation": "Static",
                 "private_ip_address_version": "IPv4",
-                "public_ip_address_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/publicIPAddresses/ip_bastion",
-                "subnet_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_bastion"
+                "public_ip_address_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/publicIPAddresses/ip_bastion",
+                "subnet_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_bastion"
               }
             ],
             "location": "eastus2",
-            "mac_address": "60-45-BD-83-3F-5B",
+            "mac_address": "",
             "name": "nic_bastion",
             "private_ip_address": "10.6.0.19",
             "private_ip_addresses": [
               "10.6.0.19"
             ],
-            "resource_group_name": "brief4_QB",
-            "tags": {},
+            "resource_group_name": "brief4_QB2",
+            "tags": null,
             "timeouts": null,
-            "virtual_machine_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Compute/virtualMachines/vm_bastion"
+            "virtual_machine_id": ""
           },
           "sensitive_attributes": [],
           "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfX0=",
@@ -1725,9 +884,9 @@
             "edge_zone": "",
             "enable_accelerated_networking": false,
             "enable_ip_forwarding": false,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkInterfaces/nic_elasticsrh",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkInterfaces/nic_elasticsrh",
             "internal_dns_name_label": "",
-            "internal_domain_name_suffix": "ywere2pyfz1u1ih5ntbzr4lu3f.cx.internal.cloudapp.net",
+            "internal_domain_name_suffix": "xpw4sw1xqgsejaogdyhswg324c.cx.internal.cloudapp.net",
             "ip_configuration": [
               {
                 "gateway_load_balancer_frontend_ip_configuration_id": "",
@@ -1737,20 +896,20 @@
                 "private_ip_address_allocation": "Dynamic",
                 "private_ip_address_version": "IPv4",
                 "public_ip_address_id": "",
-                "subnet_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_elastic"
+                "subnet_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_elastic"
               }
             ],
             "location": "eastus2",
-            "mac_address": "00-0D-3A-00-26-23",
+            "mac_address": "",
             "name": "nic_elasticsrh",
             "private_ip_address": "10.4.0.4",
             "private_ip_addresses": [
               "10.4.0.4"
             ],
-            "resource_group_name": "brief4_QB",
-            "tags": {},
+            "resource_group_name": "brief4_QB2",
+            "tags": null,
             "timeouts": null,
-            "virtual_machine_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Compute/virtualMachines/vm_elasticsrh"
+            "virtual_machine_id": ""
           },
           "sensitive_attributes": [],
           "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfX0=",
@@ -1767,33 +926,7 @@
       "type": "azurerm_network_interface_application_gateway_backend_address_pool_association",
       "name": "poolbackend",
       "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "backend_address_pool_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/backendAddressPools/network-beap",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkInterfaces/nic_app/ipConfigurations/nic_app_config|/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/applicationGateways/gateway-brief4/backendAddressPools/network-beap",
-            "ip_configuration_name": "nic_app_config",
-            "network_interface_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkInterfaces/nic_app",
-            "timeouts": null
-          },
-          "sensitive_attributes": [],
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfX0=",
-          "dependencies": [
-            "azurerm_application_gateway.network_gateway",
-            "azurerm_key_vault.keyvault",
-            "azurerm_key_vault_certificate.example",
-            "azurerm_network_interface.nic_app",
-            "azurerm_public_ip.public_ip_gateway",
-            "azurerm_resource_group.rg",
-            "azurerm_subnet.subnet_app",
-            "azurerm_subnet.subnet_gateway",
-            "azurerm_user_assigned_identity.id-magento",
-            "azurerm_virtual_network.network",
-            "data.azurerm_client_config.current"
-          ]
-        }
-      ]
+      "instances": []
     },
     {
       "mode": "managed",
@@ -1804,9 +937,9 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkInterfaces/nic_app|/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkSecurityGroups/nsg_app",
-            "network_interface_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkInterfaces/nic_app",
-            "network_security_group_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkSecurityGroups/nsg_app",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkInterfaces/nic_app|/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkSecurityGroups/nsg_app",
+            "network_interface_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkInterfaces/nic_app",
+            "network_security_group_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkSecurityGroups/nsg_app",
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -1830,9 +963,9 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkInterfaces/nic_bastion|/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkSecurityGroups/nsg_bastion",
-            "network_interface_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkInterfaces/nic_bastion",
-            "network_security_group_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkSecurityGroups/nsg_bastion",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkInterfaces/nic_bastion|/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkSecurityGroups/nsg_bastion",
+            "network_interface_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkInterfaces/nic_bastion",
+            "network_security_group_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkSecurityGroups/nsg_bastion",
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -1857,14 +990,14 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkSecurityGroups/nsg_app",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkSecurityGroups/nsg_app",
             "location": "eastus2",
             "name": "nsg_app",
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "security_rule": [
               {
                 "access": "Allow",
-                "description": null,
+                "description": "",
                 "destination_address_prefix": "*",
                 "destination_address_prefixes": [],
                 "destination_application_security_group_ids": [],
@@ -1881,7 +1014,7 @@
                 "source_port_ranges": []
               }
             ],
-            "tags": {},
+            "tags": null,
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -1901,10 +1034,10 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkSecurityGroups/nsg_bastion",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkSecurityGroups/nsg_bastion",
             "location": "eastus2",
             "name": "nsg_bastion",
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "security_rule": [
               {
                 "access": "Allow",
@@ -1925,7 +1058,7 @@
                 "source_port_ranges": []
               }
             ],
-            "tags": {},
+            "tags": null,
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -1948,22 +1081,22 @@
             "access": "Allow",
             "description": "",
             "destination_address_prefix": "*",
-            "destination_address_prefixes": [],
-            "destination_application_security_group_ids": [],
+            "destination_address_prefixes": null,
+            "destination_application_security_group_ids": null,
             "destination_port_range": "445",
-            "destination_port_ranges": [],
+            "destination_port_ranges": null,
             "direction": "Inbound",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkSecurityGroups/nsg_app/securityRules/stnsg_inbound_2000",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkSecurityGroups/nsg_app/securityRules/stnsg_inbound_2000",
             "name": "stnsg_inbound_2000",
             "network_security_group_name": "nsg_app",
             "priority": 2000,
             "protocol": "Tcp",
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "source_address_prefix": "*",
-            "source_address_prefixes": [],
-            "source_application_security_group_ids": [],
+            "source_address_prefixes": null,
+            "source_application_security_group_ids": null,
             "source_port_range": "*",
-            "source_port_ranges": [],
+            "source_port_ranges": null,
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -1984,13 +1117,13 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/privateDnsZones/privatelink.mariadb.database.azure.com",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/privateDnsZones/privatelink.mariadb.database.azure.com",
             "max_number_of_record_sets": 25000,
             "max_number_of_virtual_network_links": 1000,
             "max_number_of_virtual_network_links_with_registration": 100,
             "name": "privatelink.mariadb.database.azure.com",
-            "number_of_record_sets": 2,
-            "resource_group_name": "brief4_QB",
+            "number_of_record_sets": 1,
+            "resource_group_name": "brief4_QB2",
             "soa_record": [
               {
                 "email": "azureprivatedns-host.microsoft.com",
@@ -2005,7 +1138,7 @@
                 "ttl": 3600
               }
             ],
-            "tags": {},
+            "tags": null,
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -2025,14 +1158,14 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/privateDnsZones/privatelink.mariadb.database.azure.com/virtualNetworkLinks/link_bdd",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/privateDnsZones/privatelink.mariadb.database.azure.com/virtualNetworkLinks/link_bdd",
             "name": "link_bdd",
             "private_dns_zone_name": "privatelink.mariadb.database.azure.com",
             "registration_enabled": false,
-            "resource_group_name": "brief4_QB",
-            "tags": {},
+            "resource_group_name": "brief4_QB2",
+            "tags": null,
             "timeouts": null,
-            "virtual_network_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network"
+            "virtual_network_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/virtualNetworks/network"
           },
           "sensitive_attributes": [],
           "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfX0=",
@@ -2054,21 +1187,21 @@
           "schema_version": 0,
           "attributes": {
             "custom_dns_configs": [],
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/privateEndpoints/private_bdd",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/privateEndpoints/private_bdd",
             "ip_configuration": [],
             "location": "eastus2",
             "name": "private_bdd",
             "network_interface": [
               {
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/networkInterfaces/private_bdd.nic.896221d2-0eaa-4ace-88c6-eeb6a65bbea6",
-                "name": "private_bdd.nic.896221d2-0eaa-4ace-88c6-eeb6a65bbea6"
+                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/networkInterfaces/private_bdd.nic.399cbe12-cfac-45e9-a942-400001a2a806",
+                "name": "private_bdd.nic.399cbe12-cfac-45e9-a942-400001a2a806"
               }
             ],
             "private_dns_zone_configs": [
               {
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/privateEndpoints/private_bdd/privateDnsZoneGroups/private-dns-zone-group/privateDnsZoneConfigs/privatelink.mariadb.database.azure.com",
+                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/privateEndpoints/private_bdd/privateDnsZoneGroups/private-dns-zone-group/privateDnsZoneConfigs/privatelink.mariadb.database.azure.com",
                 "name": "privatelink.mariadb.database.azure.com",
-                "private_dns_zone_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/privateDnsZones/privatelink.mariadb.database.azure.com",
+                "private_dns_zone_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/privateDnsZones/privatelink.mariadb.database.azure.com",
                 "record_sets": [
                   {
                     "fqdn": "magento-mariadb-server.privatelink.mariadb.database.azure.com",
@@ -2084,10 +1217,10 @@
             ],
             "private_dns_zone_group": [
               {
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/privateEndpoints/private_bdd/privateDnsZoneGroups/private-dns-zone-group",
+                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/privateEndpoints/private_bdd/privateDnsZoneGroups/private-dns-zone-group",
                 "name": "private-dns-zone-group",
                 "private_dns_zone_ids": [
-                  "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/privateDnsZones/privatelink.mariadb.database.azure.com"
+                  "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/privateDnsZones/privatelink.mariadb.database.azure.com"
                 ]
               }
             ],
@@ -2096,7 +1229,7 @@
                 "is_manual_connection": false,
                 "name": "private_service_bdd",
                 "private_connection_resource_alias": "",
-                "private_connection_resource_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.DBforMariaDB/servers/magento-mariadb-server",
+                "private_connection_resource_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.DBforMariaDB/servers/magento-mariadb-server",
                 "private_ip_address": "10.3.0.4",
                 "request_message": "",
                 "subresource_names": [
@@ -2104,9 +1237,9 @@
                 ]
               }
             ],
-            "resource_group_name": "brief4_QB",
-            "subnet_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_bdd",
-            "tags": {},
+            "resource_group_name": "brief4_QB2",
+            "subnet_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_bdd",
+            "tags": null,
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -2134,21 +1267,21 @@
             "domain_name_label": null,
             "edge_zone": "",
             "fqdn": null,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/publicIPAddresses/ip_bastion",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/publicIPAddresses/ip_bastion",
             "idle_timeout_in_minutes": 4,
-            "ip_address": "20.12.17.221",
-            "ip_tags": {},
+            "ip_address": "20.14.128.204",
+            "ip_tags": null,
             "ip_version": "IPv4",
             "location": "eastus2",
             "name": "ip_bastion",
             "public_ip_prefix_id": null,
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "reverse_fqdn": null,
             "sku": "Basic",
             "sku_tier": "Regional",
-            "tags": {},
+            "tags": null,
             "timeouts": null,
-            "zones": []
+            "zones": null
           },
           "sensitive_attributes": [],
           "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfX0=",
@@ -2168,24 +1301,24 @@
           "schema_version": 0,
           "attributes": {
             "allocation_method": "Static",
-            "domain_name_label": "magentobrief4",
+            "domain_name_label": "magentobrief42",
             "edge_zone": "",
-            "fqdn": "magentobrief4.eastus2.cloudapp.azure.com",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/publicIPAddresses/ip_gateway",
+            "fqdn": "magentobrief42.eastus2.cloudapp.azure.com",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/publicIPAddresses/ip_gateway",
             "idle_timeout_in_minutes": 4,
-            "ip_address": "20.7.47.153",
-            "ip_tags": {},
+            "ip_address": "20.14.128.183",
+            "ip_tags": null,
             "ip_version": "IPv4",
             "location": "eastus2",
             "name": "ip_gateway",
             "public_ip_prefix_id": null,
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "reverse_fqdn": "",
             "sku": "Standard",
             "sku_tier": "Regional",
-            "tags": {},
+            "tags": null,
             "timeouts": null,
-            "zones": []
+            "zones": null
           },
           "sensitive_attributes": [],
           "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfX0=",
@@ -2204,10 +1337,10 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2",
             "location": "eastus2",
-            "name": "brief4_QB",
-            "tags": {},
+            "name": "brief4_QB2",
+            "tags": null,
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -2226,13 +1359,13 @@
           "attributes": {
             "debug_level": "",
             "deployment_mode": "Incremental",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Resources/deployments/arm-deploy",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Resources/deployments/arm-deploy",
             "name": "arm-deploy",
             "output_content": "{}",
             "parameters_content": "{\"webtests_requesthttp_insights_app_name\":{\"value\":\"requesthttp-insights-app\"}}",
-            "resource_group_name": "brief4_QB",
-            "tags": {},
-            "template_content": "{\"$schema\":\"https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#\",\"contentVersion\":\"1.0.0.0\",\"parameters\":{\"webtests_requesthttp_insights_app_name\":{\"defaultValue\":\"requesthttp-insights-app\",\"type\":\"String\"}},\"resources\":[{\"apiVersion\":\"2022-06-15\",\"location\":\"eastus2\",\"name\":\"[parameters('webtests_requesthttp_insights_app_name')]\",\"properties\":{\"Enabled\":true,\"Frequency\":300,\"Kind\":\"standard\",\"Locations\":[{\"Id\":\"us-va-ash-azr\"},{\"Id\":\"us-ca-sjc-azr\"},{\"Id\":\"us-fl-mia-edge\"},{\"Id\":\"apac-sg-sin-azr\"},{\"Id\":\"emea-ru-msa-edge\"}],\"Name\":\"requesthttp\",\"Request\":{\"HttpVerb\":\"GET\",\"ParseDependentRequests\":false,\"RequestUrl\":\"https://magentobrief4.eastus2.cloudapp.azure.com\"},\"RetryEnabled\":true,\"SyntheticMonitorId\":\"[parameters('webtests_requesthttp_insights_app_name')]\",\"Timeout\":120,\"ValidationRules\":{\"ExpectedHttpStatusCode\":200,\"SSLCheck\":false}},\"tags\":{\"hidden-link:/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Insights/components/insights-magento\":\"Resource\"},\"type\":\"Microsoft.Insights/webtests\"}],\"variables\":{}}",
+            "resource_group_name": "brief4_QB2",
+            "tags": null,
+            "template_content": "{\"$schema\":\"https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#\",\"contentVersion\":\"1.0.0.0\",\"parameters\":{\"webtests_requesthttp_insights_app_name\":{\"defaultValue\":\"requesthttp-insights-app\",\"type\":\"String\"}},\"resources\":[{\"apiVersion\":\"2022-06-15\",\"location\":\"eastus2\",\"name\":\"[parameters('webtests_requesthttp_insights_app_name')]\",\"properties\":{\"Enabled\":true,\"Frequency\":300,\"Kind\":\"standard\",\"Locations\":[{\"Id\":\"us-va-ash-azr\"},{\"Id\":\"us-ca-sjc-azr\"},{\"Id\":\"us-fl-mia-edge\"},{\"Id\":\"apac-sg-sin-azr\"},{\"Id\":\"emea-ru-msa-edge\"}],\"Name\":\"requesthttp\",\"Request\":{\"HttpVerb\":\"GET\",\"ParseDependentRequests\":false,\"RequestUrl\":\"https://magentobrief42.eastus2.cloudapp.azure.com\"},\"RetryEnabled\":true,\"SyntheticMonitorId\":\"[parameters('webtests_requesthttp_insights_app_name')]\",\"Timeout\":120,\"ValidationRules\":{\"ExpectedHttpStatusCode\":200,\"SSLCheck\":false}},\"tags\":{\"hidden-link:/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Insights/components/insights-magento\":\"Resource\"},\"type\":\"microsoft.insights/webtests\"}],\"variables\":{}}",
             "template_spec_version_id": "",
             "timeouts": null
           },
@@ -2254,12 +1387,12 @@
         {
           "schema_version": 0,
           "attributes": {
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Compute/sshPublicKeys/ssh_key_nomad",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Compute/sshPublicKeys/ssh_key_nomad",
             "location": "eastus2",
             "name": "ssh_key_nomad",
             "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAXuIAe8DVtQ+qHpbTnCMn5iP1u7WQEOLDE76PTRZ0lYc0TrWJvH+zWzpEbTK/fwzx5sw7yAlBnuR83cAOtm6y8Gk5yktOogsk71VnJ9cXKV7QWtX5o/nysqhliBWAW2jQmEMLHBf4DOFXcKpCdl0OBOtrPct976tnFXhM5n5WF0wrQ4dVikfWe57yg0BX+G+ZbNl7iDCHS8cAGEI2S0ziGOLjl0qJq+9jjCaj2bdVb5vtbz/ghplWtNKQvirxvfOC5H3XbX7aeH2sAlogeYbPs8DmFuz5Smq/+FLBZzqV7JhPMxBCpVFm6r+EzZDgiS2WB96Q3Jh0ItPz7wwJtgpLmSWeaBmWyPGAOh9MBal2RXgDIZ26EPOQTc9WX1377SaEMFSXgwq3e0mtFl5TYG+hzjujY9ik6nfjyLy1yNaPB7hq0z0cCijeJf0Nlm092Ukb1IJOndiS9LSZXjFJT+LRNz7hqyK/oj8nH4K2nx4DMH+Fj4JypSdsqmIk7aXLdYE= nomad@device",
-            "resource_group_name": "brief4_QB",
-            "tags": {},
+            "resource_group_name": "brief4_QB2",
+            "tags": null,
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -2303,7 +1436,7 @@
             "default_to_oauth_authentication": false,
             "edge_zone": "",
             "enable_https_traffic_only": false,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Storage/storageAccounts/staapp",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Storage/storageAccounts/staapp",
             "identity": [],
             "infrastructure_encryption_enabled": false,
             "is_hns_enabled": true,
@@ -2317,21 +1450,17 @@
                   "AzureServices"
                 ],
                 "default_action": "Allow",
-                "ip_rules": [
-                  "212.51.190.22"
-                ],
+                "ip_rules": [],
                 "private_link_access": [],
-                "virtual_network_subnet_ids": [
-                  "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_app"
-                ]
+                "virtual_network_subnet_ids": []
               }
             ],
             "nfsv3_enabled": false,
-            "primary_access_key": "IeZmYz2jWpQ2x9NO35MJPP6WktOhxpI7fmrNqHDQzQ2Vr3A7RUtFqpW6RSUWbaJ7pjXne5AFjl/m+AStcChztg==",
-            "primary_blob_connection_string": "DefaultEndpointsProtocol=https;BlobEndpoint=https://staapp.blob.core.windows.net/;AccountName=staapp;AccountKey=IeZmYz2jWpQ2x9NO35MJPP6WktOhxpI7fmrNqHDQzQ2Vr3A7RUtFqpW6RSUWbaJ7pjXne5AFjl/m+AStcChztg==",
+            "primary_access_key": "xxQ0a67YFp5eQMnsMOFP54CxP2yADERWbtIKAxeOypM7pErqjwsNyU/3s2yjY1H4KBRA7XBI4QjV+AStCrXihA==",
+            "primary_blob_connection_string": "DefaultEndpointsProtocol=https;BlobEndpoint=https://staapp.blob.core.windows.net/;AccountName=staapp;AccountKey=xxQ0a67YFp5eQMnsMOFP54CxP2yADERWbtIKAxeOypM7pErqjwsNyU/3s2yjY1H4KBRA7XBI4QjV+AStCrXihA==",
             "primary_blob_endpoint": "https://staapp.blob.core.windows.net/",
             "primary_blob_host": "staapp.blob.core.windows.net",
-            "primary_connection_string": "DefaultEndpointsProtocol=https;AccountName=staapp;AccountKey=IeZmYz2jWpQ2x9NO35MJPP6WktOhxpI7fmrNqHDQzQ2Vr3A7RUtFqpW6RSUWbaJ7pjXne5AFjl/m+AStcChztg==;EndpointSuffix=core.windows.net",
+            "primary_connection_string": "DefaultEndpointsProtocol=https;AccountName=staapp;AccountKey=xxQ0a67YFp5eQMnsMOFP54CxP2yADERWbtIKAxeOypM7pErqjwsNyU/3s2yjY1H4KBRA7XBI4QjV+AStCrXihA==;EndpointSuffix=core.windows.net",
             "primary_dfs_endpoint": "https://staapp.dfs.core.windows.net/",
             "primary_dfs_host": "staapp.dfs.core.windows.net",
             "primary_file_endpoint": "https://staapp.file.core.windows.net/",
@@ -2375,13 +1504,13 @@
                 ]
               }
             ],
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "routing": [],
-            "secondary_access_key": "/5DU8ut1pnUlERgqdVPNidJN/cA2HJKabj/fcEP92t9uuoBQ6A52jFzyjuvoUub5KlSsXGglnS3U+AStX2Lnng==",
+            "secondary_access_key": "KtbnMkW7aanRVA+MThkaPaAOd1CUDQUqIz50gOAF2DQPKskCpw8ka4bVpyplQ9L2svDuDoJoMsEk+AStWNNpBg==",
             "secondary_blob_connection_string": "",
             "secondary_blob_endpoint": null,
             "secondary_blob_host": null,
-            "secondary_connection_string": "DefaultEndpointsProtocol=https;AccountName=staapp;AccountKey=/5DU8ut1pnUlERgqdVPNidJN/cA2HJKabj/fcEP92t9uuoBQ6A52jFzyjuvoUub5KlSsXGglnS3U+AStX2Lnng==;EndpointSuffix=core.windows.net",
+            "secondary_connection_string": "DefaultEndpointsProtocol=https;AccountName=staapp;AccountKey=KtbnMkW7aanRVA+MThkaPaAOd1CUDQUqIz50gOAF2DQPKskCpw8ka4bVpyplQ9L2svDuDoJoMsEk+AStWNNpBg==;EndpointSuffix=core.windows.net",
             "secondary_dfs_endpoint": null,
             "secondary_dfs_host": null,
             "secondary_file_endpoint": null,
@@ -2407,7 +1536,7 @@
             "shared_access_key_enabled": true,
             "static_website": [],
             "table_encryption_key_type": "Service",
-            "tags": {},
+            "tags": null,
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -2451,7 +1580,7 @@
             "default_to_oauth_authentication": false,
             "edge_zone": "",
             "enable_https_traffic_only": false,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Storage/storageAccounts/stabdd",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Storage/storageAccounts/stabdd",
             "identity": [],
             "infrastructure_encryption_enabled": false,
             "is_hns_enabled": true,
@@ -2468,16 +1597,16 @@
                 "ip_rules": [],
                 "private_link_access": [],
                 "virtual_network_subnet_ids": [
-                  "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_bdd"
+                  "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_bdd"
                 ]
               }
             ],
             "nfsv3_enabled": true,
-            "primary_access_key": "OD3+Rvz0xjGGOz8X6hnnryWrcPKsm6RWsv0/r1CHH+xDCLyLhGx8ZxNfb+dlWfIxljAhlGBIedhg+ASt68LX8A==",
-            "primary_blob_connection_string": "DefaultEndpointsProtocol=https;BlobEndpoint=https://stabdd.blob.core.windows.net/;AccountName=stabdd;AccountKey=OD3+Rvz0xjGGOz8X6hnnryWrcPKsm6RWsv0/r1CHH+xDCLyLhGx8ZxNfb+dlWfIxljAhlGBIedhg+ASt68LX8A==",
+            "primary_access_key": "8mP02pkj5GoyWFi/BkW/ybsjIfIp3lSWE2WoM1gZNmI/qzJK7ATSkkTdNTCaJa12yLji8opAU/Sb+AStbAqPOg==",
+            "primary_blob_connection_string": "DefaultEndpointsProtocol=https;BlobEndpoint=https://stabdd.blob.core.windows.net/;AccountName=stabdd;AccountKey=8mP02pkj5GoyWFi/BkW/ybsjIfIp3lSWE2WoM1gZNmI/qzJK7ATSkkTdNTCaJa12yLji8opAU/Sb+AStbAqPOg==",
             "primary_blob_endpoint": "https://stabdd.blob.core.windows.net/",
             "primary_blob_host": "stabdd.blob.core.windows.net",
-            "primary_connection_string": "DefaultEndpointsProtocol=https;AccountName=stabdd;AccountKey=OD3+Rvz0xjGGOz8X6hnnryWrcPKsm6RWsv0/r1CHH+xDCLyLhGx8ZxNfb+dlWfIxljAhlGBIedhg+ASt68LX8A==;EndpointSuffix=core.windows.net",
+            "primary_connection_string": "DefaultEndpointsProtocol=https;AccountName=stabdd;AccountKey=8mP02pkj5GoyWFi/BkW/ybsjIfIp3lSWE2WoM1gZNmI/qzJK7ATSkkTdNTCaJa12yLji8opAU/Sb+AStbAqPOg==;EndpointSuffix=core.windows.net",
             "primary_dfs_endpoint": "https://stabdd.dfs.core.windows.net/",
             "primary_dfs_host": "stabdd.dfs.core.windows.net",
             "primary_file_endpoint": "https://stabdd.file.core.windows.net/",
@@ -2521,13 +1650,13 @@
                 ]
               }
             ],
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "routing": [],
-            "secondary_access_key": "GrTX3YIgnHsLlJsxs985yPF8FHhx3Zi1fvvCeRiowOG6Zt5FfRpuumfbg+b4ra0kEtXRrZpHQ6r4+ASt3eWDeQ==",
+            "secondary_access_key": "DSSqGWh5+uhMRaF5B9cR36vpr01mD7UERkdbIv1WyLUyg8ra5vY/9iUXbx4gYhc/vjzanQpkbYj9+AStMRk63g==",
             "secondary_blob_connection_string": "",
             "secondary_blob_endpoint": null,
             "secondary_blob_host": null,
-            "secondary_connection_string": "DefaultEndpointsProtocol=https;AccountName=stabdd;AccountKey=GrTX3YIgnHsLlJsxs985yPF8FHhx3Zi1fvvCeRiowOG6Zt5FfRpuumfbg+b4ra0kEtXRrZpHQ6r4+ASt3eWDeQ==;EndpointSuffix=core.windows.net",
+            "secondary_connection_string": "DefaultEndpointsProtocol=https;AccountName=stabdd;AccountKey=DSSqGWh5+uhMRaF5B9cR36vpr01mD7UERkdbIv1WyLUyg8ra5vY/9iUXbx4gYhc/vjzanQpkbYj9+AStMRk63g==;EndpointSuffix=core.windows.net",
             "secondary_dfs_endpoint": null,
             "secondary_dfs_host": null,
             "secondary_file_endpoint": null,
@@ -2553,7 +1682,7 @@
             "shared_access_key_enabled": true,
             "static_website": [],
             "table_encryption_key_type": "Service",
-            "tags": {},
+            "tags": null,
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -2599,7 +1728,7 @@
             "default_to_oauth_authentication": false,
             "edge_zone": "",
             "enable_https_traffic_only": true,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Storage/storageAccounts/stamonitor",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Storage/storageAccounts/stamonitor",
             "identity": [],
             "infrastructure_encryption_enabled": false,
             "is_hns_enabled": false,
@@ -2619,11 +1748,11 @@
               }
             ],
             "nfsv3_enabled": false,
-            "primary_access_key": "B3uWnlDq1WEU7xEe4CmiG6U2UjseGoPWPYWNp1KUd7r+iDjh4FGTsNbiKKc20vCB/3ZJZHwo+fpF+AStoB5Mlg==",
-            "primary_blob_connection_string": "DefaultEndpointsProtocol=https;BlobEndpoint=https://stamonitor.blob.core.windows.net/;AccountName=stamonitor;AccountKey=B3uWnlDq1WEU7xEe4CmiG6U2UjseGoPWPYWNp1KUd7r+iDjh4FGTsNbiKKc20vCB/3ZJZHwo+fpF+AStoB5Mlg==",
+            "primary_access_key": "gECJSzsvbWTWzH93RR62sPCXOKq1UUIizvXpys74uMUoywRxbuvhEfKZgbwoorVYcmax/3JZQ7wt+ASt+7bf+A==",
+            "primary_blob_connection_string": "DefaultEndpointsProtocol=https;BlobEndpoint=https://stamonitor.blob.core.windows.net/;AccountName=stamonitor;AccountKey=gECJSzsvbWTWzH93RR62sPCXOKq1UUIizvXpys74uMUoywRxbuvhEfKZgbwoorVYcmax/3JZQ7wt+ASt+7bf+A==",
             "primary_blob_endpoint": "https://stamonitor.blob.core.windows.net/",
             "primary_blob_host": "stamonitor.blob.core.windows.net",
-            "primary_connection_string": "DefaultEndpointsProtocol=https;AccountName=stamonitor;AccountKey=B3uWnlDq1WEU7xEe4CmiG6U2UjseGoPWPYWNp1KUd7r+iDjh4FGTsNbiKKc20vCB/3ZJZHwo+fpF+AStoB5Mlg==;EndpointSuffix=core.windows.net",
+            "primary_connection_string": "DefaultEndpointsProtocol=https;AccountName=stamonitor;AccountKey=gECJSzsvbWTWzH93RR62sPCXOKq1UUIizvXpys74uMUoywRxbuvhEfKZgbwoorVYcmax/3JZQ7wt+ASt+7bf+A==;EndpointSuffix=core.windows.net",
             "primary_dfs_endpoint": "https://stamonitor.dfs.core.windows.net/",
             "primary_dfs_host": "stamonitor.dfs.core.windows.net",
             "primary_file_endpoint": "https://stamonitor.file.core.windows.net/",
@@ -2667,13 +1796,13 @@
                 ]
               }
             ],
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "routing": [],
-            "secondary_access_key": "W8Raeate9pA6qlqTGD/j3yDogtC8Ypp3U9TWTtaooBgCTfeqikjBHeQbCw/UbNOlNYk9m2goIz8m+AStSr48vA==",
+            "secondary_access_key": "t2k6pI09325J0KpimTnul4dBUjwFshwaNKaq8hiPmlHemaDhwff0brtJDcOBmJ71bumgmdmNSn1R+AStAWzV1A==",
             "secondary_blob_connection_string": "",
             "secondary_blob_endpoint": null,
             "secondary_blob_host": null,
-            "secondary_connection_string": "DefaultEndpointsProtocol=https;AccountName=stamonitor;AccountKey=W8Raeate9pA6qlqTGD/j3yDogtC8Ypp3U9TWTtaooBgCTfeqikjBHeQbCw/UbNOlNYk9m2goIz8m+AStSr48vA==;EndpointSuffix=core.windows.net",
+            "secondary_connection_string": "DefaultEndpointsProtocol=https;AccountName=stamonitor;AccountKey=t2k6pI09325J0KpimTnul4dBUjwFshwaNKaq8hiPmlHemaDhwff0brtJDcOBmJ71bumgmdmNSn1R+AStAWzV1A==;EndpointSuffix=core.windows.net",
             "secondary_dfs_endpoint": null,
             "secondary_dfs_host": null,
             "secondary_file_endpoint": null,
@@ -2699,7 +1828,7 @@
             "shared_access_key_enabled": true,
             "static_website": [],
             "table_encryption_key_type": "Service",
-            "tags": {},
+            "tags": null,
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -2743,7 +1872,7 @@
             "default_to_oauth_authentication": false,
             "edge_zone": "",
             "enable_https_traffic_only": true,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Storage/storageAccounts/statls",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Storage/storageAccounts/statls",
             "identity": [],
             "infrastructure_encryption_enabled": false,
             "is_hns_enabled": false,
@@ -2763,11 +1892,11 @@
               }
             ],
             "nfsv3_enabled": false,
-            "primary_access_key": "S/oKT1eLcRd0kKqk9rjvIGRogK/qAul+SXhc1InVK4+CKyDzFOl1SgTlQAxfRE2a9ymxKp8agjeo+AStfffdAQ==",
-            "primary_blob_connection_string": "DefaultEndpointsProtocol=https;BlobEndpoint=https://statls.blob.core.windows.net/;AccountName=statls;AccountKey=S/oKT1eLcRd0kKqk9rjvIGRogK/qAul+SXhc1InVK4+CKyDzFOl1SgTlQAxfRE2a9ymxKp8agjeo+AStfffdAQ==",
+            "primary_access_key": "3+i1RJVrpiWCDWZU0E/lFukOEOGQ3tJujFVvbO/Sl/jPhMX1rizRcDnsCYDohvSG72RaPH1IfXgg+AStsr6awg==",
+            "primary_blob_connection_string": "DefaultEndpointsProtocol=https;BlobEndpoint=https://statls.blob.core.windows.net/;AccountName=statls;AccountKey=3+i1RJVrpiWCDWZU0E/lFukOEOGQ3tJujFVvbO/Sl/jPhMX1rizRcDnsCYDohvSG72RaPH1IfXgg+AStsr6awg==",
             "primary_blob_endpoint": "https://statls.blob.core.windows.net/",
             "primary_blob_host": "statls.blob.core.windows.net",
-            "primary_connection_string": "DefaultEndpointsProtocol=https;AccountName=statls;AccountKey=S/oKT1eLcRd0kKqk9rjvIGRogK/qAul+SXhc1InVK4+CKyDzFOl1SgTlQAxfRE2a9ymxKp8agjeo+AStfffdAQ==;EndpointSuffix=core.windows.net",
+            "primary_connection_string": "DefaultEndpointsProtocol=https;AccountName=statls;AccountKey=3+i1RJVrpiWCDWZU0E/lFukOEOGQ3tJujFVvbO/Sl/jPhMX1rizRcDnsCYDohvSG72RaPH1IfXgg+AStsr6awg==;EndpointSuffix=core.windows.net",
             "primary_dfs_endpoint": "https://statls.dfs.core.windows.net/",
             "primary_dfs_host": "statls.dfs.core.windows.net",
             "primary_file_endpoint": "https://statls.file.core.windows.net/",
@@ -2811,13 +1940,13 @@
                 ]
               }
             ],
-            "resource_group_name": "brief4_QB",
+            "resource_group_name": "brief4_QB2",
             "routing": [],
-            "secondary_access_key": "xJQoabvS/qhXVUL2Uh62raZD2tfpiYM8NUyqZn+tvm6JxS4p+9hXQ0nm7umjYE1fKa3CaRkfQVWW+AStJCZgEw==",
+            "secondary_access_key": "mTeINH1N37SPLzjGhdtmK+CnCKqpfmf+qIHySZsebd3J3EpreTmR/Fx9uJeAlVXlO6anhSeitTin+AStejyLNw==",
             "secondary_blob_connection_string": "",
             "secondary_blob_endpoint": null,
             "secondary_blob_host": null,
-            "secondary_connection_string": "DefaultEndpointsProtocol=https;AccountName=statls;AccountKey=xJQoabvS/qhXVUL2Uh62raZD2tfpiYM8NUyqZn+tvm6JxS4p+9hXQ0nm7umjYE1fKa3CaRkfQVWW+AStJCZgEw==;EndpointSuffix=core.windows.net",
+            "secondary_connection_string": "DefaultEndpointsProtocol=https;AccountName=statls;AccountKey=mTeINH1N37SPLzjGhdtmK+CnCKqpfmf+qIHySZsebd3J3EpreTmR/Fx9uJeAlVXlO6anhSeitTin+AStejyLNw==;EndpointSuffix=core.windows.net",
             "secondary_dfs_endpoint": null,
             "secondary_dfs_host": null,
             "secondary_file_endpoint": null,
@@ -2843,7 +1972,7 @@
             "shared_access_key_enabled": true,
             "static_website": [],
             "table_encryption_key_type": "Service",
-            "tags": {},
+            "tags": null,
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -2867,15 +1996,15 @@
               "AzureServices"
             ],
             "default_action": "Allow",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Storage/storageAccounts/staapp",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Storage/storageAccounts/staapp",
             "ip_rules": [
               "212.51.190.22"
             ],
             "private_link_access": [],
-            "storage_account_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Storage/storageAccounts/staapp",
+            "storage_account_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Storage/storageAccounts/staapp",
             "timeouts": null,
             "virtual_network_subnet_ids": [
-              "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_app"
+              "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_app"
             ]
           },
           "sensitive_attributes": [],
@@ -2942,7 +2071,7 @@
             "id": "https://statls.blob.core.windows.net/stacontainer",
             "metadata": {},
             "name": "stacontainer",
-            "resource_manager_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Storage/storageAccounts/statls/blobServices/default/containers/stacontainer",
+            "resource_manager_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Storage/storageAccounts/statls/blobServices/default/containers/stacontainer",
             "storage_account_name": "statls",
             "timeouts": null
           },
@@ -2971,7 +2100,7 @@
             "metadata": {},
             "name": "magentoshare01",
             "quota": 5,
-            "resource_manager_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Storage/storageAccounts/staapp/fileServices/default/fileshares/magentoshare01",
+            "resource_manager_id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Storage/storageAccounts/staapp/fileServices/default/fileshares/magentoshare01",
             "storage_account_name": "staapp",
             "timeouts": null,
             "url": "https://staapp.file.core.windows.net/magentoshare01"
@@ -3000,12 +2129,12 @@
             "delegation": [],
             "enforce_private_link_endpoint_network_policies": false,
             "enforce_private_link_service_network_policies": false,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_app",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_app",
             "name": "subnet_app",
             "private_endpoint_network_policies_enabled": true,
             "private_link_service_network_policies_enabled": true,
-            "resource_group_name": "brief4_QB",
-            "service_endpoint_policy_ids": [],
+            "resource_group_name": "brief4_QB2",
+            "service_endpoint_policy_ids": null,
             "service_endpoints": [
               "Microsoft.Storage"
             ],
@@ -3036,13 +2165,13 @@
             "delegation": [],
             "enforce_private_link_endpoint_network_policies": false,
             "enforce_private_link_service_network_policies": false,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_bastion",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_bastion",
             "name": "subnet_bastion",
             "private_endpoint_network_policies_enabled": true,
             "private_link_service_network_policies_enabled": true,
-            "resource_group_name": "brief4_QB",
-            "service_endpoint_policy_ids": [],
-            "service_endpoints": [],
+            "resource_group_name": "brief4_QB2",
+            "service_endpoint_policy_ids": null,
+            "service_endpoints": null,
             "timeouts": null,
             "virtual_network_name": "network"
           },
@@ -3070,12 +2199,12 @@
             "delegation": [],
             "enforce_private_link_endpoint_network_policies": false,
             "enforce_private_link_service_network_policies": false,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_bdd",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_bdd",
             "name": "subnet_bdd",
             "private_endpoint_network_policies_enabled": true,
             "private_link_service_network_policies_enabled": true,
-            "resource_group_name": "brief4_QB",
-            "service_endpoint_policy_ids": [],
+            "resource_group_name": "brief4_QB2",
+            "service_endpoint_policy_ids": null,
             "service_endpoints": [
               "Microsoft.Sql",
               "Microsoft.Storage"
@@ -3107,13 +2236,13 @@
             "delegation": [],
             "enforce_private_link_endpoint_network_policies": false,
             "enforce_private_link_service_network_policies": false,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_elastic",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_elastic",
             "name": "subnet_elastic",
             "private_endpoint_network_policies_enabled": true,
             "private_link_service_network_policies_enabled": true,
-            "resource_group_name": "brief4_QB",
-            "service_endpoint_policy_ids": [],
-            "service_endpoints": [],
+            "resource_group_name": "brief4_QB2",
+            "service_endpoint_policy_ids": null,
+            "service_endpoints": null,
             "timeouts": null,
             "virtual_network_name": "network"
           },
@@ -3141,13 +2270,13 @@
             "delegation": [],
             "enforce_private_link_endpoint_network_policies": false,
             "enforce_private_link_service_network_policies": false,
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_gateway",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_gateway",
             "name": "subnet_gateway",
             "private_endpoint_network_policies_enabled": true,
             "private_link_service_network_policies_enabled": true,
-            "resource_group_name": "brief4_QB",
-            "service_endpoint_policy_ids": [],
-            "service_endpoints": [],
+            "resource_group_name": "brief4_QB2",
+            "service_endpoint_policy_ids": null,
+            "service_endpoints": null,
             "timeouts": null,
             "virtual_network_name": "network"
           },
@@ -3169,13 +2298,13 @@
         {
           "schema_version": 1,
           "attributes": {
-            "client_id": "8fed33fa-260d-4fd0-a9a8-a6429eac2eb0",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-magento",
+            "client_id": "1b556edc-eb1a-4520-98f2-b9f4237270a8",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-magento",
             "location": "eastus2",
             "name": "id-magento",
-            "principal_id": "097011b1-744f-4707-9581-ad0aac54fd81",
-            "resource_group_name": "brief4_QB",
-            "tags": {},
+            "principal_id": "bbc71850-7b79-40e9-a2ea-964e8feffafb",
+            "resource_group_name": "brief4_QB2",
+            "tags": null,
             "tenant_id": "a2e466aa-4f86-4545-b5b8-97da7c8febf3",
             "timeouts": null
           },
@@ -3204,44 +2333,13 @@
             "dns_servers": [],
             "edge_zone": "",
             "flow_timeout_in_minutes": 0,
-            "guid": "711289c5-2ef8-4d77-a0ff-6cc398f974ed",
-            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network",
+            "guid": "5be9edbb-8177-44a4-81c6-1e0f2b1bbcf2",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB2/providers/Microsoft.Network/virtualNetworks/network",
             "location": "eastus2",
             "name": "network",
-            "resource_group_name": "brief4_QB",
-            "subnet": [
-              {
-                "address_prefix": "10.1.0.0/16",
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_gateway",
-                "name": "subnet_gateway",
-                "security_group": ""
-              },
-              {
-                "address_prefix": "10.2.0.0/16",
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_app",
-                "name": "subnet_app",
-                "security_group": ""
-              },
-              {
-                "address_prefix": "10.3.0.0/16",
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_bdd",
-                "name": "subnet_bdd",
-                "security_group": ""
-              },
-              {
-                "address_prefix": "10.4.0.0/16",
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_elastic",
-                "name": "subnet_elastic",
-                "security_group": ""
-              },
-              {
-                "address_prefix": "10.6.0.0/16",
-                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_bastion",
-                "name": "subnet_bastion",
-                "security_group": ""
-              }
-            ],
-            "tags": {},
+            "resource_group_name": "brief4_QB2",
+            "subnet": [],
+            "tags": null,
             "timeouts": null
           },
           "sensitive_attributes": [],
@@ -3261,12 +2359,12 @@
         {
           "schema_version": 0,
           "attributes": {
-            "b64_std": "OyYHmqdHvLk=",
-            "b64_url": "OyYHmqdHvLk",
+            "b64_std": "d+JYs1e6PB8=",
+            "b64_url": "d-JYs1e6PB8",
             "byte_length": 8,
-            "dec": "4262102458165607609",
-            "hex": "3b26079aa747bcb9",
-            "id": "OyYHmqdHvLk",
+            "dec": "8638564562544245791",
+            "hex": "77e258b357ba3c1f",
+            "id": "d-JYs1e6PB8",
             "keepers": null,
             "prefix": null
           },
@@ -3283,7 +2381,7 @@
         {
           "schema_version": 3,
           "attributes": {
-            "bcrypt_hash": "$2a$10$vZMX04wI7CndQBr57wC5xe1tAsuIZAfPZhfIRO.nRSm7uqpxSI3ny",
+            "bcrypt_hash": "$2a$10$L7IiFMp1PSanL3q3WglRmuKI4aWRfquoB6t.ZnliUXZzfX0PaTrU6",
             "id": "none",
             "keepers": null,
             "length": 16,
@@ -3295,7 +2393,7 @@
             "number": true,
             "numeric": true,
             "override_special": "!#$%\u0026*()-_=+[]{}\u003c\u003e:?",
-            "result": "zb5W0{sfE!%58s}a",
+            "result": "dVDqNvf+z9ed4FVC",
             "special": true,
             "upper": true
           },

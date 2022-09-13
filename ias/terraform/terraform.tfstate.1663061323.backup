@@ -1,0 +1,382 @@
+{
+  "version": 4,
+  "terraform_version": "1.2.7",
+  "serial": 801,
+  "lineage": "637868ba-fbc7-98ab-33b2-e4b1c8b7c29a",
+  "outputs": {
+    "ip_private": {
+      "value": "10.2.0.19",
+      "type": "string"
+    },
+    "password": {
+      "value": "mw6JDV!x6!t3A[p)",
+      "type": "string",
+      "sensitive": true
+    },
+    "public_ip_address_app": {
+      "value": [
+        "20.7.160.93"
+      ],
+      "type": [
+        "tuple",
+        [
+          "string"
+        ]
+      ]
+    },
+    "public_ip_address_gateway": {
+      "value": [
+        "20.22.185.176"
+      ],
+      "type": [
+        "tuple",
+        [
+          "string"
+        ]
+      ]
+    },
+    "resource_group_name": {
+      "value": "brief4_QB2",
+      "type": "string"
+    },
+    "test": {
+      "value": "privatelink.mariadb.database.azure.com",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "data",
+      "type": "external",
+      "name": "id_alert_requesthttp",
+      "provider": "provider[\"registry.terraform.io/hashicorp/external\"]",
+      "instances": []
+    },
+    {
+      "mode": "data",
+      "type": "template_cloudinit_config",
+      "name": "configapp",
+      "provider": "provider[\"registry.terraform.io/hashicorp/template\"]",
+      "instances": []
+    },
+    {
+      "mode": "data",
+      "type": "template_file",
+      "name": "scriptapp",
+      "provider": "provider[\"registry.terraform.io/hashicorp/template\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_application_insights",
+      "name": "insight",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_key_vault",
+      "name": "keyvault",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_key_vault_access_policy",
+      "name": "admin",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_key_vault_access_policy",
+      "name": "app",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_key_vault_certificate",
+      "name": "example",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_linux_virtual_machine",
+      "name": "vm_app",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_linux_virtual_machine",
+      "name": "vm_bastion",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_linux_virtual_machine",
+      "name": "vmelasticsrh",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_mariadb_database",
+      "name": "db_magento",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_mariadb_firewall_rule",
+      "name": "mdbrule",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_mariadb_server",
+      "name": "server_magento",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_monitor_action_group",
+      "name": "group-monitor",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_monitor_metric_alert",
+      "name": "alert-stock",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_monitor_metric_alert",
+      "name": "alert-vm-cpu",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_network_security_rule",
+      "name": "nsg_inbound_2000",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_private_dns_zone",
+      "name": "private_dns_mariadb",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_private_dns_zone_virtual_network_link",
+      "name": "link_bdd",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_private_endpoint",
+      "name": "private_bdd",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_ssh_public_key",
+      "name": "ssh_nomad",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "Storage_share01",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "storage-bdd",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "storage-monitor",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "storage-tls",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_storage_account_network_rules",
+      "name": "Storage_share01_association",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_storage_blob",
+      "name": "blob_tls",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_storage_container",
+      "name": "storage-container-tls",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_storage_share",
+      "name": "smb_share",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_user_assigned_identity",
+      "name": "id-magento",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "network",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "address_space": [
+              "10.0.0.0/8"
+            ],
+            "bgp_community": "",
+            "ddos_protection_plan": [],
+            "dns_servers": [],
+            "edge_zone": "",
+            "flow_timeout_in_minutes": 0,
+            "guid": "6e4c87f3-d46a-4686-9c0d-90bdb2688f43",
+            "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network",
+            "location": "eastus2",
+            "name": "network",
+            "resource_group_name": "brief4_QB",
+            "subnet": [
+              {
+                "address_prefix": "10.1.0.0/16",
+                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_gateway",
+                "name": "subnet_gateway",
+                "security_group": ""
+              },
+              {
+                "address_prefix": "10.2.0.0/16",
+                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_app",
+                "name": "subnet_app",
+                "security_group": ""
+              },
+              {
+                "address_prefix": "10.3.0.0/16",
+                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_bdd",
+                "name": "subnet_bdd",
+                "security_group": ""
+              },
+              {
+                "address_prefix": "10.4.0.0/16",
+                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_elastic",
+                "name": "subnet_elastic",
+                "security_group": ""
+              },
+              {
+                "address_prefix": "10.6.0.0/16",
+                "id": "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/brief4_QB/providers/Microsoft.Network/virtualNetworks/network/subnets/subnet_bastion",
+                "name": "subnet_bastion",
+                "security_group": ""
+              }
+            ],
+            "tags": {},
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "azurerm_resource_group.rg"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "random_id",
+      "name": "randomId",
+      "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "b64_std": "1fZcfGc682Q=",
+            "b64_url": "1fZcfGc682Q",
+            "byte_length": 8,
+            "dec": "15417612063727088484",
+            "hex": "d5f65c7c673af364",
+            "id": "1fZcfGc682Q",
+            "keepers": null,
+            "prefix": null
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "random_password",
+      "name": "dbpassword",
+      "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
+      "instances": [
+        {
+          "schema_version": 3,
+          "attributes": {
+            "bcrypt_hash": "$2a$10$rRW8yYq2vhvXRdWUkF0.keauT8RLXvf0baeAffdGFkHHC3R0pbncK",
+            "id": "none",
+            "keepers": null,
+            "length": 16,
+            "lower": true,
+            "min_lower": 0,
+            "min_numeric": 0,
+            "min_special": 0,
+            "min_upper": 0,
+            "number": true,
+            "numeric": true,
+            "override_special": "!#$%\u0026*()-_=+[]{}\u003c\u003e:?",
+            "result": "mw6JDV!x6!t3A[p)",
+            "special": true,
+            "upper": true
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    }
+  ]
+}

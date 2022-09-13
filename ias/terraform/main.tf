@@ -186,6 +186,7 @@ resource "azurerm_key_vault" "keyvault" {
   sku_name = "premium"
 
 }
+
 resource "azurerm_key_vault_access_policy" "admin" {
   key_vault_id = azurerm_key_vault.keyvault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
@@ -300,7 +301,7 @@ resource "azurerm_key_vault_certificate" "example" {
     password = ""
   }
 }
-# CREATE AN AZURE STORAGE ACCOUNT
+# create an azure storage account
 #https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account
 
 resource "azurerm_storage_account" "storage-tls" {
@@ -311,7 +312,7 @@ resource "azurerm_storage_account" "storage-tls" {
   account_replication_type = "LRS"
 }
 
-# CREATE A CONTAINER WITHIN AN AZURE STORAGE ACCOUNT
+# create a container within an azure storage account
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container
 
 resource "azurerm_storage_container" "storage-container-tls" {
@@ -320,7 +321,7 @@ resource "azurerm_storage_container" "storage-container-tls" {
   container_access_type = "blob"
 }
 
-# CREATE A BLOB WITHIN A STORAGE CONTAINER
+# create a blob within a storage container
 #https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_blob
 
 resource "azurerm_storage_blob" "blob_tls" {
@@ -874,7 +875,7 @@ resource "azurerm_monitor_metric_alert" "alert-stock" {
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/template_deployment
 
 resource "azurerm_resource_group_template_deployment" "example" {
-  name                = "example-deploy"
+  name                = "arm-deploy"
   resource_group_name = azurerm_resource_group.rg.name
   deployment_mode     = "Incremental"
 
@@ -891,7 +892,7 @@ resource "azurerm_resource_group_template_deployment" "example" {
     "variables": {},
     "resources": [
         {
-            "type": "microsoft.insights/webtests",
+            "type": "Microsoft.Insights/webtests",
             "apiVersion": "2022-06-15",
             "name": "[parameters('webtests_requesthttp_insights_app_name')]",
             "location": "eastus2",
@@ -924,7 +925,7 @@ resource "azurerm_resource_group_template_deployment" "example" {
                     }
                 ],
                 "Request": {
-                    "RequestUrl": "http://${var.fqdn}.${var.resource_group_location}.cloudapp.azure.com",
+                    "RequestUrl": "https://${var.fqdn}.${var.resource_group_location}.cloudapp.azure.com",
                     "HttpVerb": "GET",
                     "ParseDependentRequests": false
                 },
@@ -939,4 +940,38 @@ resource "azurerm_resource_group_template_deployment" "example" {
 DEPLOY
 }
 
+data "external" "id_alert_requesthttp" {
+  program = ["sh", "./getAzRequest.sh"]
+  query = {
+    id = azurerm_resource_group_template_deployment.example.id
+  }
+}
 
+locals {
+  files = data.external.id_alert_requesthttp.result
+  instance = azurerm_resource_group_template_deployment.example.id
+}
+
+resource "azurerm_monitor_metric_alert" "alert-availability" {
+  name                = "alert-availability"
+  resource_group_name = azurerm_resource_group.rg.name
+  scopes              = [azurerm_application_insights.insight.id]
+  description         = "Availability"
+
+  criteria {
+    metric_namespace = "Microsoft.Insights/components"
+    metric_name      = "availabilityResults/availabilityPercentage"
+    aggregation      = "Average"
+    operator         = "LessThan"
+    threshold        = 100
+    dimension {
+      name="availabilityResult/name"
+      operator = "Include"
+      values=["requesthttp"]
+    }
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.group-monitor.id
+  }
+}
