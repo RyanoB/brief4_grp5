@@ -80,3 +80,4 @@ runcmd:
   - sudo mount -t cifs //staapp.file.core.windows.net/magentoshare01 /var/www/html/magento2/pub -o credentials=/etc/smbcredentials/staapp.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30
   - sudo cp -R /home/magento/pub/* /var/www/html/magento2/pub
   - rm var/.maintenance.flag
+  - cd /var/www/html/magento2 && sudo bin/magento module:disable Magento_TwoFactorAuth
