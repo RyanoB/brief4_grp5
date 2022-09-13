@@ -172,9 +172,15 @@ resource "azurerm_user_assigned_identity" "id-magento" {
 }
 
 data "azurerm_client_config" "current" {}
+data "azuread_user" "mybigq" {
+  user_principal_name = "qbesse.ext@simplonformations.onmicrosoft.com"
+}
 
 data "azuread_user" "mybigstep" {
   user_principal_name = "sandriamarofahatra.ext@simplonformations.onmicrosoft.com"
+}
+data "azuread_user" "mybigr" {
+  user_principal_name = "rboucheriha.ext@simplonformations.onmicrosoft.com"
 }
 
 resource "azurerm_key_vault" "keyvault" {
@@ -193,7 +199,7 @@ resource "azurerm_key_vault" "keyvault" {
 resource "azurerm_key_vault_access_policy" "admin" {
   key_vault_id = azurerm_key_vault.keyvault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_client_config.current.object_id
+  object_id    = data.azuread_user.mybigq.object_id
 
    certificate_permissions = [
       "Create",
@@ -337,6 +343,67 @@ resource "azurerm_key_vault_access_policy" "mybigstep" {
       "Update",
       "Verify",
       "WrapKey",
+      "Release",
+      "Rotate",
+      "GetRotationPolicy",
+      "SetRotationPolicy",
+    ]
+
+    secret_permissions = [
+      "Backup",
+      "Delete",
+      "Get",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Set",
+    ]
+}
+
+
+resource "azurerm_key_vault_access_policy" "mybigr" {
+  key_vault_id = azurerm_key_vault.keyvault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azuread_user.mybigr.object_id
+
+   certificate_permissions = [
+      "Create",
+      "Delete",
+      "DeleteIssuers",
+      "Get",
+      "GetIssuers",
+      "Import",
+      "List",
+      "ListIssuers",
+      "ManageContacts",
+      "ManageIssuers",
+      "SetIssuers",
+      "Update",
+      "Purge",
+    ]
+
+    key_permissions = [
+      "Backup",
+      "Create",
+      "Decrypt",
+      "Delete",
+      "Encrypt",
+      "Get",
+      "Import",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Sign",
+      "UnwrapKey",
+      "Update",
+      "Verify",
+      "WrapKey",
+      "Release",
+      "Rotate",
+      "GetRotationPolicy",
+      "SetRotationPolicy",
     ]
 
     secret_permissions = [

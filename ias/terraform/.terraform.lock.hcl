@@ -4,6 +4,7 @@
 provider "registry.terraform.io/hashicorp/azuread" {
   version = "2.28.1"
   hashes = [
+    "h1:3jxt0MSlf6JBDJIAmSidwUNWnloHu7kV1C+m3BJu7Os=",
     "h1:j1gkaSGKC8NVOYK1u3cBgZgxloCAZEzK11DoVnP/RUw=",
     "zh:02eb721687ddd7ab3633f9bd544ab4dd187c89c90e0d3263d6fa360cab5cc13c",
     "zh:0abcc323e010fb71d58d9fab5f52e3ef5be1af3e1728f8b3777bc2f3ebbf94df",
