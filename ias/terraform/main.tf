@@ -173,6 +173,9 @@ resource "azurerm_user_assigned_identity" "id-magento" {
 
 data "azurerm_client_config" "current" {}
 
+data "azuread_user" "mybigstep" {
+  user_principal_name = "sandriamarofahatra.ext@simplonformations.onmicrosoft.com"
+}
 
 resource "azurerm_key_vault" "keyvault" {
   name                        = "keyvaultmagento"
@@ -244,6 +247,58 @@ resource "azurerm_key_vault_access_policy" "app" {
   key_vault_id = azurerm_key_vault.keyvault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = azurerm_user_assigned_identity.id-magento.principal_id
+
+   certificate_permissions = [
+      "Create",
+      "Delete",
+      "DeleteIssuers",
+      "Get",
+      "GetIssuers",
+      "Import",
+      "List",
+      "ListIssuers",
+      "ManageContacts",
+      "ManageIssuers",
+      "SetIssuers",
+      "Update",
+      "Purge",
+    ]
+
+    key_permissions = [
+      "Backup",
+      "Create",
+      "Decrypt",
+      "Delete",
+      "Encrypt",
+      "Get",
+      "Import",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Sign",
+      "UnwrapKey",
+      "Update",
+      "Verify",
+      "WrapKey",
+    ]
+
+    secret_permissions = [
+      "Backup",
+      "Delete",
+      "Get",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Set",
+    ]
+}
+
+resource "azurerm_key_vault_access_policy" "mybigstep" {
+  key_vault_id = azurerm_key_vault.keyvault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azuread_user.mybigstep.object_id
 
    certificate_permissions = [
       "Create",
@@ -973,7 +1028,7 @@ resource "azurerm_monitor_metric_alert" "alert-availability" {
 # CHECK des Prérequis du FILE SHARE ci-dessous :
 # region eastus OK, account kind en General purpose ok, Standard OK, firewall allowed ok, smb ok (BACKUP STORAGE ne supporte pas nfs)
 
-# STEP1 : CREATION D'UN RECOVERY VAULT 
+# STEP1 : CREATION D'UN RECOVERY VAULT
 
 resource "azurerm_recovery_services_vault" "magento-rsvault" {
   name                = "magento-recovery-vault"
@@ -1008,7 +1063,7 @@ resource "azurerm_backup_policy_file_share" "magentopolicy01" {
   }
 }
 # STEP4 : LIAISON DES RESSOURCES ET MISE EN PLACE
-# NB : " effet de bord " => Force la mise en place d'un AZUREPROTECTIONLOCK (LOCK) du compte de stockage. seul le Owners peut supprimer.  
+# NB : " effet de bord " => Force la mise en place d'un AZUREPROTECTIONLOCK (LOCK) du compte de stockage. seul le Owners peut supprimer.
 resource "azurerm_backup_protected_file_share" "share1" {
   resource_group_name       = azurerm_resource_group.rg.name
   recovery_vault_name       = azurerm_recovery_services_vault.magento-rsvault.name
