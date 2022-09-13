@@ -940,17 +940,7 @@ resource "azurerm_resource_group_template_deployment" "example" {
 DEPLOY
 }
 
-data "external" "id_alert_requesthttp" {
-  program = ["sh", "./getAzRequest.sh"]
-  query = {
-    id = azurerm_resource_group_template_deployment.example.id
-  }
-}
 
-locals {
-  files = data.external.id_alert_requesthttp.result
-  instance = azurerm_resource_group_template_deployment.example.id
-}
 
 resource "azurerm_monitor_metric_alert" "alert-availability" {
   name                = "alert-availability"
@@ -975,3 +965,57 @@ resource "azurerm_monitor_metric_alert" "alert-availability" {
     action_group_id = azurerm_monitor_action_group.group-monitor.id
   }
 }
+
+
+
+
+# -----------------------------BACKUP POUR STORAGE SHARES FILE------------------------------------------------
+# CHECK des Prérequis du FILE SHARE ci-dessous :
+# region eastus OK, account kind en General purpose ok, Standard OK, firewall allowed ok, smb ok (BACKUP STORAGE ne supporte pas nfs)
+
+# STEP1 : CREATION D'UN RECOVERY VAULT 
+
+resource "azurerm_recovery_services_vault" "magento-rsvault" {
+  name                = "magento-recovery-vault"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku                 = "Standard"
+}
+
+# STEP4 :CREATION D'UN BACKUP CONTAINER
+
+resource "azurerm_backup_container_storage_account" "protection-container01" {
+  resource_group_name = azurerm_resource_group.rg.name
+  recovery_vault_name = azurerm_recovery_services_vault.magento-rsvault.name
+  storage_account_id  = azurerm_storage_account.Storage_share01.id
+}
+
+# STEP3 : CREATION d'un BACKUP POLICY + CONFIGURATION DES PARAMETRES
+resource "azurerm_backup_policy_file_share" "magentopolicy01" {
+  name                = "recovery-vault-magentopolicy01"
+  resource_group_name = azurerm_resource_group.rg.name
+  recovery_vault_name = azurerm_recovery_services_vault.magento-rsvault.name
+
+  timezone = "UTC"
+
+  backup {
+    frequency = "Daily"
+    time      = "14:00"
+  }
+
+  retention_daily {
+    count = 14
+  }
+}
+# STEP4 : LIAISON DES RESSOURCES ET MISE EN PLACE
+# NB : " effet de bord " => Force la mise en place d'un AZUREPROTECTIONLOCK (LOCK) du compte de stockage. seul le Owners peut supprimer.  
+resource "azurerm_backup_protected_file_share" "share1" {
+  resource_group_name       = azurerm_resource_group.rg.name
+  recovery_vault_name       = azurerm_recovery_services_vault.magento-rsvault.name
+  source_storage_account_id = azurerm_backup_container_storage_account.protection-container01.storage_account_id
+  source_file_share_name    = azurerm_storage_share.smb_share.name
+  backup_policy_id          = azurerm_backup_policy_file_share.magentopolicy01.id
+}
+
+#------------------------------FIN BACKUP STORAGE SHARES FILE-------------------------------------
+
