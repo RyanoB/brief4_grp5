@@ -5,6 +5,7 @@ packages:
   - mariadb-client
   - mariadb-client-10.1
   - nfs-common
+  - nginx
 
 users:
   - default
@@ -35,7 +36,7 @@ users:
 
 write_files:
   - path: /home/magento/magento
-    content: "upstream fastcgi_backend {\n  server  unix:/run/php/php8.1-fpm.sock;\n}\n\nserver {\n  listen [::]:80;\n  server_name _;\n  set $MAGE_ROOT /var/www/html/magento2;\n  include /var/www/html/magento2/nginx.conf.sample;\n}\n"
+    content: "upstream fastcgi_backend {\n  server  unix:/run/php/php8.1-fpm.sock;\n}\n\nserver {\n  listen 80;\n  server_name _;\n  set $MAGE_ROOT /var/www/html/magento2;\n  include /var/www/html/magento2/nginx.conf.sample;\n}\n"
 
 runcmd:
   - sudo apt install software-properties-common && sudo add-apt-repository ppa:ondrej/php -y
@@ -66,7 +67,8 @@ runcmd:
   - sudo echo "zlib.output_compression = On" >> vim /etc/php/8.1/cli/php.ini
   - sudo systemctl restart php8.1-fpm
   - sudo chmod 775 ./generated/
-  - cd /var/www/html/magento2 && sudo bin/magento setup:di:compil  - sudo cp -R /var/www/html/magento2/pub /home/magento/pub
+  - cd /var/www/html/magento2 && sudo bin/magento setup:di:compil
+  - sudo cp -R /var/www/html/magento2/pub /home/magento/pub
   - sudo mkdir /etc/smbcredentials
   - sudo bash -c 'echo "username=staapp" >> /etc/smbcredentials/staapp.cred'
   - sudo bash -c 'echo "password=${password}" >> /etc/smbcredentials/staapp.cred'
