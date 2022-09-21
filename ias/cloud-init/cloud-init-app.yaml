@@ -36,7 +36,7 @@ users:
 
 write_files:
   - path: /home/magento/magento
-    content: "upstream fastcgi_backend {\n  server  unix:/run/php/php8.1-fpm.sock;\n}\n\nserver {\n  listen 10.2.0.19:80;\n  server_name _;\n  set $MAGE_ROOT /var/www/html/magento2;\n  include /var/www/html/magento2/nginx.conf.sample;\n}\n"
+    content: "upstream fastcgi_backend {\n  server  unix:/run/php/php8.1-fpm.sock;\n}\n\nserver {\n  listen 80;\n  server_name _;\n  set $MAGE_ROOT /var/www/html/magento2;\n  include /var/www/html/magento2/nginx.conf.sample;\n}\n"
 
 runcmd:
   - sudo apt install software-properties-common && sudo add-apt-repository ppa:ondrej/php -y
