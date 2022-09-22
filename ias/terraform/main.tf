@@ -18,8 +18,9 @@ resource "azurerm_virtual_network" "network" {
 
 # CREATE SUBNET
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
-# Amélioration possible réduire le nombre de subnet.
+# Axe amélioration: réduire le nombre de sous réseau pour
 
+# Sous réseau de la gateway.
 # Obligatoire pour la gateway.
 resource "azurerm_subnet" "subnet_gateway" {
   name                 = var.subnet_gateway_name
@@ -28,8 +29,7 @@ resource "azurerm_subnet" "subnet_gateway" {
   address_prefixes     = var.subnet_gateway_address
 }
 
-# subnet de l'application Magento.
-# avec le compte endpoint du stockage.
+
 resource "azurerm_subnet" "subnet_app" {
   name                 = var.subnet_app_name
   resource_group_name  = azurerm_resource_group.rg.name
@@ -38,9 +38,6 @@ resource "azurerm_subnet" "subnet_app" {
     service_endpoints    = ["Microsoft.Storage"] # pour liaison compte de stockage smb share
 }
 
-# subnet de la base de donnée de l'application.
-# PROF: demander si variable better en dur ou en variable.
-#
 resource "azurerm_subnet" "subnet_bdd" {
   name                 = "subnet_bdd"
   resource_group_name  = azurerm_resource_group.rg.name
@@ -48,9 +45,9 @@ resource "azurerm_subnet" "subnet_bdd" {
   address_prefixes     = ["10.3.0.0/16"]
 
   service_endpoints    = ["Microsoft.Sql", "Microsoft.Storage"] # pour liaison sql et  compte de stockage
+  private_endpoint_network_policies_enabled = true
 }
 
-# Subnet elastic.
 resource "azurerm_subnet" "subnet_elastic" {
   name                 = "subnet_elastic"
   resource_group_name  = azurerm_resource_group.rg.name
@@ -663,12 +660,13 @@ resource "azurerm_linux_virtual_machine" "vm_bastion" {
   }
 }
 
+
 # CREATION D UNE VM APP
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine
 
-
+/*
 resource "azurerm_linux_virtual_machine_scale_set" "example" {
-  name                = "vmsapptest"
+  name                = "vmsapp"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   sku                 = "Standard_DS1_v2"
@@ -776,6 +774,7 @@ resource "azurerm_monitor_autoscale_setting" "example" {
     }
   }
 }
+*/
 
 # creation d'un gateway subnet
 # resource "azurerm_subnet" "myterraformsubnetgateway" {

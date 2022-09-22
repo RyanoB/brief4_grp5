@@ -83,4 +83,5 @@ runcmd:
   - sudo apt install nginx
   - sudo cp /home/magento/magento /etc/nginx/conf.d/magento.conf
   - sudo rm /etc/nginx/sites-enabled/default
+  - sudo sed -i "/^http {$/a add_header X-Backend-Server \$hostname;" /etc/nginx/nginx.conf
   - sudo systemctl restart nginx
