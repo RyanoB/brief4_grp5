@@ -184,7 +184,7 @@ data "azuread_user" "mybigr" {
 }
 
 resource "azurerm_key_vault" "keyvault" {
-  name                        = "keyvaultmagento"
+  name                        = "keyvaultmagento1"
   location                    = azurerm_resource_group.rg.location
   resource_group_name         = azurerm_resource_group.rg.name
   enabled_for_disk_encryption = true
@@ -419,7 +419,7 @@ resource "azurerm_key_vault_access_policy" "mybigr" {
 }
 
 resource "azurerm_key_vault_certificate" "example" {
-  name         = "key-magento-app"
+  name         = "key-magento-app2"
   key_vault_id = azurerm_key_vault.keyvault.id
 
   certificate {
@@ -479,7 +479,7 @@ resource "azurerm_network_security_rule" "nsg_inbound_2000" {
 #PARAMETRE = Par defaut est defini le protocole SMB
 
 resource "azurerm_storage_account" "Storage_share01" {
-  name = "staapp"
+  name = "stapp2"
   resource_group_name = azurerm_resource_group.rg.name
   location = azurerm_resource_group.rg.location
   account_tier = "Standard"
@@ -728,7 +728,7 @@ resource "azurerm_linux_virtual_machine" "vm_bastion" {
 
 
 resource "azurerm_linux_virtual_machine_scale_set" "example" {
-  name                = "vmsapp"
+  name                = "vmsapptest"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   sku                 = "Standard_DS1_v2"
@@ -745,7 +745,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "example" {
     username   = "magento"
     public_key = azurerm_ssh_public_key.ssh_nomad.public_key
   }
-
   source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
@@ -757,7 +756,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "example" {
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }
-
 
   network_interface {
     name    = "example"
@@ -805,7 +803,7 @@ resource "azurerm_monitor_autoscale_setting" "example" {
         direction = "Increase"
         type      = "ChangeCount"
         value     = "1"
-        cooldown  = "PT1M"
+        cooldown = "PT20M"
       }
     }
 
@@ -825,7 +823,7 @@ resource "azurerm_monitor_autoscale_setting" "example" {
         direction = "Decrease"
         type      = "ChangeCount"
         value     = "1"
-        cooldown  = "PT1M"
+        cooldown  = "PT15M"
       }
     }
   }
@@ -1178,7 +1176,7 @@ resource "azurerm_backup_container_storage_account" "protection-container01" {
 
 # STEP3 : CREATION d'un BACKUP POLICY + CONFIGURATION DES PARAMETRES
 resource "azurerm_backup_policy_file_share" "magentopolicy01" {
-  name                = "recovery-vault-magentopolicy01"
+  name                = "recovery-vault-magentopolicy012"
   resource_group_name = azurerm_resource_group.rg.name
   recovery_vault_name = azurerm_recovery_services_vault.magento-rsvault.name
 
