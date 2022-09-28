@@ -1,11 +1,11 @@
 #cloud-config
 package_update: true
 packages:
-  - nginx
   - composer
   - mariadb-client
   - mariadb-client-10.1
   - nfs-common
+  - nginx
 
 users:
   - default
@@ -58,8 +58,6 @@ runcmd:
   - sudo apt-get autoremove apache2 -y
   - sudo apt-get purge apache2 -y
   - sudo apt-get autoremove --purge apache2 -y
-  - sudo cp /home/magento/magento /etc/nginx/conf.d/magento.conf
-  - sudo rm /etc/nginx/sites-enabled/default
   - chown www-data:www-data -R /var/www/html/magento2/var/
   - sudo echo "memory_limit = 2G" >> vim /etc/php/8.1/fpm/php.ini
   - sudo echo "max_execution_time = 1800" >> vim /etc/php/8.1/fpm/php.ini
@@ -69,8 +67,7 @@ runcmd:
   - sudo echo "zlib.output_compression = On" >> vim /etc/php/8.1/cli/php.ini
   - sudo systemctl restart php8.1-fpm
   - sudo chmod 775 ./generated/
-  - cd /var/www/html/magento2 && sudo bin/magento setup:di:compile
-  - sudo systemctl restart nginx
+  - cd /var/www/html/magento2 && sudo bin/magento setup:di:compil
   - sudo cp -R /var/www/html/magento2/pub /home/magento/pub
   - sudo mkdir /etc/smbcredentials
   - sudo bash -c 'echo "username=staapp" >> /etc/smbcredentials/staapp.cred'
@@ -80,3 +77,18 @@ runcmd:
   - sudo mount -t cifs //staapp.file.core.windows.net/magentoshare01 /var/www/html/magento2/pub -o credentials=/etc/smbcredentials/staapp.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30
   - sudo cp -R /home/magento/pub/* /var/www/html/magento2/pub
   - rm var/.maintenance.flag
+  - sudo chown -R www-data:www-data /var/www/html/magento2/var/cache
+  - sudo chown -R www-data:www-data /var/www/html/magento2
+  - sudo cp /home/magento/magento /etc/nginx/conf.d/magento.conf
+  - sudo rm /etc/nginx/sites-enabled/default
+  - sudo systemctl restart nginx
+  - sudo sed -i "/^http {$/a add_header X-Backend-Server \$hostname;" /etc/nginx/nginx.conf
+  - sudo systemctl restart nginx
+  - cd /var/www/html/magento2 && sudo bin/magento module:disable Magento_TwoFactorAuth
+  - cd /var/www/html/magento2 && sudo chmod -R 0777 var/ pub/ generated/
+  - cd /var/www/html/magento2 && sudo rm -rf var/cache/* var/view_preprocessed/* generated/* pub/static/*
+  - cd /var/www/html/magento2 && sudo bin/magento setup:upgrade
+  - cd /var/www/html/magento2 && sudo bin/magento setup:di:compile
+  - cd /var/www/html/magento2 && sudo bin/magento setup:static-content:deploy -f
+  - cd /var/www/html/magento2 && sudo bin/magento cache:flush
+  - cd /var/www/html/magento2 && sudo bin/magento indexer:reindex

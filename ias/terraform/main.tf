@@ -18,13 +18,17 @@ resource "azurerm_virtual_network" "network" {
 
 # CREATE SUBNET
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
+# Axe amélioration: réduire le nombre de sous réseau pour
 
+# Sous réseau de la gateway.
+# Obligatoire pour la gateway.
 resource "azurerm_subnet" "subnet_gateway" {
   name                 = var.subnet_gateway_name
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = var.subnet_gateway_address
 }
+
 
 resource "azurerm_subnet" "subnet_app" {
   name                 = var.subnet_app_name
@@ -52,12 +56,139 @@ resource "azurerm_subnet" "subnet_elastic" {
 }
 
 resource "azurerm_subnet" "subnet_bastion" {
-  name = "subnet_bastion"
+  name = "AzureBastionSubnet"
   resource_group_name = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = ["10.6.0.0/16"]
 }
+/*
+resource "azurerm_network_security_group" "nsg_bastion" {
+  name                = "nsg_bastion"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
 
+
+  security_rule {
+    # Ingress traffic from Internet on 443 is enabled
+    name                       = "AllowIB_HTTPS443_Internet"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "Internet"
+    destination_address_prefix = "*"
+  }
+  security_rule {
+    # Ingress traffic for control plane activity that is GatewayManger to be able to talk to Azure Bastion
+    name                       = "AllowIB_TCP443_GatewayManager"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "GatewayManager"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    # Ingress traffic for health probes, enabled AzureLB to detect connectivity
+    name                       = "AllowIB_TCP443_AzureLoadBalancer"
+    priority                   = 120
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "AzureLoadBalancer"
+    destination_address_prefix = "*"
+  }
+  security_rule {
+    # Ingress traffic for data plane activity that is VirtualNetwork service tag
+    name                       = "AllowIB_BastionHost_Commn8080"
+    priority                   = 130
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_ranges    = ["8080", "5701"]
+    source_address_prefix      = "VirtualNetwork"
+    destination_address_prefix = "VirtualNetwork"
+  }
+
+  security_rule {
+    # Deny all other Ingress traffic
+    name                       = "DenyIB_any_other_traffic"
+    priority                   = 900
+    direction                  = "Inbound"
+    access                     = "Deny"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  # * * * * * * OUT-BOUND Traffic * * * * * * #
+
+  # Egress traffic to the target VM subnets over ports 3389 and 22
+  security_rule {
+    name                       = "AllowOB_SSHRDP_VirtualNetwork"
+    priority                   = 100
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_ranges    = ["3389", "22"]
+    source_address_prefix      = "*"
+    destination_address_prefix = "VirtualNetwork"
+  }
+  # Egress traffic to AzureCloud over 443
+  security_rule {
+    name                       = "AllowOB_AzureCloud"
+    priority                   = 105
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "*"
+    destination_address_prefix = "AzureCloud"
+  }
+  # Egress traffic for data plane communication between the Bastion and VNets service tags
+  security_rule {
+    name                       = "AllowOB_BastionHost_Comn"
+    priority                   = 110
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_ranges    = ["8080", "5701"]
+    source_address_prefix      = "VirtualNetwork"
+    destination_address_prefix = "VirtualNetwork"
+  }
+
+  # Egress traffic for SessionInformation
+  security_rule {
+    name                       = "AllowOB_GetSessionInformation"
+    priority                   = 120
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = "*"
+    destination_address_prefix = "Internet"
+  }
+}
+
+# Associate the NSG to the AZBastionHost Subnet
+resource "azurerm_subnet_network_security_group_association" "azbsubnet-and-nsg-association" {
+  network_security_group_id = azurerm_network_security_group.nsg_bastion.id
+  subnet_id                 = azurerm_subnet.subnet_bastion.id
+}
 # CREATE IP ADDRESS
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip
 
@@ -66,6 +197,7 @@ resource "azurerm_public_ip" "public_ip_bastion" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
+  sku = "Standard"
 }
 
 resource "azurerm_public_ip" "public_ip_gateway" {
@@ -79,7 +211,7 @@ resource "azurerm_public_ip" "public_ip_gateway" {
 
 # CREATE NETWORK SECURITY GROUP AND RULES
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group
-
+/*
 resource "azurerm_network_security_group" "nsg_bastion" {
   name                = "nsg_bastion"
   location            = azurerm_resource_group.rg.location
@@ -96,7 +228,7 @@ resource "azurerm_network_security_group" "nsg_bastion" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
-}
+}*/
 
 resource "azurerm_network_security_group" "nsg_app" {
   name                = "nsg_app"
@@ -105,7 +237,7 @@ resource "azurerm_network_security_group" "nsg_app" {
 
   security_rule {
     name                       = "PING"
-    priority                   = 100
+    priority                   = 101
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Icmp"
@@ -114,15 +246,25 @@ resource "azurerm_network_security_group" "nsg_app" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+  security_rule {
+    name                       = "AllowIB_SSHRDP_fromBastion"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_ranges     = ["443", "22", "3389"]
+    destination_address_prefix = "*"
+  }
 }
 
 # CONNECT THE SECURITY GROUP TO THE NETWORK INTERFACE
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_security_group_association
-
+/*
 resource "azurerm_network_interface_security_group_association" "assoc-nic-nsg-bastion" {
   network_interface_id      = azurerm_network_interface.nic_bastion.id
   network_security_group_id = azurerm_network_security_group.nsg_bastion.id
-}
+}*/
 
 resource "azurerm_network_interface_security_group_association" "assoc-nic-nsg-app" {
   network_interface_id      = azurerm_network_interface.nic_app.id
@@ -131,7 +273,7 @@ resource "azurerm_network_interface_security_group_association" "assoc-nic-nsg-a
 
 # CREATE NETWORK INTERFACE FOR THE BASTION
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_application_security_group_association
-
+/*
 resource "azurerm_network_interface" "nic_bastion" {
   name                = "nic_bastion"
   location            = azurerm_resource_group.rg.location
@@ -144,7 +286,7 @@ resource "azurerm_network_interface" "nic_bastion" {
     private_ip_address = "10.6.0.19"
     public_ip_address_id = azurerm_public_ip.public_ip_bastion.id
   }
-}
+}*/
 # CREATE NETWORK INTERFACE FOR APP
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_application_security_group_association
 
@@ -172,9 +314,15 @@ resource "azurerm_user_assigned_identity" "id-magento" {
 }
 
 data "azurerm_client_config" "current" {}
+data "azuread_user" "mybigq" {
+  user_principal_name = "qbesse.ext@simplonformations.onmicrosoft.com"
+}
 
 data "azuread_user" "mybigstep" {
   user_principal_name = "sandriamarofahatra.ext@simplonformations.onmicrosoft.com"
+}
+data "azuread_user" "mybigr" {
+  user_principal_name = "rboucheriha.ext@simplonformations.onmicrosoft.com"
 }
 
 resource "azurerm_key_vault" "keyvault" {
@@ -193,7 +341,7 @@ resource "azurerm_key_vault" "keyvault" {
 resource "azurerm_key_vault_access_policy" "admin" {
   key_vault_id = azurerm_key_vault.keyvault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_client_config.current.object_id
+  object_id    = data.azuread_user.mybigq.object_id
 
    certificate_permissions = [
       "Create",
@@ -337,6 +485,67 @@ resource "azurerm_key_vault_access_policy" "mybigstep" {
       "Update",
       "Verify",
       "WrapKey",
+      "Release",
+      "Rotate",
+      "GetRotationPolicy",
+      "SetRotationPolicy",
+    ]
+
+    secret_permissions = [
+      "Backup",
+      "Delete",
+      "Get",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Set",
+    ]
+}
+
+
+resource "azurerm_key_vault_access_policy" "mybigr" {
+  key_vault_id = azurerm_key_vault.keyvault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azuread_user.mybigr.object_id
+
+   certificate_permissions = [
+      "Create",
+      "Delete",
+      "DeleteIssuers",
+      "Get",
+      "GetIssuers",
+      "Import",
+      "List",
+      "ListIssuers",
+      "ManageContacts",
+      "ManageIssuers",
+      "SetIssuers",
+      "Update",
+      "Purge",
+    ]
+
+    key_permissions = [
+      "Backup",
+      "Create",
+      "Decrypt",
+      "Delete",
+      "Encrypt",
+      "Get",
+      "Import",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Sign",
+      "UnwrapKey",
+      "Update",
+      "Verify",
+      "WrapKey",
+      "Release",
+      "Rotate",
+      "GetRotationPolicy",
+      "SetRotationPolicy",
     ]
 
     secret_permissions = [
@@ -412,7 +621,7 @@ resource "azurerm_network_security_rule" "nsg_inbound_2000" {
 #PARAMETRE = Par defaut est defini le protocole SMB
 
 resource "azurerm_storage_account" "Storage_share01" {
-  name = "staapp"
+  name = "stapp2"
   resource_group_name = azurerm_resource_group.rg.name
   location = azurerm_resource_group.rg.location
   account_tier = "Standard"
@@ -621,7 +830,21 @@ resource "azurerm_mariadb_firewall_rule" "mdbrule" {
 
 # CREATION D UNE VM BASTION
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine
+resource "azurerm_bastion_host" "example" {
+  name                = "bastion_magento"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku = "Standard"
+  shareable_link_enabled = true
 
+  ip_configuration {
+    name                 = "configuration"
+    subnet_id            = azurerm_subnet.subnet_bastion.id
+    public_ip_address_id = azurerm_public_ip.public_ip_bastion.id
+  }
+}
+
+/*
 resource "azurerm_linux_virtual_machine" "vm_bastion" {
   name = "vm_bastion"
   location              = azurerm_resource_group.rg.location
@@ -654,13 +877,14 @@ resource "azurerm_linux_virtual_machine" "vm_bastion" {
     username   = "bastion"
     public_key = azurerm_ssh_public_key.ssh_nomad.public_key
   }
-}
+}*/
+
 
 # CREATION D UNE VM APP
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine
-
+/*
 resource "azurerm_linux_virtual_machine" "vm_app" {
-  name                  = "vm_app"
+  name                  = "vm_apptest"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.nic_app.id]
@@ -696,7 +920,123 @@ resource "azurerm_linux_virtual_machine" "vm_app" {
     storage_account_uri = azurerm_storage_account.storage-bdd.primary_blob_endpoint
   }
 }
+*/
 
+resource "azurerm_linux_virtual_machine_scale_set" "example" {
+  name                = "vmsapp"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  sku                 = "Standard_DS1_v2"
+  instances           = 1
+
+  # GENERER LE FICHIER YAML CLOUD-INIT POUR CONFIGURATION DE LA VM BASTION
+  # https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config
+
+  //custom_data = data.template_cloudinit_config.configapp.rendered
+  admin_username                  = "magento"
+  disable_password_authentication = true
+  source_image_id = "/subscriptions/a1f74e2d-ec58-4f9a-a112-088e3469febb/resourceGroups/img_magento/providers/Microsoft.Compute/images/img_magento"
+
+  admin_ssh_key {
+    username   = "magento"
+    public_key = azurerm_ssh_public_key.ssh_nomad.public_key
+  }
+  /*
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+  */
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Premium_LRS"
+  }
+
+  network_interface {
+    name    = azurerm_network_interface.nic_app.name
+    primary = true
+
+    ip_configuration {
+      name      = "internal"
+      primary   = true
+      subnet_id = azurerm_subnet.subnet_app.id
+      application_gateway_backend_address_pool_ids = [tolist(azurerm_application_gateway.network_gateway.backend_address_pool).0.id]
+    }
+  }
+  boot_diagnostics {
+    storage_account_uri = azurerm_storage_account.storage-bdd.primary_blob_endpoint
+  }
+}
+
+resource "azurerm_monitor_autoscale_setting" "example" {
+  name                = "myAutoscaleSetting"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  target_resource_id  = azurerm_linux_virtual_machine_scale_set.example.id
+
+  profile {
+    name = "defaultProfile"
+
+    capacity {
+      default = 1
+      minimum = 1
+      maximum = 10
+    }
+
+    rule {
+      metric_trigger {
+        metric_name        = "Percentage CPU"
+        metric_resource_id = azurerm_linux_virtual_machine_scale_set.example.id
+        time_grain         = "PT1M"
+        statistic          = "Average"
+        time_window        = "PT5M"
+        time_aggregation   = "Average"
+        operator           = "GreaterThan"
+        threshold          = 15
+        metric_namespace   = "microsoft.compute/virtualmachinescalesets"
+
+      }
+
+      scale_action {
+        direction = "Increase"
+        type      = "ChangeCount"
+        value     = "1"
+        cooldown = "PT20M"
+      }
+    }
+
+    rule {
+      metric_trigger {
+        metric_name        = "Percentage CPU"
+        metric_resource_id = azurerm_linux_virtual_machine_scale_set.example.id
+        time_grain         = "PT1M"
+        statistic          = "Average"
+        time_window        = "PT5M"
+        time_aggregation   = "Average"
+        operator           = "LessThan"
+        threshold          = 10
+      }
+
+      scale_action {
+        direction = "Decrease"
+        type      = "ChangeCount"
+        value     = "1"
+        cooldown  = "PT15M"
+      }
+    }
+  }
+
+  notification {
+    email {
+      send_to_subscription_administrator    = true
+      send_to_subscription_co_administrator = true
+      custom_emails                         = ["admin@contoso.com"]
+    }
+  }
+}
 
 
 # creation d'un gateway subnet
@@ -743,6 +1083,16 @@ resource "azurerm_application_gateway" "network_gateway" {
   gateway_ip_configuration {
     name      = "my-gateway-ip-configuration"
     subnet_id = azurerm_subnet.subnet_gateway.id
+  }
+
+  probe {
+    name = "probetest"
+    host = "magentobrief4.eastus2.cloudapp.azure.com"
+    protocol = "Http"
+    path = "/customer/account/create/"
+    interval = "30"
+    timeout = "30"
+    unhealthy_threshold = "3"
   }
 
   frontend_port {
@@ -832,15 +1182,6 @@ resource "azurerm_application_gateway" "network_gateway" {
 
 }
 
-# STEP 3 ASSOCIATION DE AZURE APP GATEWAY AVEC LE POOL BACKEND
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_application_gateway_backend_address_pool_association
-
-resource "azurerm_network_interface_application_gateway_backend_address_pool_association" "poolbackend" {
-  network_interface_id = azurerm_network_interface.nic_app.id
-  ip_configuration_name = "nic_app_config"
-  backend_address_pool_id = tolist(azurerm_application_gateway.network_gateway.backend_address_pool).0.id
-
-}
 
 
 
@@ -878,29 +1219,6 @@ resource "azurerm_monitor_action_group" "group-monitor" {
   }
 }
 
-# STEP 3 MISE EN PLACE DE L'ALERTE POUR LA VM "APP"
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert
-
-resource "azurerm_monitor_metric_alert" "alert-vm-cpu" {
-  name                = "alert-vm-cpu"
-  resource_group_name = azurerm_resource_group.rg.name
-  scopes              = [azurerm_linux_virtual_machine.vm_app.id]
-  description         = "VM App cpu alert"
-  target_resource_type = "Microsoft.Compute/virtualMachines"
-
-  criteria {
-    metric_namespace = "Microsoft.Compute/virtualMachines"
-    metric_name      = "Percentage CPU"
-    aggregation      = "Total"
-    operator         = "GreaterThan"
-    threshold        = 90
-  }
-
-  action {
-    action_group_id = azurerm_monitor_action_group.group-monitor.id
-  }
-}
-
 # MISE EN PLACE DE L'ALERTE POUR LA VM "BDD"
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert
 
@@ -927,7 +1245,26 @@ resource "azurerm_monitor_metric_alert" "alert-stock" {
 }
 
 
+resource "azurerm_application_insights_web_test" "example" {
+  name                    = "tf-test-appinsights-webtest"
+  location                = azurerm_resource_group.rg.location
+  resource_group_name     = azurerm_resource_group.rg.name
+  application_insights_id = azurerm_application_insights.insight.id
+  kind                    = "ping"
+  frequency               = 300
+  timeout                 = 60
+  enabled                 = true
+  geo_locations           = ["us-tx-sn1-azr", "us-il-ch1-azr"]
 
+  configuration = <<XML
+<WebTest Name="WebTest1" Id="ABD48585-0831-40CB-9069-682EA6BB3583" Enabled="True" CssProjectStructure="" CssIteration="" Timeout="0" WorkItemIds="" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" Description="" CredentialUserName="" CredentialPassword="" PreAuthenticate="True" Proxy="default" StopOnError="False" RecordedResultFile="" ResultsLocale="">
+  <Items>
+    <Request Method="GET" Guid="a5f10126-e4cd-570d-961c-cea43999a200" Version="1.1" Url="http://microsoft.com" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="200" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False" />
+  </Items>
+</WebTest>
+XML
+
+}
 
 
 # CREATION D'UNE RESSOURCE QUI GENERE UN TEMPLATE AU FORMAT JSON
@@ -1077,4 +1414,3 @@ resource "azurerm_backup_protected_file_share" "share1" {
 }
 
 #------------------------------FIN BACKUP STORAGE SHARES FILE-------------------------------------
-
