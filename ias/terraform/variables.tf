@@ -1,5 +1,5 @@
 variable "resource_group_name" {
-  default = "brief4_QB_2"
+  default = "brief4_QB"
   description   = "Prefix of the resource group name that's combined with a random ID so name is unique in your Azure subscription."
 }
 

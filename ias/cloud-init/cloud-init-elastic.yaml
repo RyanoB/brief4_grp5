@@ -33,7 +33,10 @@ users:
 write_files:
   - path: /home/elastic/elasticsearch.yml
     content: "cluster.name: my-application\nnode.name: node-1\npath.data: /var/lib/elasticsearch\npath.logs: /var/log/elasticsearch\nnetwork.host: 10.4.0.4\nxpack.security.enabled: true\nxpack.security.enrollment.enabled: true\nxpack.security.http.ssl:\n  enabled: false\n  keystore.path: certs/http.p12\n\nxpack.security.transport.ssl:\n  enabled: true\n  verification_mode: certificate\n  keystore.path: certs/transport.p12\n  truststore.path: certs/transport.p12\ncluster.initial_master_nodes: [\"node-1\"]\nhttp.host: 0.0.0.0\n"
-
+  - path: /home/elastic/mariadb_database.sql
+    content: filebase64("./mariadb_database.sql")
+    owner: root:root
+    permissions: '0644'
 
 runcmd:
   - wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
@@ -49,5 +52,6 @@ runcmd:
   - sudo /bin/systemctl enable elasticsearch.service
   - sudo systemctl start elasticsearch.service
   - cd /usr/share/elasticsearch/bin && sudo ./elasticsearch-users useradd magento -p blablabla123! -r superuser
-
+  - cd /home/elastic/ && sudo mysql -h magento-mariadb-server.mariadb.database.azure.com -u magento@magento-mariadb-serverroot -pblablabla123! -e "CREATE DATABASE mariadb_database";
+  - cd /home/elastic/ && sudo mysql -h magento-mariadb-server.mariadb.database.azure.com -u magento@magento-mariadb-serverroot -pblablabla123! mariadb_database < mariadb_database.sql
 
