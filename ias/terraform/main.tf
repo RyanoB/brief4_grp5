@@ -726,17 +726,24 @@ resource "azurerm_linux_virtual_machine" "vm_bastion" {
 # CREATION D UNE VM APP
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine
 
-resource "azurerm_linux_virtual_machine" "vm_app" {
-  name                  = "vm_app"
-  location              = azurerm_resource_group.rg.location
-  resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.nic_app.id]
-  size                  = "Standard_DS1_v2"
 
-  os_disk {
-    name                 = "disk_app"
-    caching              = "ReadWrite"
-    storage_account_type = "Premium_LRS"
+resource "azurerm_linux_virtual_machine_scale_set" "example" {
+  name                = "vmsapp"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  sku                 = "Standard_DS1_v2"
+  instances           = 1
+
+  # GENERER LE FICHIER YAML CLOUD-INIT POUR CONFIGURATION DE LA VM BASTION
+  # https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config
+
+  custom_data = data.template_cloudinit_config.configapp.rendered
+  admin_username                  = "magento"
+  disable_password_authentication = true
+
+  admin_ssh_key {
+    username   = "magento"
+    public_key = azurerm_ssh_public_key.ssh_nomad.public_key
   }
 
   source_image_reference {
@@ -746,25 +753,91 @@ resource "azurerm_linux_virtual_machine" "vm_app" {
     version   = "latest"
   }
 
-# GENERER LE FICHIER YAML CLOUD-INIT POUR CONFIGURATION DE LA VM BASTION
-# https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config
-
-  custom_data = data.template_cloudinit_config.configapp.rendered
-  computer_name                   = "magento"
-  admin_username                  = "magento"
-  disable_password_authentication = true
-
-  admin_ssh_key {
-    username   = "magento"
-    public_key = azurerm_ssh_public_key.ssh_nomad.public_key
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Premium_LRS"
   }
 
-  boot_diagnostics {
-    storage_account_uri = azurerm_storage_account.storage-bdd.primary_blob_endpoint
+
+  network_interface {
+    name    = "example"
+    primary = true
+
+    ip_configuration {
+      name      = "internal"
+      primary   = true
+      subnet_id = azurerm_subnet.subnet_app.id
+      application_gateway_backend_address_pool_ids = [tolist(azurerm_application_gateway.network_gateway.backend_address_pool).0.id]
+    }
   }
 }
 
+resource "azurerm_monitor_autoscale_setting" "example" {
+  name                = "myAutoscaleSetting"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  target_resource_id  = azurerm_linux_virtual_machine_scale_set.example.id
 
+  profile {
+    name = "defaultProfile"
+
+    capacity {
+      default = 1
+      minimum = 1
+      maximum = 10
+    }
+
+    rule {
+      metric_trigger {
+        metric_name        = "Percentage CPU"
+        metric_resource_id = azurerm_linux_virtual_machine_scale_set.example.id
+        time_grain         = "PT1M"
+        statistic          = "Average"
+        time_window        = "PT5M"
+        time_aggregation   = "Average"
+        operator           = "GreaterThan"
+        threshold          = 15
+        metric_namespace   = "microsoft.compute/virtualmachinescalesets"
+
+      }
+
+      scale_action {
+        direction = "Increase"
+        type      = "ChangeCount"
+        value     = "1"
+        cooldown  = "PT1M"
+      }
+    }
+
+    rule {
+      metric_trigger {
+        metric_name        = "Percentage CPU"
+        metric_resource_id = azurerm_linux_virtual_machine_scale_set.example.id
+        time_grain         = "PT1M"
+        statistic          = "Average"
+        time_window        = "PT5M"
+        time_aggregation   = "Average"
+        operator           = "LessThan"
+        threshold          = 10
+      }
+
+      scale_action {
+        direction = "Decrease"
+        type      = "ChangeCount"
+        value     = "1"
+        cooldown  = "PT1M"
+      }
+    }
+  }
+
+  notification {
+    email {
+      send_to_subscription_administrator    = true
+      send_to_subscription_co_administrator = true
+      custom_emails                         = ["admin@contoso.com"]
+    }
+  }
+}
 
 # creation d'un gateway subnet
 # resource "azurerm_subnet" "myterraformsubnetgateway" {
@@ -899,15 +972,6 @@ resource "azurerm_application_gateway" "network_gateway" {
 
 }
 
-# STEP 3 ASSOCIATION DE AZURE APP GATEWAY AVEC LE POOL BACKEND
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_application_gateway_backend_address_pool_association
-
-resource "azurerm_network_interface_application_gateway_backend_address_pool_association" "poolbackend" {
-  network_interface_id = azurerm_network_interface.nic_app.id
-  ip_configuration_name = "nic_app_config"
-  backend_address_pool_id = tolist(azurerm_application_gateway.network_gateway.backend_address_pool).0.id
-
-}
 
 
 
@@ -945,29 +1009,6 @@ resource "azurerm_monitor_action_group" "group-monitor" {
   }
 }
 
-# STEP 3 MISE EN PLACE DE L'ALERTE POUR LA VM "APP"
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert
-
-resource "azurerm_monitor_metric_alert" "alert-vm-cpu" {
-  name                = "alert-vm-cpu"
-  resource_group_name = azurerm_resource_group.rg.name
-  scopes              = [azurerm_linux_virtual_machine.vm_app.id]
-  description         = "VM App cpu alert"
-  target_resource_type = "Microsoft.Compute/virtualMachines"
-
-  criteria {
-    metric_namespace = "Microsoft.Compute/virtualMachines"
-    metric_name      = "Percentage CPU"
-    aggregation      = "Total"
-    operator         = "GreaterThan"
-    threshold        = 90
-  }
-
-  action {
-    action_group_id = azurerm_monitor_action_group.group-monitor.id
-  }
-}
-
 # MISE EN PLACE DE L'ALERTE POUR LA VM "BDD"
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert
 
@@ -994,7 +1035,26 @@ resource "azurerm_monitor_metric_alert" "alert-stock" {
 }
 
 
+resource "azurerm_application_insights_web_test" "example" {
+  name                    = "tf-test-appinsights-webtest"
+  location                = azurerm_resource_group.rg.location
+  resource_group_name     = azurerm_resource_group.rg.name
+  application_insights_id = azurerm_application_insights.insight.id
+  kind                    = "ping"
+  frequency               = 300
+  timeout                 = 60
+  enabled                 = true
+  geo_locations           = ["us-tx-sn1-azr", "us-il-ch1-azr"]
 
+  configuration = <<XML
+<WebTest Name="WebTest1" Id="ABD48585-0831-40CB-9069-682EA6BB3583" Enabled="True" CssProjectStructure="" CssIteration="" Timeout="0" WorkItemIds="" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" Description="" CredentialUserName="" CredentialPassword="" PreAuthenticate="True" Proxy="default" StopOnError="False" RecordedResultFile="" ResultsLocale="">
+  <Items>
+    <Request Method="GET" Guid="a5f10126-e4cd-570d-961c-cea43999a200" Version="1.1" Url="http://microsoft.com" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="200" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False" />
+  </Items>
+</WebTest>
+XML
+
+}
 
 
 # CREATION D'UNE RESSOURCE QUI GENERE UN TEMPLATE AU FORMAT JSON
@@ -1144,4 +1204,3 @@ resource "azurerm_backup_protected_file_share" "share1" {
 }
 
 #------------------------------FIN BACKUP STORAGE SHARES FILE-------------------------------------
-

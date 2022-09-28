@@ -1,7 +1,6 @@
 #cloud-config
 package_update: true
 packages:
-  - nginx
   - composer
   - mariadb-client
   - mariadb-client-10.1
@@ -36,7 +35,7 @@ users:
 
 write_files:
   - path: /home/magento/magento
-    content: "upstream fastcgi_backend {\n  server  unix:/run/php/php8.1-fpm.sock;\n}\n\nserver {\n  listen 10.2.0.19:80;\n  server_name _;\n  set $MAGE_ROOT /var/www/html/magento2;\n  include /var/www/html/magento2/nginx.conf.sample;\n}\n"
+    content: "upstream fastcgi_backend {\n  server  unix:/run/php/php8.1-fpm.sock;\n}\n\nserver {\n  listen [::]:80;\n  server_name _;\n  set $MAGE_ROOT /var/www/html/magento2;\n  include /var/www/html/magento2/nginx.conf.sample;\n}\n"
 
 runcmd:
   - sudo apt install software-properties-common && sudo add-apt-repository ppa:ondrej/php -y
@@ -58,8 +57,6 @@ runcmd:
   - sudo apt-get autoremove apache2 -y
   - sudo apt-get purge apache2 -y
   - sudo apt-get autoremove --purge apache2 -y
-  - sudo cp /home/magento/magento /etc/nginx/conf.d/magento.conf
-  - sudo rm /etc/nginx/sites-enabled/default
   - chown www-data:www-data -R /var/www/html/magento2/var/
   - sudo echo "memory_limit = 2G" >> vim /etc/php/8.1/fpm/php.ini
   - sudo echo "max_execution_time = 1800" >> vim /etc/php/8.1/fpm/php.ini
@@ -69,9 +66,7 @@ runcmd:
   - sudo echo "zlib.output_compression = On" >> vim /etc/php/8.1/cli/php.ini
   - sudo systemctl restart php8.1-fpm
   - sudo chmod 775 ./generated/
-  - cd /var/www/html/magento2 && sudo bin/magento setup:di:compile
-  - sudo systemctl restart nginx
-  - sudo cp -R /var/www/html/magento2/pub /home/magento/pub
+  - cd /var/www/html/magento2 && sudo bin/magento setup:di:compil  - sudo cp -R /var/www/html/magento2/pub /home/magento/pub
   - sudo mkdir /etc/smbcredentials
   - sudo bash -c 'echo "username=staapp" >> /etc/smbcredentials/staapp.cred'
   - sudo bash -c 'echo "password=${password}" >> /etc/smbcredentials/staapp.cred'
@@ -88,3 +83,9 @@ runcmd:
   - cd /var/www/html/magento2 && sudo bin/magento setup:static-content:deploy -f
   - cd /var/www/html/magento2 && sudo bin/magento cache:flush
   - cd /var/www/html/magento2 && sudo bin/magento indexer:reindex
+  - sudo chown -R www-data:www-data /var/www/html/magento2/var/cache
+  - sudo chown -R www-data:www-data /var/www/html/magento2
+  - sudo apt install nginx
+  - sudo cp /home/magento/magento /etc/nginx/conf.d/magento.conf
+  - sudo rm /etc/nginx/sites-enabled/default
+  - sudo systemctl restart nginx
