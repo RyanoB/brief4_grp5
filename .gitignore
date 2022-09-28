@@ -1,2 +1,3 @@
 .gitignore
-ias/terraform/.terraform
+ias/terraform/.terraform*
+ias/terraform/terraform.tfstate*
