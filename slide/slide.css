@@ -1,0 +1,19 @@
+/* @theme slide */
+
+@import 'default';
+section {
+  background: #282a36;
+  color: whitesmoke;
+}
+
+h1 {
+  color: whitesmoke;
+}
+
+img {
+  max-width: 80%;
+}
+
+table {
+  color: black;
+}
