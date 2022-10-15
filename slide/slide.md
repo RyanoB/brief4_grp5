@@ -19,10 +19,9 @@ size: 16:9
 * 1 Introduction.
 * 2 Missions.
 * 3 Objectifs.
-* 4 Ressouces.
-* 5 Déploiment de l'infrastructure.
-* 6 Installation de l'application et ses dépendances.
-* 7 Retrospective du sprint.
+* 4 Scale set.
+* 5 Test de charge.
+* 6 Terraform.
 
 
 ---
